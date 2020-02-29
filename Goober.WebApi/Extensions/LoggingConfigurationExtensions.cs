@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Goober.WebApi.LoggingMiddleware;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
@@ -7,6 +8,11 @@ namespace Goober.WebApi.Extensions
 {
     public static class LoggingConfigurationExtensions
     {
+        public static void UserApiErrorHandling(this IApplicationBuilder app)
+        {
+            app.UseMiddleware(typeof(ErrorHandlingMiddleware));
+        }
+
         public static void UseGooberLoggingVariables(this IApplicationBuilder applicationBuilder)
         {
             applicationBuilder.UseMiddleware(typeof(Goober.WebApi.LoggingMiddleware.LoggingMiddleware));

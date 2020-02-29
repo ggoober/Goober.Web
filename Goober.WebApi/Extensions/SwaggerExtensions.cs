@@ -7,7 +7,7 @@ using System.IO;
 
 namespace Goober.WebApi.Extensions
 {
-    static class ConfigExtensions
+    static class SwaggerExtensions
     {
         public static void AddSwaggerGenWithDocs(this IServiceCollection service, OpenApiInfo info = null)
         {

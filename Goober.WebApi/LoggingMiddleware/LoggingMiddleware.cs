@@ -21,6 +21,7 @@ namespace Goober.WebApi.LoggingMiddleware
 
             context.Items["CONTEXT_USER_IDENTITY_NAME"] = context.User?.Identity?.Name;
             context.Items["REQUEST_HEADERS"] = headers;
+            context.Items["REQUEST_BODY"] = context?.Request?.Body?.ToString();
 
             await next(context);
         }
