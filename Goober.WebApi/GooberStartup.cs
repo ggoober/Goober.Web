@@ -37,8 +37,9 @@ namespace Goober.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.RegisterDateTimeService();
-            services.AddCaching();
+            services.AddGooberDateTimeService();
+            services.AddGooberCaching();
+            services.AddGooberHttpHelper();
             services.AddSingleton(Configuration);
 
             if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())
