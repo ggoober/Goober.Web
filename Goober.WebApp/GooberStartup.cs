@@ -1,15 +1,15 @@
-using System.Collections.Generic;
-using System.Linq;
-using Goober.Core.Extensions;
-using Goober.WebApi.Extensions;
-using Goober.WebApi.LoggingMiddleware;
+﻿using Goober.Core.Extensions;
+using Goober.WebApp.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
+using System.Linq;
 
-namespace Goober.WebApi
+namespace Goober.WebApp
 {
     public abstract class GooberStartup
     {
@@ -50,11 +50,12 @@ namespace Goober.WebApi
                 services.AddSwaggerGenWithDocs(SwaggerInfo);
             }
 
-            services.AddControllers();
+            services.AddControllersWithViews();
 
             ConfigureServiceCollections(services);
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseGooberLoggingVariables();
@@ -69,14 +70,11 @@ namespace Goober.WebApi
 
             app.UseSwaggerUIWithDocs();
 
-            app.UseRouting();
-
             app.UseStaticFiles();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseRouting();
+
+            app.UseEndpoints(ConfigureRoutes);
 
             ConfigurePipelineAfterMvc(app);
         }
@@ -86,5 +84,7 @@ namespace Goober.WebApi
         protected abstract void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app);
 
         protected abstract void ConfigurePipelineAfterMvc(IApplicationBuilder app);
+
+        protected abstract void ConfigureRoutes(IEndpointRouteBuilder routes);
     }
 }

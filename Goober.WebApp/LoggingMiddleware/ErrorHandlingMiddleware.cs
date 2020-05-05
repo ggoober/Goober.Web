@@ -5,7 +5,7 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace Goober.WebApi.LoggingMiddleware
+namespace Goober.WebApp.LoggingMiddleware
 {
     public class ErrorHandlingMiddleware
     {
