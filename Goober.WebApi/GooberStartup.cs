@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Goober.Core.Extensions;
+using Goober.Http.Extensions;
 using Goober.WebApi.Extensions;
 using Goober.WebApi.LoggingMiddleware;
 using Microsoft.AspNetCore.Builder;

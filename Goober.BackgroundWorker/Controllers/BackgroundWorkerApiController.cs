@@ -108,7 +108,7 @@ namespace Goober.BackgroundWorker.Controllers
         }
 
 
-        private IHostedService GetBackgroundWorkerByFullName(string fullName)
+        private IHostedService GetBackgroundWorkerByFullName([FromBody]string fullName)
         {
             var workers = _serviceProvider.GetServices<IHostedService>();
 
