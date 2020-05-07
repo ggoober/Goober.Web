@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi", "Goober.Web
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Core", "..\Goober.Standard\Goober.Core\Goober.Core.csproj", "{28D6C76B-CAA2-49B3-913B-27D2BD4303DD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.WebApp", "Goober.WebApp\Goober.WebApp.csproj", "{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApp", "Goober.WebApp\Goober.WebApp.csproj", "{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.BackgroundWorkers", "Goober.BackgroundWorkers\Goober.BackgroundWorkers.csproj", "{8179378D-6D90-4D01-BFDA-582861AB62FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8179378D-6D90-4D01-BFDA-582861AB62FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8179378D-6D90-4D01-BFDA-582861AB62FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8179378D-6D90-4D01-BFDA-582861AB62FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8179378D-6D90-4D01-BFDA-582861AB62FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
