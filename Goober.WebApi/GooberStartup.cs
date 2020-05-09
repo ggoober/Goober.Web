@@ -41,6 +41,7 @@ namespace Goober.WebApi
             services.AddGooberDateTimeService();
             services.AddGooberCaching();
             services.AddGooberHttpHelper();
+            services.AddGooberUdpHelper();
             services.AddSingleton(Configuration);
 
             if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())
