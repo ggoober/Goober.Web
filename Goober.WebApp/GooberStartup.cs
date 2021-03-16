@@ -1,5 +1,4 @@
 ﻿using Goober.Core.Extensions;
-using Goober.Http.Extensions;
 using Goober.WebApp.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -40,8 +39,6 @@ namespace Goober.WebApp
         {
             services.AddGooberDateTimeService();
             services.AddGooberCaching();
-            services.AddGooberHttpHelper();
-            services.AddGooberUdpHelper();
             services.AddSingleton(Configuration);
 
             if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())

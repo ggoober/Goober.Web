@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Goober.Core.Extensions;
-using Goober.Http.Extensions;
 using Goober.WebApi.Extensions;
 using Goober.WebApi.LoggingMiddleware;
 using Microsoft.AspNetCore.Builder;
@@ -29,7 +28,7 @@ namespace Goober.WebApi
         public GooberStartup(IConfiguration config)
         {
             Configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", true)
                 .Build();
         }
 
@@ -40,8 +39,6 @@ namespace Goober.WebApi
         {
             services.AddGooberDateTimeService();
             services.AddGooberCaching();
-            services.AddGooberHttpHelper();
-            services.AddGooberUdpHelper();
             services.AddSingleton(Configuration);
 
             if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())
