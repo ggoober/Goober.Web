@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Goober.WebApi.Example
 {
-    public class Startup : Goober.WebApi.GooberStartup
+    public class Startup : Goober.WebApi.BaseStartup
     {
         public Startup(IConfiguration config) : base(config)
         {

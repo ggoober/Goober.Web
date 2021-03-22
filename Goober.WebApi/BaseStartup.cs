@@ -1,17 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using Goober.Core.Extensions;
 using Goober.WebApi.Extensions;
-using Goober.WebApi.LoggingMiddleware;
+using Goober.WebApi.ModelBinder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json;
 
 namespace Goober.WebApi
 {
-    public abstract class GooberStartup
+    public abstract class BaseStartup
     {
         #region props
 
@@ -25,7 +27,7 @@ namespace Goober.WebApi
 
         #region ctor
 
-        public GooberStartup(IConfiguration config)
+        public BaseStartup(IConfiguration config)
         {
             Configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", true)
@@ -34,7 +36,6 @@ namespace Goober.WebApi
 
         #endregion
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGooberDateTimeService();
@@ -50,7 +51,20 @@ namespace Goober.WebApi
                 services.AddSwaggerGenWithDocs(SwaggerInfo);
             }
 
-            services.AddControllers();
+            services
+                .AddControllers(o =>
+                {
+                    o.ModelBinderProviders.Insert(0, new DateCultureIsoModelBinderProvider());
+                })
+                .AddJsonOptions(o =>
+                {
+                    o.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+                    o.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
+                    o.JsonSerializerOptions.IgnoreNullValues = true;
+                    o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    
+                });
+
 
             ConfigureServiceCollections(services);
         }
