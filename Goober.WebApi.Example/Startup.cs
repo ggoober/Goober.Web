@@ -8,6 +8,7 @@ namespace Goober.WebApi.Example
     {
         public Startup(IConfiguration config) : base(config)
         {
+            SwaggerXmlCommentsFileNameList.Add("WebApi.Example.xml");
         }
 
         protected override void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app)

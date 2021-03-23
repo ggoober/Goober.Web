@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Goober.WebApi.Example</name>
+    </assembly>
+    <members>
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.Get(System.Int32,System.Single,System.String,System.DateTime,Goober.WebApi.Example.Models.ExampleEnum,System.Collections.Generic.List{System.Int32})">
+            <summary>
+            Get api method
+            </summary>
+            <param name="intValue"></param>
+            <param name="floatValue"></param>
+            <param name="stringValue"></param>
+            <param name="dateValue"></param>
+            <param name="enumValue"></param>
+            <param name="intList"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJson(Goober.WebApi.Example.Models.PostJsonRequest)">
+            <summary>
+            Post json api method
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
