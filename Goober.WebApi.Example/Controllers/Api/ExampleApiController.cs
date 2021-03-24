@@ -3,10 +3,9 @@ using Goober.Core.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using System.IO;
+using Goober.CommonModels;
 
 namespace Goober.WebApi.Example.Controllers.Api
 {
@@ -49,12 +48,6 @@ namespace Goober.WebApi.Example.Controllers.Api
         [Route("post-json")]
         public string PostJson([FromBody] PostJsonRequest request)
         {
-            //if (request.Params == null || request.Params.Any() == false)
-            //{
-            //    request.Params = new System.Collections.Generic.Dictionary<int, string>();
-            //    request.Params.Add(1, "1str");
-            //    request.Params.Add(2, "2str");
-            //}
             return $"post-json {request.Serialize()}";
         }
 
@@ -78,6 +71,16 @@ namespace Goober.WebApi.Example.Controllers.Api
             {
                 FileDownloadName = name
             };
+        }
+
+        /// <summary>
+        /// hidden method
+        /// </summary>
+        [HttpGet]
+        [Route("hidden")]
+        [SwaggerHideInDocsAttribute("test")]
+        public void HiddenMethod()
+        { 
         }
     }
 }

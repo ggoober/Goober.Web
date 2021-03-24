@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Goober.Standard\Goober.CommonModels\Goober.CommonModels.csproj" />
     <ProjectReference Include="..\..\Goober.Standard\Goober.Core\Goober.Core.csproj" />
   </ItemGroup>
 

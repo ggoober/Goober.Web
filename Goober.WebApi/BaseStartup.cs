@@ -23,6 +23,8 @@ namespace Goober.WebApi
 
         protected OpenApiInfo SwaggerInfo { get; set; }
 
+        protected bool UseSwaggerHideDocsFilter { get; set; }
+
         #endregion
 
         #region ctor
@@ -44,11 +46,11 @@ namespace Goober.WebApi
 
             if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())
             {
-                services.AddSwaggerGenWithXmlDocs(SwaggerXmlCommentsFileNameList, SwaggerInfo);
+                services.AddSwaggerGenWithXmlDocs(SwaggerXmlCommentsFileNameList, UseSwaggerHideDocsFilter, SwaggerInfo);
             }
             else
             {
-                services.AddSwaggerGenWithDocs(SwaggerInfo);
+                services.AddSwaggerGenWithDocs(UseSwaggerHideDocsFilter, SwaggerInfo);
             }
 
             services

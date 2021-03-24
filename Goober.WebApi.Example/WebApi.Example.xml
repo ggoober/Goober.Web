@@ -23,5 +23,10 @@
             <param name="request"></param>
             <returns></returns>
         </member>
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.HiddenMethod">
+            <summary>
+            hidden method
+            </summary>
+        </member>
     </members>
 </doc>
