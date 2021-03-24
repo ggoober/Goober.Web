@@ -18,7 +18,7 @@ namespace Goober.WebApi
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
-            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("hrmSecurityKey", out string securityKey);
+            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("swagger-show", out string securityKey);
 
             foreach (var apiDescription in context.ApiDescriptions)
             {
