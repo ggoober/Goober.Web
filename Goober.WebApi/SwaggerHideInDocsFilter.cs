@@ -18,7 +18,7 @@ namespace Goober.WebApi
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
-            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("swagger-show", out string securityKey);
+            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("swagger-show", out string password);
 
             foreach (var apiDescription in context.ApiDescriptions)
             {
@@ -32,7 +32,7 @@ namespace Goober.WebApi
                     continue;
 
                 var targetAttribute = swaggerHideAttribute.First() as SwaggerHideInDocsAttribute;
-                if (targetAttribute.SecurityKey == securityKey)
+                if (targetAttribute.Password == password)
                     continue;
 
                 var key = "/" + apiDescription.RelativePath.TrimEnd('/');

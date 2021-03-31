@@ -19,14 +19,6 @@ namespace Goober.WebApi.Extensions
 
         public static IWebHostBuilder UseGooberLogging(this IWebHostBuilder webHostBuilder)
         {
-            var nLogConfiguration = NLog.LogManager.Configuration;
-
-            if (nLogConfiguration != null)
-            {
-                nLogConfiguration.Variables["ENVIRONMENT"] = System.Environment.GetEnvironmentVariable("envVar");
-                nLogConfiguration.Variables["APPLICATION"] = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-            }
-
             return webHostBuilder
                 .ConfigureLogging(logging =>
                 {

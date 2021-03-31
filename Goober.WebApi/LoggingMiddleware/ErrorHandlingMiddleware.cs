@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
+using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -27,7 +28,11 @@ namespace Goober.WebApi.LoggingMiddleware
             catch (Exception ex)
             {
                 var originalExc = ex.GetBaseException();
-                var message = $"Base exception message: {originalExc.Message}, stackTrace: {originalExc.StackTrace}";
+                var message = $"Exception: {ex.Message}";
+                if (ex.Message != originalExc?.Message)
+                {
+                    message = $"Exception: {ex.Message}, BaseExceptionMessage: {originalExc.Message}";
+                }
                 _logger.LogError(exception: ex, message: message);
 
                 var result = new { error = ex.Message }.Serialize();
