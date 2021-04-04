@@ -2,14 +2,22 @@
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using System;
+using System.Reflection;
 
 namespace Goober.WebApi
 {
     public static class ProgramUtils
     {
+        public static string ApplicationName
+        {
+            get; private set;
+        }
+
         public static void RunWebhost<TStartup>(string[] args, string nlogConfigFileName = "nlog.config")
             where TStartup : class
         {
+            ApplicationName = Assembly.GetEntryAssembly().GetName().Name;
+
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {
@@ -37,5 +45,7 @@ namespace Goober.WebApi
                              .UseGooberLogging()
                              .UseStartup<TStartup>();
         }
+
+
     }
 }

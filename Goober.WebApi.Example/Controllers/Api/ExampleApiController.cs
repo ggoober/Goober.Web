@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Goober.CommonModels;
 using Microsoft.Extensions.Logging;
+using Goober.WebApi.Example.Services;
 
 namespace Goober.WebApi.Example.Controllers.Api
 {
@@ -15,10 +16,13 @@ namespace Goober.WebApi.Example.Controllers.Api
     public class ExampleApiController : ControllerBase
     {
         private readonly ILogger<ExampleApiController> _logger;
+        private readonly IExampleHttpService _exampleHttpService;
 
-        public ExampleApiController(ILogger<ExampleApiController> logger)
+        public ExampleApiController(ILogger<ExampleApiController> logger,
+            IExampleHttpService exampleHttpService)
         {
             _logger = logger;
+            _exampleHttpService = exampleHttpService;
         }
 
         /// <summary>
@@ -40,6 +44,7 @@ namespace Goober.WebApi.Example.Controllers.Api
             [FromQuery] ExampleEnum enumValue,
             [FromQuery] List<int> intList)
         {
+            
             _logger.LogError("query string readed");
 
             return $"get-string result {new { intValue, floatValue, stringValue, dateValue, enumValue, intList }.Serialize()}";
@@ -52,11 +57,39 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// <returns></returns>
         [HttpPost]
         [Route("post-json")]
-        public string PostJson([FromBody] PostJsonRequest request)
+        public PostJsonResponse PostJson([FromBody] PostJsonRequest request)
         {
             _logger.LogError("json readed");
 
-            return $"post-json {request.Serialize()}";
+            return new PostJsonResponse { Message = $"post-json {request.Serialize()}" };
+        }
+
+        /// <summary>
+        /// Post json api method
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("post-json-through-http")]
+        public async Task<PostJsonResponse> PostJsonExecuteThroughHttpAsync([FromBody] PostJsonRequest request)
+        {
+            _logger.LogError("json readed");
+
+            return await _exampleHttpService.PostJsonAsync(request);
+        }
+
+        /// <summary>
+        /// Post json api method
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("post-json-through-http-twice")]
+        public async Task<PostJsonResponse> PostJsonExecuteThroughHttpTwiceAsync([FromBody] PostJsonRequest request)
+        {
+            _logger.LogError("json readed");
+
+            return await _exampleHttpService.PostJsonExecuteThroughHttpAsync(request);
         }
 
         [HttpPost]

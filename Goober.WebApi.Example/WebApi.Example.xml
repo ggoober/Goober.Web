@@ -23,6 +23,20 @@
             <param name="request"></param>
             <returns></returns>
         </member>
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJsonExecuteThroughHttpAsync(Goober.WebApi.Example.Models.PostJsonRequest)">
+            <summary>
+            Post json api method
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJsonExecuteThroughHttpTwiceAsync(Goober.WebApi.Example.Models.PostJsonRequest)">
+            <summary>
+            Post json api method
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
         <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.HiddenMethod">
             <summary>
             hidden method

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Goober.Core.Extensions;
+using System.Reflection;
 
 namespace Goober.WebApi.LoggingMiddleware
 {
@@ -12,6 +13,8 @@ namespace Goober.WebApi.LoggingMiddleware
         public static int MaxContentLength { get; set; } = 1024 * 5;
 
         private readonly RequestDelegate _next;
+
+        private string _assemblyName;
 
         public LoggingMiddleware(RequestDelegate next)
         {
@@ -23,6 +26,8 @@ namespace Goober.WebApi.LoggingMiddleware
             var request = context?.Request;
             if (request == null)
                 return;
+
+            context.Items["APPLICATION"] = ProgramUtils.ApplicationName;
 
             var requestForm = GetRequestForm(request);
             context.Items["CONTEXT_REQUEST_FORM"] = requestForm;

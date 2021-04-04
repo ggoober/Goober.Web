@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Http\Goober.Http.csproj" />
     <ProjectReference Include="..\Goober.WebApi\Goober.WebApi.csproj" />
   </ItemGroup>
 
