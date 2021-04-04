@@ -4,12 +4,14 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Goober.WebApi.LoggingMiddleware
 {
     public class ErrorHandlingMiddleware
     {
+        private const string ApplicationJsonContentType = "application/json";
         private readonly RequestDelegate _next;
         private readonly ILogger<ErrorHandlingMiddleware> _logger;
 
@@ -34,12 +36,17 @@ namespace Goober.WebApi.LoggingMiddleware
                     message = $"Exception: {ex.Message}, BaseExceptionMessage: {originalExc.Message}";
                 }
                 _logger.LogError(exception: ex, message: message);
-
-                var result = new { error = ex.Message }.Serialize();
-                context.Response.ContentType = "application/json";
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                await context.Response.WriteAsync(result);
+                
+                await SetErrorResponseAsync(context, ex.Message);
             }
+        }
+
+        private static async Task SetErrorResponseAsync(HttpContext context, string message)
+        {
+            var result = new { error = message }.Serialize();
+            context.Response.ContentType = ApplicationJsonContentType;
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            await context.Response.WriteAsync(result);
         }
     }
 }

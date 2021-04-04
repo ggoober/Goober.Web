@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
-using System.IO;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Goober.Core.Extensions;
 
 namespace Goober.WebApi.LoggingMiddleware
 {
@@ -10,22 +11,20 @@ namespace Goober.WebApi.LoggingMiddleware
     {
         public static int MaxContentLength { get; set; } = 1024 * 5;
 
-        private readonly RequestDelegate next;
+        private readonly RequestDelegate _next;
 
         public LoggingMiddleware(RequestDelegate next)
         {
-            this.next = next;
+            _next = next ?? throw new ArgumentNullException(nameof(next));
         }
 
         public async Task Invoke(HttpContext context)
         {
-            //var requestHeaders = GetRequestHeadersStr(context);
-
             var request = context?.Request;
             if (request == null)
                 return;
 
-            var requestForm = await GetRequestFormAsync(request);
+            var requestForm = GetRequestForm(request);
             context.Items["CONTEXT_REQUEST_FORM"] = requestForm;
 
             string requestBody = null;
@@ -35,10 +34,10 @@ namespace Goober.WebApi.LoggingMiddleware
             }
             context.Items["CONTEXT_REQUEST_BODY"] = requestBody;
 
-            await next(context);
+            await _next(context);
         }
 
-        private static async Task<string> GetRequestFormAsync(HttpRequest request)
+        private string GetRequestForm(HttpRequest request)
         {
             if (request.Method == "GET")
                 return null;
@@ -47,7 +46,7 @@ namespace Goober.WebApi.LoggingMiddleware
                 return null;
 
             if (request.ContentLength > MaxContentLength)
-                return $"ContentForm content length > {MaxContentLength}";
+                return $"RequestForm content length > {MaxContentLength}";
 
             request.EnableBuffering();
 
@@ -69,34 +68,20 @@ namespace Goober.WebApi.LoggingMiddleware
             return sb.ToString();
         }
 
-        private static async Task<string> GetRequestBodyAsync(HttpRequest request)
+        private async Task<string> GetRequestBodyAsync(HttpRequest request)
         {
             if (request.Method.ToUpper() == "GET")
                 return null;
 
             if (request.ContentLength > MaxContentLength)
-                return $"ContentForm content length > {MaxContentLength}";
+                return $"RequestBody content length > {MaxContentLength}";
 
             string requestBody;
             
             request.EnableBuffering();
-            requestBody = await ReadRequestBodyAsync(request);
+            requestBody = await request.Body.ReadWithMaxSizeLimitsAsync(Encoding.UTF8, maxSize: MaxContentLength);
             request.Body.Position = 0;
             
-            return requestBody;
-        }
-
-        private async static Task<string> ReadRequestBodyAsync(HttpRequest request, int maxReadSize = 1024 * 5)
-        {
-            string requestBody;
-
-            using (StreamReader reader = new StreamReader(stream: request.Body,
-                detectEncodingFromByteOrderMarks: true,
-                leaveOpen: true))
-            {
-                requestBody = await reader.ReadToEndAsync();
-            }
-
             return requestBody;
         }
     }

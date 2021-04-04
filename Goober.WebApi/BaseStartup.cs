@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using Goober.Core.Extensions;
 using Goober.WebApi.Extensions;
@@ -64,7 +65,6 @@ namespace Goober.WebApi
                     o.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
                     o.JsonSerializerOptions.IgnoreNullValues = true;
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    
                 });
 
 
@@ -73,9 +73,9 @@ namespace Goober.WebApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseGooberExceptionsHandling();
-
             app.UseGooberLoggingVariables();
+
+            app.UseGooberExceptionsHandling();
 
             app.UseRequestLocalizationByDefault();
 

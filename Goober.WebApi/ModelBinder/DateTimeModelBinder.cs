@@ -39,7 +39,14 @@ namespace Goober.WebApi.ModelBinder
             
             var dateTime = dateToParse.ToDateTimeByJsonSerialization();
 
-            bindingContext.Result = ModelBindingResult.Success(dateTime);
+            if (dateTime.HasValue == false)
+            {
+                bindingContext.Result = ModelBindingResult.Failed();
+            }
+            else
+            {
+                bindingContext.Result = ModelBindingResult.Success(dateTime);
+            }
 
             return Task.CompletedTask;
         }
