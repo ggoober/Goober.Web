@@ -4,17 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Goober.Core.Extensions;
-using System.Reflection;
 
 namespace Goober.WebApi.LoggingMiddleware
 {
     public class LoggingMiddleware
     {
-        public static int MaxContentLength { get; set; } = 1024 * 5;
+        public static int MaxContentLength { get; set; } = 1024 * 30;
 
         private readonly RequestDelegate _next;
 
-        private string _assemblyName;
+        private const string CallSequenceIdKey = "g-callsec-id";
 
         public LoggingMiddleware(RequestDelegate next)
         {
@@ -28,6 +27,8 @@ namespace Goober.WebApi.LoggingMiddleware
                 return;
 
             context.Items["APPLICATION"] = ProgramUtils.ApplicationName;
+
+            context.Items[CallSequenceIdKey] = GetCallSequenceIdFromRequestHeaderOrGenerateNew(context);
 
             var requestForm = GetRequestForm(request);
             context.Items["CONTEXT_REQUEST_FORM"] = requestForm;
@@ -88,6 +89,20 @@ namespace Goober.WebApi.LoggingMiddleware
             request.Body.Position = 0;
             
             return requestBody;
+        }
+
+        private string GetCallSequenceIdFromRequestHeaderOrGenerateNew(HttpContext httpContext)
+        {
+            var request = httpContext.Request;
+
+            if (request == null || request.Headers.ContainsKey(CallSequenceIdKey) == false)
+            {
+                return Guid.NewGuid().ToString();
+            }
+
+            var ret = request.Headers[CallSequenceIdKey];
+
+            return ret;
         }
     }
 }
