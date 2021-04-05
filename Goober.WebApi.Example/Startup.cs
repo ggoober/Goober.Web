@@ -24,7 +24,7 @@ namespace Goober.WebApi.Example
 
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
-            services.AddGooberHttpHelper();
+            services.AddGooberHttpServices();
             services.RegisterAssemblyClasses<Startup>();
         }
     }
