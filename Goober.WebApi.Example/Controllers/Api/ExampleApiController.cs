@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Goober.CommonModels;
 using Microsoft.Extensions.Logging;
 using Goober.WebApi.Example.Services;
+using System.IO;
+using Microsoft.AspNetCore.Hosting;
 
 namespace Goober.WebApi.Example.Controllers.Api
 {
@@ -17,12 +19,17 @@ namespace Goober.WebApi.Example.Controllers.Api
     {
         private readonly ILogger<ExampleApiController> _logger;
         private readonly IExampleHttpService _exampleHttpService;
+        private readonly IWebHostEnvironment _appEnvironment;
+
+        private const long MaxFileSize = 10L * 1024L * 1024L * 1024L;
 
         public ExampleApiController(ILogger<ExampleApiController> logger,
-            IExampleHttpService exampleHttpService)
+            IExampleHttpService exampleHttpService,
+            IWebHostEnvironment appEnvironment)
         {
             _logger = logger;
             _exampleHttpService = exampleHttpService;
+            _appEnvironment = appEnvironment;
         }
 
         /// <summary>
@@ -105,26 +112,30 @@ namespace Goober.WebApi.Example.Controllers.Api
 
         [HttpPost]
         [Route("post-file")]
-        public async Task<FileResult> PostBytesAsync([FromHeader] int id, [FromHeader] string name, IFormFile file)
+        [RequestSizeLimit(MaxFileSize)]
+        [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
+        public async Task<PostFileResult> PostFileAsync([FromHeader] int id, [FromHeader] string name, IFormFile file)
         {
             id.RequiredNotNull(nameof(id));
             name.RequiredNotNull(nameof(name));
             file.RequiredNotNull(nameof(file));
 
-            if (file.ContentType.StartsWith("application/x-") == true)
+            var contentType = file.ContentType;
+
+            if (contentType.StartsWith("application/x-") == true)
             {
                 throw new InvalidOperationException();
             }
 
-            var stream = file.OpenReadStream();
-            var contentType = file.ContentType;
-
-            _logger.LogError("file readed");
-
-            return new FileStreamResult(fileStream: stream, contentType: contentType)
+            string path = Path.Combine("files", file.FileName);
+            using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
             {
-                FileDownloadName = name
-            };
+                await file.CopyToAsync(fileStream);
+            }
+            
+            _logger.LogError("file saved");
+
+            return new PostFileResult { FileName = file.FileName };
         }
 
         /// <summary>
