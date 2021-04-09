@@ -12,7 +12,7 @@ using Goober.WebApi.FileExample.Models;
 
 namespace Goober.WebApi.FileExample.Controllers.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/file")]
     [ApiController]
     public class FileApiController : ControllerBase
     {
