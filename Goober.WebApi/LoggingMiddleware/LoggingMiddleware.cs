@@ -85,7 +85,14 @@ namespace Goober.WebApi.LoggingMiddleware
             string requestBody;
             
             request.EnableBuffering();
-            requestBody = await request.Body.ReadWithMaxSizeLimitsAsync(Encoding.UTF8, maxSize: MaxContentLength);
+            var readBodyResult = await request.Body.ReadStreamWithMaxSizeRetrictionAsync(Encoding.UTF8, maxSize: MaxContentLength);
+            if (readBodyResult.IsReadToTheEnd == false)
+            {
+                readBodyResult.StringResult.AppendLine();
+                readBodyResult.StringResult.AppendLine($"<<< NOT END, request body is greter than {MaxContentLength}.");
+            }
+            requestBody = readBodyResult.StringResult.ToString();
+
             request.Body.Position = 0;
             
             return requestBody;
