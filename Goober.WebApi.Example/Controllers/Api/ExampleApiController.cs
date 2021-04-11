@@ -66,6 +66,11 @@ namespace Goober.WebApi.Example.Controllers.Api
         [Route("post-json")]
         public PostJsonResponse PostJson([FromBody] PostJsonRequest request)
         {
+            if (true)
+            {
+                throw new InvalidOperationException("Some exception message");
+            }
+
             _logger.LogError("json readed");
 
             return new PostJsonResponse { Message = $"post-json {request.Serialize()}" };
@@ -124,7 +129,7 @@ namespace Goober.WebApi.Example.Controllers.Api
 
             if (contentType.StartsWith("application/x-") == true)
             {
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("Can't upload exe files");
             }
 
             string path = Path.Combine("files", file.FileName);

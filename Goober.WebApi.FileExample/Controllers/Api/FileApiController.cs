@@ -9,6 +9,7 @@ using Goober.Http.Utils;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
 using Goober.WebApi.FileExample.Models;
+using Goober.Http.Services;
 
 namespace Goober.WebApi.FileExample.Controllers.Api
 {
@@ -18,16 +19,19 @@ namespace Goober.WebApi.FileExample.Controllers.Api
     {
         private readonly ILogger<FileApiController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpJsonHelperService _httpJsonHelperService;
         private readonly IConfiguration _configuration;
 
         private const long MaxFileSize = 10L * 1024L * 1024L * 1024L;
 
         public FileApiController(ILogger<FileApiController> logger,
             IHttpClientFactory httpClientFactory,
+            IHttpJsonHelperService httpJsonHelperService,
             IConfiguration configuration)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _httpJsonHelperService = httpJsonHelperService;
             _configuration = configuration;
         }
 
@@ -56,41 +60,12 @@ namespace Goober.WebApi.FileExample.Controllers.Api
             headerValues.Add(new KeyValuePair<string, string>("id", id.ToString()));
             headerValues.Add(new KeyValuePair<string, string>("name", name));
 
-            var stream = file.OpenReadStream();
+            var ret = await _httpJsonHelperService.UploadFileAsync<PostFileResult>(
+                url: url,
+                file: file,
+                headerValues: headerValues);
 
-            using (var httpClient = _httpClientFactory.CreateClient())
-            {
-                httpClient.Timeout = TimeSpan.FromMilliseconds(120000);
-
-                var httpRequest = HttpUtils.GenerateHttpRequestMessage(
-                    requestUri: url,
-                    httpMethodType: HttpMethod.Post,
-                    authenticationHeaderValue: null,
-                    headerValues: null,
-                    responseMediaTypes: new List<string> { "application/json" });
-
-
-                var streamContent = new StreamContent(stream);
-                streamContent.Headers.Add("Content-Type", file.ContentType);
-
-                var formData = new MultipartFormDataContent();
-                formData.Add(streamContent, "file", file.FileName);
-
-                httpRequest.Content = formData;
-
-                foreach (var iCustomHeader in headerValues)
-                {
-                    httpRequest.Content.Headers.Add(iCustomHeader.Key, iCustomHeader.Value);
-                }
-
-                var httpResponse = await httpClient.SendAsync(httpRequest);
-
-                var ret = await httpResponse.Content.ReadAsStringAsync();
-
-                _logger.LogError("file sended");
-
-                return ret.Deserialize<PostFileResult>();
-            }
+            return ret;
         }
     }
 }

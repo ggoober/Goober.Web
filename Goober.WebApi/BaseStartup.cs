@@ -73,9 +73,9 @@ namespace Goober.WebApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseGooberExceptionsHandling(); 
+            
             app.UseGooberLoggingVariables();
-
-            app.UseGooberExceptionsHandling();
 
             app.UseRequestLocalizationByDefault();
 

@@ -51,22 +51,24 @@ namespace Goober.WebApi.LoggingMiddleware
             if (request.ContentType.Contains("form-data") == false)
                 return null;
 
-            if (request.ContentLength > MaxContentLength)
-                return $"RequestForm content length > {MaxContentLength}";
-
-            request.EnableBuffering();
-
             var sb = new StringBuilder();
-
-            foreach (var iFormItem in request.Form)
-            {
-                sb.AppendLine($"{iFormItem.Key}:{iFormItem.Value}");
-            }
 
             if (request.Form.Files.Count > 0)
             {
                 var fileNames = request.Form.Files.Select(x => x.FileName).ToList();
                 sb.AppendLine($"files: {string.Join(";", fileNames)}");
+
+                return sb.ToString();
+            }
+
+            if (request.ContentLength > MaxContentLength)
+                return $"RequestForm content length > {MaxContentLength}";
+
+            request.EnableBuffering();
+
+            foreach (var iFormItem in request.Form)
+            {
+                sb.AppendLine($"{iFormItem.Key}:{iFormItem.Value}");
             }
 
             request.Body.Position = 0;

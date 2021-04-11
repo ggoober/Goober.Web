@@ -30,14 +30,17 @@ namespace Goober.WebApi.LoggingMiddleware
             catch (Exception ex)
             {
                 var originalExc = ex.GetBaseException();
-                var message = $"Exception: {ex.Message}";
+                var message = $"{ex.GetType().Name}: {ex.Message}";
                 if (ex.Message != originalExc?.Message)
                 {
-                    message = $"Exception: {ex.Message}, BaseExceptionMessage: {originalExc.Message}";
+                    message = $"{ex.GetType().Name}: {ex.Message}, Base {originalExc.GetType().Name}: {originalExc.Message}";
                 }
+
+                context.Items["CONTEXT_RESPONSE_STATUSCODE"] = (int)HttpStatusCode.InternalServerError;
+
                 _logger.LogError(exception: ex, message: message);
                 
-                await SetErrorResponseAsync(context, ex.Message);
+                await SetErrorResponseAsync(context, message);
             }
         }
 
