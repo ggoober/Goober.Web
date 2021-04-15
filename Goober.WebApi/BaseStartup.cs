@@ -1,14 +1,14 @@
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using Goober.Core.Extensions;
 using Goober.WebApi.Extensions;
 using Goober.WebApi.ModelBinder;
+using Goober.Config.Api;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Goober.WebApi.Models;
 
 namespace Goober.WebApi
 {
@@ -18,21 +18,65 @@ namespace Goober.WebApi
 
         protected IConfiguration Configuration { get; private set; }
 
-        protected List<string> SwaggerXmlCommentsFileNameList { get; set; } = new List<string>();
+        private BaseStartupSwaggerSettings SwaggerSettings { get; set; } = new BaseStartupSwaggerSettings {
+            UseHideInDocsFilter = false
+        };
 
-        protected OpenApiInfo SwaggerInfo { get; set; }
-
-        protected bool UseSwaggerHideDocsFilter { get; set; }
+        private BaseStartupConfigSettings ConfigSettings { get; set; } = new BaseStartupConfigSettings 
+        { 
+            AppSettingsFileName = "appsettings.json", 
+            IsAppSettingsFileOptional = false
+        };
 
         #endregion
 
         #region ctor
 
-        public BaseStartup(IConfiguration config)
+        public BaseStartup(IConfiguration notUsingConfiguration)
         {
-            Configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", true)
-                .Build();
+            Init(swaggerSettings: null, configSettings: null);
+        }
+
+        public BaseStartup(BaseStartupSwaggerSettings swaggerSettings = null, 
+            BaseStartupConfigSettings configSettings = null)
+        {
+            Init(swaggerSettings, configSettings);
+        }
+
+        private IConfigurationBuilder Init(BaseStartupSwaggerSettings swaggerSettings, BaseStartupConfigSettings configSettings)
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+
+            if (configSettings != null)
+            {
+                ConfigSettings = configSettings;
+            }
+
+            if (swaggerSettings != null)
+            {
+                SwaggerSettings = swaggerSettings;
+            }
+
+            if (ConfigSettings != null)
+            {
+                if (ConfigSettings.ConfigApiEnvironmentAndHostMappings != null
+                    && ConfigSettings.ConfigApiEnvironmentAndHostMappings.Any() == true)
+                {
+                    configurationBuilder = configurationBuilder.AddApiConfiguration(environmentConfigApiSchemeAndHosts: ConfigSettings.ConfigApiEnvironmentAndHostMappings);
+                }
+
+                if (string.IsNullOrEmpty(ConfigSettings.AppSettingsFileName) == false)
+                {
+                    configurationBuilder = configurationBuilder.AddJsonFile(ConfigSettings.AppSettingsFileName, optional: ConfigSettings.IsAppSettingsFileOptional);
+                }
+            }
+            else
+            {
+                configurationBuilder = configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+            }
+
+            Configuration = configurationBuilder.Build();
+            return configurationBuilder;
         }
 
         #endregion
@@ -43,13 +87,17 @@ namespace Goober.WebApi
             services.AddGooberCaching();
             services.AddSingleton(Configuration);
 
-            if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())
+            if (SwaggerSettings != null)
             {
-                services.AddSwaggerGenWithXmlDocs(SwaggerXmlCommentsFileNameList, UseSwaggerHideDocsFilter, SwaggerInfo);
-            }
-            else
-            {
-                services.AddSwaggerGenWithDocs(UseSwaggerHideDocsFilter, SwaggerInfo);
+                if (SwaggerSettings.XmlCommentsFileNameList != null 
+                    && SwaggerSettings.XmlCommentsFileNameList.Any() == true)
+                {
+                    services.AddSwaggerGenWithXmlDocs(SwaggerSettings.XmlCommentsFileNameList, SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
+                }
+                else
+                {
+                    services.AddSwaggerGenWithDocs(SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
+                }
             }
 
             services
@@ -70,8 +118,8 @@ namespace Goober.WebApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseGooberExceptionsHandling(); 
-            
+            app.UseGooberExceptionsHandling();
+
             app.UseGooberLoggingVariables();
 
             app.UseRequestLocalizationByDefault();

@@ -3,17 +3,30 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.Core.Extensions;
 using Goober.Http.Extensions;
+using System;
+using System.Net.Http;
 
 namespace Goober.WebApi.Example
 {
     public class Startup : Goober.WebApi.BaseStartup
     {
-        public Startup(IConfiguration config) : base(config)
+        public Startup(IConfiguration config, IServiceProvider serviceProvider) 
+            : 
+            base(swaggerSettings: null,
+                configSettings: 
+                    new WebApi.Models.BaseStartupConfigSettings { 
+                        ConfigApiEnvironmentAndHostMappings = new System.Collections.Generic.Dictionary<string, string> { 
+                            { "Production", "http://localhost:55260/" } 
+                        }
+                    }
+                )
         {
-            SwaggerXmlCommentsFileNameList.Add("WebApi.Example.xml");
-            UseSwaggerHideDocsFilter = true;
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.AddHttpClient();
+            var sp = serviceCollection.BuildServiceProvider();
+            var factory = sp.GetRequiredService<IHttpClientFactory>();
         }
-
+        
         protected override void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app)
         {
         }
@@ -26,6 +39,7 @@ namespace Goober.WebApi.Example
         {
             services.AddGooberHttpServices();
             services.RegisterAssemblyClasses<Startup>();
+            services.Configure<Controllers.Api.ExampleApiController.Doc>(Configuration.GetSection("doc"));
         }
     }
 }
