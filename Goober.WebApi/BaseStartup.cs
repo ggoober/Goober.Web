@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Encodings.Web;
 using System.Text.Json.Serialization;
 using Goober.Core.Extensions;
 using Goober.WebApi.Extensions;
@@ -10,7 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Newtonsoft.Json;
 
 namespace Goober.WebApi
 {
@@ -66,7 +64,6 @@ namespace Goober.WebApi
                     o.JsonSerializerOptions.IgnoreNullValues = true;
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-
 
             ConfigureServiceCollections(services);
         }

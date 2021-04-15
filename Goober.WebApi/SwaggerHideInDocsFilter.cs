@@ -18,7 +18,7 @@ namespace Goober.WebApi
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
-            _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue("swagger-show", out string password);
+            
 
             foreach (var apiDescription in context.ApiDescriptions)
             {
@@ -32,6 +32,13 @@ namespace Goober.WebApi
                     continue;
 
                 var targetAttribute = swaggerHideAttribute.First() as SwaggerHideInDocsAttribute;
+                var cookieName = targetAttribute.CookieName;
+
+                if (string.IsNullOrEmpty(cookieName))
+                    continue;
+
+                 _httpContextAccessor.HttpContext.Request.Cookies.TryGetValue(cookieName, out string password);
+
                 if (targetAttribute.Password == password)
                     continue;
 

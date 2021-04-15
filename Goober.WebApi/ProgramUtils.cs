@@ -13,10 +13,17 @@ namespace Goober.WebApi
             get; private set;
         }
 
+        public static string AssemblyVersion
+        {
+            get; private set;
+        }
+
         public static void RunWebhost<TStartup>(string[] args, string nlogConfigFileName = "nlog.config")
             where TStartup : class
         {
             ApplicationName = Assembly.GetEntryAssembly().GetName().Name;
+
+            AssemblyVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
 
             var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
@@ -45,7 +52,5 @@ namespace Goober.WebApi
                              .UseGooberLogging()
                              .UseStartup<TStartup>();
         }
-
-
     }
 }
