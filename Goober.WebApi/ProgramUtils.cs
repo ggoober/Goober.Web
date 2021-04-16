@@ -29,8 +29,10 @@ namespace Goober.WebApi
             try
             {
                 logger.Debug("init main");
-                var webHost = CreateWebHostBuilder<TStartup>(args)
-                    .Build();
+                var webHost = WebHost.CreateDefaultBuilder(args)
+                             .UseGooberLogging()
+                             .UseStartup<TStartup>()
+                             .Build();
 
                 webHost.Run();
             }
@@ -43,14 +45,6 @@ namespace Goober.WebApi
             {
                 NLog.LogManager.Shutdown();
             }
-        }
-
-        public static IWebHostBuilder CreateWebHostBuilder<TStartup>(string[] args)
-            where TStartup : class
-        {
-            return WebHost.CreateDefaultBuilder(args)
-                             .UseGooberLogging()
-                             .UseStartup<TStartup>();
         }
     }
 }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 using Goober.WebApi.Example.Services;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace Goober.WebApi.Example.Controllers.Api
 {
@@ -18,17 +20,23 @@ namespace Goober.WebApi.Example.Controllers.Api
     public class ExampleApiController : ControllerBase
     {
         private readonly ILogger<ExampleApiController> _logger;
+        private readonly IConfiguration _configuration;
         private readonly IExampleHttpService _exampleHttpService;
+        private readonly IOptions<Doc> _docOptionsAccessor;
         private readonly IWebHostEnvironment _appEnvironment;
 
         private const long MaxFileSize = 10L * 1024L * 1024L * 1024L;
 
         public ExampleApiController(ILogger<ExampleApiController> logger,
+            IConfiguration configuration,
             IExampleHttpService exampleHttpService,
+            IOptions<Doc> docOptionsAccessor,
             IWebHostEnvironment appEnvironment)
         {
             _logger = logger;
+            _configuration = configuration;
             _exampleHttpService = exampleHttpService;
+            this._docOptionsAccessor = docOptionsAccessor;
             _appEnvironment = appEnvironment;
         }
 
@@ -161,6 +169,32 @@ namespace Goober.WebApi.Example.Controllers.Api
             request.RequiredArgumentNotNull(nameof(request));
 
             throw new InvalidOperationException(request.LogMessage);
+        }
+
+        public class Div 
+        {
+            public string Text { get; set; }
+
+            public string Span { get; set; }
+        }
+        public class Body
+        { 
+            public Div Div { get; set; }
+
+            public List<Div> Divs { get; set; } = new List<Div>();
+        }
+
+        public class Doc { 
+            public Body Body { get; set; }
+        }
+
+        [HttpGet]
+        [Route("get-configs")]
+        public string GetConfigs()
+        {
+            var ret = _docOptionsAccessor.Value?.Serialize();
+
+            return ret;
         }
     }
 }
