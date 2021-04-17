@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.WebApi.Models;
+using Goober.Http.Extensions;
 
 namespace Goober.WebApi
 {
@@ -86,6 +87,7 @@ namespace Goober.WebApi
             services.AddGooberDateTimeService();
             services.AddGooberCaching();
             services.AddSingleton(Configuration);
+            services.AddGooberHttpServices(); ;
 
             if (SwaggerSettings != null)
             {
