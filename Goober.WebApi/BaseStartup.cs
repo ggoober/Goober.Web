@@ -9,6 +9,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.WebApi.Models;
+using System;
+using System.Net.Http;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
+using Goober.Http.Extensions;
 
 namespace Goober.WebApi
 {
@@ -32,51 +37,21 @@ namespace Goober.WebApi
 
         #region ctor
 
-        public BaseStartup(IConfiguration notUsingConfiguration)
-        {
-            Init(swaggerSettings: null, configSettings: null);
+        public BaseStartup()
+        { 
         }
 
-        public BaseStartup(BaseStartupSwaggerSettings swaggerSettings = null, 
-            BaseStartupConfigSettings configSettings = null)
+        public BaseStartup(BaseStartupSwaggerSettings swaggerSettings, BaseStartupConfigSettings configSettings)
         {
-            Init(swaggerSettings, configSettings);
-        }
-
-        private IConfigurationBuilder Init(BaseStartupSwaggerSettings swaggerSettings, BaseStartupConfigSettings configSettings)
-        {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-
-            if (configSettings != null)
-            {
-                ConfigSettings = configSettings;
-            }
-
             if (swaggerSettings != null)
             {
                 SwaggerSettings = swaggerSettings;
             }
 
-            if (ConfigSettings != null)
+            if (configSettings != null)
             {
-                if (ConfigSettings.ConfigApiEnvironmentAndHostMappings != null
-                    && ConfigSettings.ConfigApiEnvironmentAndHostMappings.Any() == true)
-                {
-                    configurationBuilder = configurationBuilder.AddApiConfiguration(environmentConfigApiSchemeAndHosts: ConfigSettings.ConfigApiEnvironmentAndHostMappings);
-                }
-
-                if (string.IsNullOrEmpty(ConfigSettings.AppSettingsFileName) == false)
-                {
-                    configurationBuilder = configurationBuilder.AddJsonFile(ConfigSettings.AppSettingsFileName, optional: ConfigSettings.IsAppSettingsFileOptional);
-                }
+                ConfigSettings = configSettings;
             }
-            else
-            {
-                configurationBuilder = configurationBuilder.AddJsonFile("appsettings.json", optional: false);
-            }
-
-            Configuration = configurationBuilder.Build();
-            return configurationBuilder;
         }
 
         #endregion
@@ -85,19 +60,16 @@ namespace Goober.WebApi
         {
             services.AddGooberDateTimeService();
             services.AddGooberCaching();
+            services.AddGooberHttp();
+
+            var serviceProvider = services.BuildServiceProvider();
+            Configuration = GenerateConfiguration(configSettings: ConfigSettings, serviceProvider: serviceProvider);
+
             services.AddSingleton(Configuration);
 
             if (SwaggerSettings != null)
             {
-                if (SwaggerSettings.XmlCommentsFileNameList != null 
-                    && SwaggerSettings.XmlCommentsFileNameList.Any() == true)
-                {
-                    services.AddSwaggerGenWithXmlDocs(SwaggerSettings.XmlCommentsFileNameList, SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
-                }
-                else
-                {
-                    services.AddSwaggerGenWithDocs(SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
-                }
+                ConfigureSwagger(services);
             }
 
             services
@@ -116,7 +88,20 @@ namespace Goober.WebApi
             ConfigureServiceCollections(services);
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private void ConfigureSwagger(IServiceCollection services)
+        {
+            if (SwaggerSettings.XmlCommentsFileNameList != null
+                                && SwaggerSettings.XmlCommentsFileNameList.Any() == true)
+            {
+                services.AddSwaggerGenWithXmlDocs(SwaggerSettings.XmlCommentsFileNameList, SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
+            }
+            else
+            {
+                services.AddSwaggerGenWithDocs(SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
+            }
+        }
+
+        public void Configure(IApplicationBuilder app)
         {
             app.UseGooberExceptionsHandling();
 
@@ -147,5 +132,33 @@ namespace Goober.WebApi
         protected abstract void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app);
 
         protected abstract void ConfigurePipelineAfterMvc(IApplicationBuilder app);
+
+        private static IConfiguration GenerateConfiguration(BaseStartupConfigSettings configSettings,
+            IServiceProvider serviceProvider)
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+
+            if (configSettings != null)
+            {
+                if (configSettings.ConfigApiEnvironmentAndHostMappings != null
+                    && configSettings.ConfigApiEnvironmentAndHostMappings.Any() == true)
+                {
+                    configurationBuilder = configurationBuilder.AddApiConfiguration(
+                        environmentConfigApiSchemeAndHosts: configSettings.ConfigApiEnvironmentAndHostMappings,
+                        serviceProvider: serviceProvider);
+                }
+
+                if (string.IsNullOrEmpty(configSettings.AppSettingsFileName) == false)
+                {
+                    configurationBuilder = configurationBuilder.AddJsonFile(configSettings.AppSettingsFileName, optional: configSettings.IsAppSettingsFileOptional);
+                }
+            }
+            else
+            {
+                configurationBuilder = configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+            }
+
+            return configurationBuilder.Build();
+        }
     }
 }

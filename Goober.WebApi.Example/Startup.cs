@@ -10,7 +10,7 @@ namespace Goober.WebApi.Example
 {
     public class Startup : Goober.WebApi.BaseStartup
     {
-        public Startup(IConfiguration config, IServiceProvider serviceProvider) 
+        public Startup(IServiceProvider serviceProvider) 
             : 
             base(swaggerSettings: null,
                 configSettings: 
@@ -21,10 +21,7 @@ namespace Goober.WebApi.Example
                     }
                 )
         {
-            var serviceCollection = new ServiceCollection();
-            serviceCollection.AddHttpClient();
-            var sp = serviceCollection.BuildServiceProvider();
-            var factory = sp.GetRequiredService<IHttpClientFactory>();
+           
         }
         
         protected override void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app)
@@ -37,9 +34,8 @@ namespace Goober.WebApi.Example
 
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
-            services.AddGooberHttpServices();
             services.RegisterAssemblyClasses<Startup>();
-            services.Configure<Controllers.Api.ExampleApiController.Doc>(Configuration.GetSection("doc"));
+            //services.Configure<Controllers.Api.ExampleApiController.Doc>(Configuration.GetSection("doc"));
         }
     }
 }

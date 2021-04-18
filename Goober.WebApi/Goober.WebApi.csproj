@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -23,9 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Goober.Config\Goober.Config.WebApi\Goober.Config.Api\Goober.Config.Api.csproj" />
+    <ProjectReference Include="..\..\Goober.Config\Goober.Config.Api\Goober.Config.Api.csproj" />
     <ProjectReference Include="..\..\Goober.Standard\Goober.CommonModels\Goober.CommonModels.csproj" />
     <ProjectReference Include="..\..\Goober.Standard\Goober.Core\Goober.Core.csproj" />
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Http\Goober.Http.csproj" />
   </ItemGroup>
 
 </Project>

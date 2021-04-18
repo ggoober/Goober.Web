@@ -22,7 +22,6 @@ namespace Goober.WebApi.Example.Controllers.Api
         private readonly ILogger<ExampleApiController> _logger;
         private readonly IConfiguration _configuration;
         private readonly IExampleHttpService _exampleHttpService;
-        private readonly IOptions<Doc> _docOptionsAccessor;
         private readonly IWebHostEnvironment _appEnvironment;
 
         private const long MaxFileSize = 10L * 1024L * 1024L * 1024L;
@@ -30,13 +29,11 @@ namespace Goober.WebApi.Example.Controllers.Api
         public ExampleApiController(ILogger<ExampleApiController> logger,
             IConfiguration configuration,
             IExampleHttpService exampleHttpService,
-            IOptions<Doc> docOptionsAccessor,
             IWebHostEnvironment appEnvironment)
         {
             _logger = logger;
             _configuration = configuration;
             _exampleHttpService = exampleHttpService;
-            this._docOptionsAccessor = docOptionsAccessor;
             _appEnvironment = appEnvironment;
         }
 
@@ -192,7 +189,9 @@ namespace Goober.WebApi.Example.Controllers.Api
         [Route("get-configs")]
         public string GetConfigs()
         {
-            var ret = _docOptionsAccessor.Value?.Serialize();
+            var section = _configuration.GetSection("Doc");
+            
+            var ret = section?.Get<Doc>().Serialize();
 
             return ret;
         }
