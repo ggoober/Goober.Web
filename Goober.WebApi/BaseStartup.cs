@@ -5,11 +5,11 @@ using Goober.WebApi.Extensions;
 using Goober.WebApi.ModelBinder;
 using Goober.Config.Api;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.WebApi.Models;
 using Goober.Http.Extensions;
+using System;
 
 namespace Goober.WebApi
 {
@@ -19,15 +19,17 @@ namespace Goober.WebApi
 
         protected IConfiguration Configuration { get; private set; }
 
-        private BaseStartupSwaggerSettings SwaggerSettings { get; set; } = new BaseStartupSwaggerSettings {
+        private BaseStartupSwaggerSettings _swaggerSettings { get; set; } = new BaseStartupSwaggerSettings {
             UseHideInDocsFilter = false
         };
 
-        private BaseStartupConfigSettings ConfigSettings { get; set; } = new BaseStartupConfigSettings 
+        private BaseStartupConfigSettings _configSettings { get; set; } = new BaseStartupConfigSettings 
         { 
             AppSettingsFileName = "appsettings.json", 
             IsAppSettingsFileOptional = false
         };
+
+        private long? _memoryCacheSizeLimitInBytes = null;
 
         #endregion
 
@@ -37,17 +39,19 @@ namespace Goober.WebApi
         { 
         }
 
-        public BaseStartup(BaseStartupSwaggerSettings swaggerSettings, BaseStartupConfigSettings configSettings)
+        public BaseStartup(BaseStartupSwaggerSettings swaggerSettings, BaseStartupConfigSettings configSettings, int? memoryCacheSizeLimitInMB)
         {
             if (swaggerSettings != null)
             {
-                SwaggerSettings = swaggerSettings;
+                _swaggerSettings = swaggerSettings;
             }
 
             if (configSettings != null)
             {
-                ConfigSettings = configSettings;
+                _configSettings = configSettings;
             }
+
+            _memoryCacheSizeLimitInBytes = memoryCacheSizeLimitInMB * 1024;
         }
 
         #endregion
@@ -55,16 +59,15 @@ namespace Goober.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGooberDateTimeService();
-            services.AddGooberCaching();
+            services.AddGooberCaching(memoryCacheSizeLimitInBytes: _memoryCacheSizeLimitInBytes);
             services.AddGooberHttp();
 
             var serviceProvider = services.BuildServiceProvider();
-            Configuration = GenerateConfiguration(configSettings: ConfigSettings, serviceProvider: serviceProvider);
+            Configuration = GenerateConfiguration(configSettings: _configSettings, serviceProvider: serviceProvider);
 
             services.AddSingleton(Configuration);
-            services.AddGooberHttpServices(); ;
 
-            if (SwaggerSettings != null)
+            if (_swaggerSettings != null)
             {
                 ConfigureSwagger(services);
             }
@@ -87,14 +90,14 @@ namespace Goober.WebApi
 
         private void ConfigureSwagger(IServiceCollection services)
         {
-            if (SwaggerSettings.XmlCommentsFileNameList != null
-                                && SwaggerSettings.XmlCommentsFileNameList.Any() == true)
+            if (_swaggerSettings.XmlCommentsFileNameList != null
+                                && _swaggerSettings.XmlCommentsFileNameList.Any() == true)
             {
-                services.AddSwaggerGenWithXmlDocs(SwaggerSettings.XmlCommentsFileNameList, SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
+                services.AddSwaggerGenWithXmlDocs(_swaggerSettings.XmlCommentsFileNameList, _swaggerSettings.UseHideInDocsFilter, _swaggerSettings.OpenApiInfo);
             }
             else
             {
-                services.AddSwaggerGenWithDocs(SwaggerSettings.UseHideInDocsFilter, SwaggerSettings.OpenApiInfo);
+                services.AddSwaggerGenWithDocs(_swaggerSettings.UseHideInDocsFilter, _swaggerSettings.OpenApiInfo);
             }
         }
 
