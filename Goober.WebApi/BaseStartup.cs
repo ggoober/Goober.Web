@@ -9,10 +9,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.WebApi.Models;
-using System;
-using System.Net.Http;
-using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 using Goober.Http.Extensions;
 
 namespace Goober.WebApi
@@ -66,6 +62,7 @@ namespace Goober.WebApi
             Configuration = GenerateConfiguration(configSettings: ConfigSettings, serviceProvider: serviceProvider);
 
             services.AddSingleton(Configuration);
+            services.AddGooberHttpServices(); ;
 
             if (SwaggerSettings != null)
             {
