@@ -21,10 +21,10 @@ namespace Goober.WebApi.Example.Services.Implementation
         {
         }
 
-        public async Task<PostJsonResponse> PostJsonAsync(PostJsonRequest request, [CallerMemberName] string callerMethodName = null)
-            => await ExecutePostAsync<PostJsonResponse, PostJsonRequest>("api/example/post-json", request, callerMethodName: callerMethodName);
+        public async Task<PostJsonResponse> PostJsonAsync(PostJsonRequest request, [CallerMemberName] string callerMemberName = null)
+            => await ExecutePostAsync<PostJsonResponse, PostJsonRequest>("api/example/post-json", request, callerMemberName: callerMemberName);
 
-        public async Task<PostJsonResponse> PostJsonExecuteThroughHttpAsync(PostJsonRequest request, [CallerMemberName] string callerMethodName = null)
-            => await ExecutePostAsync<PostJsonResponse, PostJsonRequest>("api/example/post-json-through-http", request, callerMethodName: callerMethodName);
+        public async Task<PostJsonResponse> PostJsonExecuteThroughHttpAsync(PostJsonRequest request, [CallerMemberName] string callerMemberName = null)
+            => await ExecutePostAsync<PostJsonResponse, PostJsonRequest>("api/example/post-json-through-http", request, callerMemberName: callerMemberName);
     }
 }

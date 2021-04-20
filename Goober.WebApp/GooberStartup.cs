@@ -38,7 +38,7 @@ namespace Goober.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddGooberDateTimeService();
-            services.AddGooberCaching();
+            //services.AddGooberCaching();
             services.AddSingleton(Configuration);
 
             if (SwaggerXmlCommentsFileNameList != null && SwaggerXmlCommentsFileNameList.Any())

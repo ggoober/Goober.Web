@@ -1,6 +1,7 @@
 ﻿using Goober.CommonModels;
 using Goober.Core.Services;
 using Goober.WebApi;
+using Goober.WebApi.Glossary;
 using Goober.WebApi.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +24,7 @@ namespace Goober.Config.WebApi.Controllers.Api
 
         [HttpGet]
         [Route("/api/ping/get")]
-        [SwaggerHideInDocsAttribute(cookieName: "swagger-show", password: "12345-zx")]
+        [SwaggerHideInDocsAttribute(cookieName: SwaggerGlossary.HideInDocsCookieName, password: SwaggerGlossary.HideInDocsPasswordValue)]
         public GetPingResponse Get([FromQuery]string application, 
             [FromQuery]string environment, 
             [FromQuery]string machine)

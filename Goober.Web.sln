@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.FileExample",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Config.Api", "..\Goober.Config\Goober.Config.Api\Goober.Config.Api.csproj", "{60EC1729-586B-40B8-B7B1-986065F67234}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.Api", "Goober.Api\Goober.Api.csproj", "{20CE5140-69C7-40D7-A089-3D80E34866D1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{60EC1729-586B-40B8-B7B1-986065F67234}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60EC1729-586B-40B8-B7B1-986065F67234}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60EC1729-586B-40B8-B7B1-986065F67234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -18,8 +18,8 @@ namespace Goober.WebApi.Example
                         ConfigApiEnvironmentAndHostMappings = new System.Collections.Generic.Dictionary<string, string> { 
                             { "Production", "http://localhost:55260/" } 
                         }
-                    }
-                )
+                    },
+                memoryCacheSizeLimitInMB: null)
         {
            
         }
