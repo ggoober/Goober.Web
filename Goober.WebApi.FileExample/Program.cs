@@ -1,3 +1,5 @@
+using Goober.Web;
+
 namespace Goober.WebApi.FileExample
 {
     public class Program

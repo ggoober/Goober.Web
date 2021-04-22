@@ -1,12 +1,11 @@
-using Goober.Http.Extensions;
+using Goober.Web;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Goober.WebApi.FileExample
 {
-    public class Startup : BaseStartup
+    public class Startup : BaseApiStartup
     {
         public Startup() : base()
         {
@@ -22,7 +21,6 @@ namespace Goober.WebApi.FileExample
 
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
-            services.AddGooberHttp();
         }
     }
 }
