@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Goober.WebApi.Models
+namespace Goober.Web.Models
 {
     public class GetCachedEntriesModel
     {

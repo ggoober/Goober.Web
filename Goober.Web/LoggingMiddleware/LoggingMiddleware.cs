@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Goober.Core.Extensions;
 
-namespace Goober.WebApi.LoggingMiddleware
+namespace Goober.Web.LoggingMiddleware
 {
     public class LoggingMiddleware
     {

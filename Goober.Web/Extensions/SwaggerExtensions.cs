@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Goober.WebApi.Extensions
+namespace Goober.Web.Extensions
 {
     static class SwaggerExtensions
     {

@@ -5,13 +5,12 @@ using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
-using Goober.CommonModels;
 using Microsoft.Extensions.Logging;
 using Goober.WebApi.Example.Services;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
+using Goober.Core.Attributes;
 
 namespace Goober.WebApi.Example.Controllers.Api
 {

@@ -1,4 +1,4 @@
-﻿namespace Goober.WebApi.Glossary
+﻿namespace Goober.Web.Glossary
 {
     public static class SwaggerGlossary
     {

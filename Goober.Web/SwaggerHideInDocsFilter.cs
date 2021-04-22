@@ -1,11 +1,11 @@
-﻿using Goober.CommonModels;
+﻿using Goober.Core.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 
-namespace Goober.WebApi
+namespace Goober.Web
 {
     public class SwaggerHideInDocsFilter : IDocumentFilter
     {
@@ -18,8 +18,6 @@ namespace Goober.WebApi
 
         public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
         {
-            
-
             foreach (var apiDescription in context.ApiDescriptions)
             {
                 var controllerActionDescriptor = apiDescription.ActionDescriptor as ControllerActionDescriptor;

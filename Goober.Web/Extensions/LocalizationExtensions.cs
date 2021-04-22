@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Localization;
 using System.Globalization;
 
-namespace Goober.WebApi.Extensions
+namespace Goober.Web.Extensions
 {
     public static class LocalizationExtensions
     {

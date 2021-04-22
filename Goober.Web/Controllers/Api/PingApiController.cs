@@ -1,13 +1,13 @@
-﻿using Goober.CommonModels;
-using Goober.Core.Services;
-using Goober.WebApi;
-using Goober.WebApi.Glossary;
-using Goober.WebApi.Models;
+﻿using Goober.Core.Services;
+using Goober.Web.Glossary;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using Goober.Core.Attributes;
+using Goober.Web.Models;
+using Goober.Web;
 
-namespace Goober.Config.WebApi.Controllers.Api
+namespace Goober.Config.Web.Controllers.Api
 {
     [ApiController]
     public class PingApiController : ControllerBase

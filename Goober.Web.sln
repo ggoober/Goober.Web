@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi", "Goober.WebApi\Goober.WebApi.csproj", "{8F94BE84-1C67-4DA2-B0B8-7AC637672A02}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Core", "..\Goober.Standard\Goober.Core\Goober.Core.csproj", "{28D6C76B-CAA2-49B3-913B-27D2BD4303DD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApp", "Goober.WebApp\Goober.WebApp.csproj", "{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}"
@@ -13,15 +11,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.BackgroundWorker", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.Example", "Goober.WebApi.Example\Goober.WebApi.Example.csproj", "{3001D8A0-E12F-4B4C-B56A-43F0685853EA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.CommonModels", "..\Goober.Standard\Goober.CommonModels\Goober.CommonModels.csproj", "{2A88621B-E675-48BB-B030-900F39A115AB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Http", "..\Goober.Standard\Goober.Http\Goober.Http.csproj", "{40CAAB35-E74C-4DE4-8B5E-5782492A0C2C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.FileExample", "Goober.WebApi.FileExample\Goober.WebApi.FileExample.csproj", "{60CA10F6-B748-4EF2-9C9C-F3E8C13D87E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Config.Api", "..\Goober.Config\Goober.Config.Api\Goober.Config.Api.csproj", "{60EC1729-586B-40B8-B7B1-986065F67234}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.Api", "Goober.Api\Goober.Api.csproj", "{20CE5140-69C7-40D7-A089-3D80E34866D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Api", "Goober.Api\Goober.Api.csproj", "{20CE5140-69C7-40D7-A089-3D80E34866D1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Caching", "..\Goober.Standard\Goober.Caching\Goober.Caching.csproj", "{49BE4997-E70A-4D1D-8D5F-2F354DC95B6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Caching.Abstractions", "..\Goober.Standard\Goober.Caching.Abstractions\Goober.Caching.Abstractions.csproj", "{3B7FA457-6603-45C6-A839-ED6415A88DAD}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Http.Abstractions", "..\Goober.Standard\Goober.Http.Abstractions\Goober.Http.Abstractions.csproj", "{3154CF21-E9B3-47C3-8951-D84343479305}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.Web", "Goober.Web\Goober.Web.csproj", "{665E3D6C-3EBD-45FD-8F83-DC1E5AFDB5D7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +33,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8F94BE84-1C67-4DA2-B0B8-7AC637672A02}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8F94BE84-1C67-4DA2-B0B8-7AC637672A02}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8F94BE84-1C67-4DA2-B0B8-7AC637672A02}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8F94BE84-1C67-4DA2-B0B8-7AC637672A02}.Release|Any CPU.Build.0 = Release|Any CPU
 		{28D6C76B-CAA2-49B3-913B-27D2BD4303DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{28D6C76B-CAA2-49B3-913B-27D2BD4303DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28D6C76B-CAA2-49B3-913B-27D2BD4303DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -49,10 +49,6 @@ Global
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2A88621B-E675-48BB-B030-900F39A115AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2A88621B-E675-48BB-B030-900F39A115AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2A88621B-E675-48BB-B030-900F39A115AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2A88621B-E675-48BB-B030-900F39A115AB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{40CAAB35-E74C-4DE4-8B5E-5782492A0C2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{40CAAB35-E74C-4DE4-8B5E-5782492A0C2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{40CAAB35-E74C-4DE4-8B5E-5782492A0C2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +65,22 @@ Global
 		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20CE5140-69C7-40D7-A089-3D80E34866D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49BE4997-E70A-4D1D-8D5F-2F354DC95B6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49BE4997-E70A-4D1D-8D5F-2F354DC95B6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49BE4997-E70A-4D1D-8D5F-2F354DC95B6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49BE4997-E70A-4D1D-8D5F-2F354DC95B6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B7FA457-6603-45C6-A839-ED6415A88DAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B7FA457-6603-45C6-A839-ED6415A88DAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B7FA457-6603-45C6-A839-ED6415A88DAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B7FA457-6603-45C6-A839-ED6415A88DAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3154CF21-E9B3-47C3-8951-D84343479305}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3154CF21-E9B3-47C3-8951-D84343479305}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3154CF21-E9B3-47C3-8951-D84343479305}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3154CF21-E9B3-47C3-8951-D84343479305}.Release|Any CPU.Build.0 = Release|Any CPU
+		{665E3D6C-3EBD-45FD-8F83-DC1E5AFDB5D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{665E3D6C-3EBD-45FD-8F83-DC1E5AFDB5D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{665E3D6C-3EBD-45FD-8F83-DC1E5AFDB5D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{665E3D6C-3EBD-45FD-8F83-DC1E5AFDB5D7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

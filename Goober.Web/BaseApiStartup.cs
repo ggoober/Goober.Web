@@ -1,19 +1,19 @@
 using System.Linq;
 using System.Text.Json.Serialization;
+using Goober.Caching;
 using Goober.Core.Extensions;
-using Goober.WebApi.Extensions;
-using Goober.WebApi.ModelBinder;
 using Goober.Config.Api;
+using Goober.Http;
+using Goober.Web.Extensions;
+using Goober.Web.ModelBinder;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Goober.WebApi.Models;
-using Goober.Http.Extensions;
-using System;
+using Goober.Web.Models;
 
-namespace Goober.WebApi
+namespace Goober.Web
 {
-    public abstract class BaseStartup
+    public abstract class BaseApiStartup
     {
         #region props
 
@@ -26,7 +26,9 @@ namespace Goober.WebApi
         private BaseStartupConfigSettings _configSettings { get; set; } = new BaseStartupConfigSettings 
         { 
             AppSettingsFileName = "appsettings.json", 
-            IsAppSettingsFileOptional = false
+            IsAppSettingsFileOptional = false,
+            CacheExpirationTimeInMinutes = null,
+            CacheRefreshTimeInMinutes = 5
         };
 
         private long? _memoryCacheSizeLimitInBytes = null;
@@ -35,11 +37,14 @@ namespace Goober.WebApi
 
         #region ctor
 
-        public BaseStartup()
+        public BaseApiStartup()
         { 
         }
 
-        public BaseStartup(BaseStartupSwaggerSettings swaggerSettings, BaseStartupConfigSettings configSettings, int? memoryCacheSizeLimitInMB)
+        public BaseApiStartup(
+            BaseStartupSwaggerSettings swaggerSettings = null, 
+            BaseStartupConfigSettings configSettings = null, 
+            int? memoryCacheSizeLimitInMB = null)
         {
             if (swaggerSettings != null)
             {
@@ -62,9 +67,7 @@ namespace Goober.WebApi
             services.AddGooberCaching(memoryCacheSizeLimitInBytes: _memoryCacheSizeLimitInBytes);
             services.AddGooberHttp();
 
-            var serviceProvider = services.BuildServiceProvider();
-            Configuration = GenerateConfiguration(configSettings: _configSettings, serviceProvider: serviceProvider);
-
+            Configuration = GenerateConfiguration(configSettings: _configSettings, serviceCollection: services);
             services.AddSingleton(Configuration);
 
             if (_swaggerSettings != null)
@@ -134,7 +137,7 @@ namespace Goober.WebApi
         protected abstract void ConfigurePipelineAfterMvc(IApplicationBuilder app);
 
         private static IConfiguration GenerateConfiguration(BaseStartupConfigSettings configSettings,
-            IServiceProvider serviceProvider)
+            IServiceCollection serviceCollection)
         {
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 
@@ -143,9 +146,13 @@ namespace Goober.WebApi
                 if (configSettings.ConfigApiEnvironmentAndHostMappings != null
                     && configSettings.ConfigApiEnvironmentAndHostMappings.Any() == true)
                 {
-                    configurationBuilder = configurationBuilder.AddApiConfiguration(
-                        environmentConfigApiSchemeAndHosts: configSettings.ConfigApiEnvironmentAndHostMappings,
-                        serviceProvider: serviceProvider);
+                    configurationBuilder = configurationBuilder.AddConfigApi(
+                            serviceCollection: serviceCollection,
+                            environmentConfigApiSchemeAndHosts: configSettings.ConfigApiEnvironmentAndHostMappings,
+                            cacheExpirationTimeInMinutes: configSettings.CacheExpirationTimeInMinutes,
+                            cacheRefreshTimeInMinutes: configSettings.CacheRefreshTimeInMinutes,
+                            applicationName: configSettings.OverrideApplicationName
+                        );
                 }
 
                 if (string.IsNullOrEmpty(configSettings.AppSettingsFileName) == false)

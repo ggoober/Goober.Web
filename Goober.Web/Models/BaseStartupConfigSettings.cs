@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Goober.WebApi.Models
+namespace Goober.Web.Models
 {
     public class BaseStartupConfigSettings
     {
@@ -8,6 +8,12 @@ namespace Goober.WebApi.Models
 
         public string AppSettingsFileName { get; set; } = "appsettings.json";
 
+        public string OverrideApplicationName { get; set; }
+
         public bool IsAppSettingsFileOptional { get; set; } = false;
+
+        public int? CacheRefreshTimeInMinutes { get; set; }
+        
+        public int? CacheExpirationTimeInMinutes { get; set; }
     }
 }

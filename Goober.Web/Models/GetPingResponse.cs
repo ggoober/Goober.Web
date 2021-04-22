@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace Goober.WebApi.Models
+namespace Goober.Web.Models
 {
     public class GetPingResponse
     {

@@ -3,7 +3,7 @@ using System;
 using Goober.Core.Extensions;
 using System.Threading.Tasks;
 
-namespace Goober.WebApi.ModelBinder
+namespace Goober.Web.ModelBinder
 {
     public class DateTimeModelBinder: IModelBinder
     {

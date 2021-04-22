@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
 
-namespace Goober.WebApi.Models
+namespace Goober.Web.Models
 {
     public class BaseStartupSwaggerSettings
     {

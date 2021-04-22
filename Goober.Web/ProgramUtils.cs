@@ -1,10 +1,10 @@
-﻿using Goober.WebApi.Extensions;
+﻿using Goober.Web.Extensions;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using System;
 using System.Reflection;
 
-namespace Goober.WebApi
+namespace Goober.Web
 {
     public static class ProgramUtils
     {

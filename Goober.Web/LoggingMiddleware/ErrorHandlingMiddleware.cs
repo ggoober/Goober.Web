@@ -2,12 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
-using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace Goober.WebApi.LoggingMiddleware
+namespace Goober.Web.LoggingMiddleware
 {
     public class ErrorHandlingMiddleware
     {

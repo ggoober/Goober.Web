@@ -3,18 +3,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
-namespace Goober.WebApi.Extensions
+namespace Goober.Web.Extensions
 {
     public static class ConfigurationExtensions
     {
         public static void UseGooberLoggingVariables(this IApplicationBuilder applicationBuilder)
         {
-            applicationBuilder.UseMiddleware(typeof(Goober.WebApi.LoggingMiddleware.LoggingMiddleware));
+            applicationBuilder.UseMiddleware(typeof(Goober.Web.LoggingMiddleware.LoggingMiddleware));
         }
 
         public static void UseGooberExceptionsHandling(this IApplicationBuilder applicationBuilder)
         {
-            applicationBuilder.UseMiddleware(typeof(Goober.WebApi.LoggingMiddleware.ErrorHandlingMiddleware));
+            applicationBuilder.UseMiddleware(typeof(Goober.Web.LoggingMiddleware.ErrorHandlingMiddleware));
         }
 
         public static IWebHostBuilder UseGooberLogging(this IWebHostBuilder webHostBuilder)

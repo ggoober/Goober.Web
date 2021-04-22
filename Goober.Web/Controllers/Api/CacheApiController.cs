@@ -1,13 +1,12 @@
-﻿using Goober.CommonModels;
-using Goober.Core.Services;
-using Goober.WebApi.Glossary;
-using Goober.WebApi.Models;
+﻿using Goober.Caching.Services;
+using Goober.Core.Attributes;
+using Goober.Web.Glossary;
+using Goober.Web.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Net;
 
 
-namespace Goober.WebApi.Controllers.Api
+namespace Goober.Web.Controllers.Api
 {
     [ApiController]
     class CacheApiController : ControllerBase
@@ -24,10 +23,10 @@ namespace Goober.WebApi.Controllers.Api
         [SwaggerHideInDocsAttribute(cookieName: SwaggerGlossary.HideInDocsCookieName, password: SwaggerGlossary.HideInDocsPasswordValue)]
         public GetCachedEntriesResponse GetCachedEntries([FromQuery]string password)
         {
-            if (password != CacheGlossary.CacheApiPasswordValue)
-            {
-                throw new System.Web.Http.HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (password != CacheGlossary.CacheApiPasswordValue)
+            //{
+            //    throw new System.Web.Http.HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
 
             var res = _cacheProvider.GetCachedEntries();
             var ret = new GetCachedEntriesResponse { 
@@ -53,10 +52,10 @@ namespace Goober.WebApi.Controllers.Api
         [SwaggerHideInDocsAttribute(cookieName: SwaggerGlossary.HideInDocsCookieName, password: SwaggerGlossary.HideInDocsPasswordValue)]
         public void Remove([FromQuery] string cacheKey, [FromQuery] string password)
         {
-            if (password != CacheGlossary.CacheApiPasswordValue)
-            {
-                throw new System.Web.Http.HttpResponseException(HttpStatusCode.Unauthorized);
-            }
+            //if (password != CacheGlossary.CacheApiPasswordValue)
+            //{
+            //    throw new System.Web.Http.HttpResponseException(HttpStatusCode.Unauthorized);
+            //}
 
             _cacheProvider.Remove(cacheKey);
         }

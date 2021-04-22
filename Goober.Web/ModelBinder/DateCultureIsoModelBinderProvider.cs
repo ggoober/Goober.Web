@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Goober.WebApi.ModelBinder
+namespace Goober.Web.ModelBinder
 {
     public class DateCultureIsoModelBinderProvider: IModelBinderProvider
     {
