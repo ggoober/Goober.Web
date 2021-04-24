@@ -1,6 +1,6 @@
 ﻿namespace Goober.Web.Glossary
 {
-    public static class SwaggerGlossary
+    public class SwaggerGlossary
     {
         public const string HideInDocsCookieName = "swagger-show";
 

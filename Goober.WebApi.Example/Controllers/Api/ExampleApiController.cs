@@ -48,17 +48,24 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// <returns></returns>
         [HttpGet]
         [Route("get")]
-        public string Get([FromQuery] int intValue,
+        public GetResponse Get([FromQuery] int intValue,
             [FromQuery] float floatValue,
             [FromQuery] string stringValue,
             [FromQuery] DateTime dateValue,
             [FromQuery] ExampleEnum enumValue,
             [FromQuery] List<int> intList)
         {
-            
             _logger.LogError("query string readed");
 
-            return $"get-string result {new { intValue, floatValue, stringValue, dateValue, enumValue, intList }.Serialize()}";
+            return new GetResponse
+            {
+                IntValue = intValue,
+                FloatValue = floatValue,
+                StringValue = stringValue,
+                DateValue = dateValue,
+                EnumValue = enumValue,
+                IntList = intList
+            };
         }
 
         /// <summary>
@@ -70,11 +77,6 @@ namespace Goober.WebApi.Example.Controllers.Api
         [Route("post-json")]
         public PostJsonResponse PostJson([FromBody] PostJsonRequest request)
         {
-            if (true)
-            {
-                throw new InvalidOperationException("Some exception message");
-            }
-
             _logger.LogError("json readed");
 
             return new PostJsonResponse { Message = $"post-json {request.Serialize()}" };
@@ -110,13 +112,13 @@ namespace Goober.WebApi.Example.Controllers.Api
 
         [HttpPost]
         [Route("post-form")]
-        public string PostForm([FromForm] int id, [FromForm] string name, [FromForm]DateTime date)
+        public string PostForm([FromForm] int id, [FromForm] string name, [FromForm] DateTime date)
         {
             name.RequiredArgumentNotNull(nameof(name));
 
             _logger.LogError("form readed");
 
-            return $"post-form {new { id, name }.Serialize()}";
+            return $"{new { id, name, date }.Serialize()}";
         }
 
         [HttpPost]
@@ -141,7 +143,7 @@ namespace Goober.WebApi.Example.Controllers.Api
             {
                 await file.CopyToAsync(fileStream);
             }
-            
+
             _logger.LogError("file saved");
 
             return new PostFileResult { FileName = file.FileName };
@@ -160,27 +162,28 @@ namespace Goober.WebApi.Example.Controllers.Api
 
         [HttpPost]
         [Route("throw-exception")]
-        public void Throwxception([FromBody]LogRequest request)
+        public void ThrowException([FromBody] LogRequest request)
         {
             request.RequiredArgumentNotNull(nameof(request));
 
             throw new InvalidOperationException(request.LogMessage);
         }
 
-        public class Div 
+        public class Div
         {
             public string Text { get; set; }
 
             public string Span { get; set; }
         }
         public class Body
-        { 
+        {
             public Div Div { get; set; }
 
             public List<Div> Divs { get; set; } = new List<Div>();
         }
 
-        public class Doc { 
+        public class Doc
+        {
             public Body Body { get; set; }
         }
 
@@ -189,7 +192,7 @@ namespace Goober.WebApi.Example.Controllers.Api
         public string GetConfigs()
         {
             var section = _configuration.GetSection("Doc");
-            
+
             var ret = section?.Get<Doc>().Serialize();
 
             return ret;

@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.Web.Models;
+using Goober.Web.Glossary;
+using System.Collections.Generic;
 
 namespace Goober.Web
 {
@@ -28,7 +30,12 @@ namespace Goober.Web
             AppSettingsFileName = "appsettings.json", 
             IsAppSettingsFileOptional = false,
             CacheExpirationTimeInMinutes = null,
-            CacheRefreshTimeInMinutes = 5
+            CacheRefreshTimeInMinutes = 5,
+            ConfigApiEnvironmentAndHostMappings = new Dictionary<string, string> { 
+                { "Production", ConfigGlossary.ProductionConfigApiSchemeAndHost },
+                { "Development", ConfigGlossary.DevelopmentConfigApiSchemeAndHost },
+                { "Staging", ConfigGlossary.StagingConfigApiSchemeAndHost } 
+            }
         };
 
         private long? _memoryCacheSizeLimitInBytes = null;

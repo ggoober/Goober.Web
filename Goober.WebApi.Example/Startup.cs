@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.Core.Extensions;
+using Goober.Web.Glossary;
 
 namespace Goober.WebApi.Example
 {
@@ -13,7 +14,9 @@ namespace Goober.WebApi.Example
                 configSettings: 
                     new Goober.Web.Models.BaseStartupConfigSettings { 
                         ConfigApiEnvironmentAndHostMappings = new System.Collections.Generic.Dictionary<string, string> { 
-                            { "Production", "http://localhost:55260/" } 
+                            { "Production",  ConfigGlossary.ProductionConfigApiSchemeAndHost },
+                            { "Staging", ConfigGlossary.StagingConfigApiSchemeAndHost },
+                            { "Development", "http://localhost:55260/" }
                         }
                     })
         {
