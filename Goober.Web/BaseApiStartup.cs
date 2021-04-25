@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Goober.Web.Models;
 using Goober.Web.Glossary;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Routing;
 
 namespace Goober.Web
 {
@@ -134,6 +135,8 @@ namespace Goober.Web
                 endpoints.MapControllers();
             });
 
+            app.UseMvc(ConfigureRoutes);
+
             ConfigurePipelineAfterMvc(app);
         }
 
@@ -142,6 +145,8 @@ namespace Goober.Web
         protected abstract void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app);
 
         protected abstract void ConfigurePipelineAfterMvc(IApplicationBuilder app);
+
+        protected abstract void ConfigureRoutes(IRouteBuilder routes);
 
         private static IConfiguration GenerateConfiguration(BaseStartupConfigSettings configSettings,
             IServiceCollection serviceCollection)
