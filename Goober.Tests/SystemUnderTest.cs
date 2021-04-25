@@ -153,6 +153,29 @@ namespace Goober.Tests
 
         #region fixture
 
+        private HashSet<int> CreatedIds = new HashSet<int>();
+
+        public int CreateUniqueIntIdFixture()
+        {
+            var newId = Fixture.Create<int>();
+            const int maxIterations = 100;
+            int currentIteration = 0;
+            while (true)
+            {
+                if (CreatedIds.Contains(newId) == false)
+                {
+                    CreatedIds.Add(newId);
+                    return newId;
+                }
+
+                currentIteration++;
+                if (currentIteration >= maxIterations)
+                {
+                    throw new InvalidOperationException($"currentIteration >= {maxIterations}");
+                }
+            }
+        }
+
         public T CreateFixture<T>()
         {
             return Fixture.Create<T>();

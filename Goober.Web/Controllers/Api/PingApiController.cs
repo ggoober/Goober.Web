@@ -5,9 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using Goober.Core.Attributes;
 using Goober.Web.Models;
-using Goober.Web;
 
-namespace Goober.Config.Web.Controllers.Api
+namespace Goober.Web.Controllers.Api
 {
     [ApiController]
     public class PingApiController : ControllerBase

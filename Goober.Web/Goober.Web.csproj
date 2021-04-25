@@ -1,10 +1,31 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>3.1.0.1</Version>
+    <Authors>Goober</Authors>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="nlog-json.config" />
+    <None Remove="nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="nlog-json.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Goober.Caching" Version="2.0.0.1" />
+    <PackageReference Include="Goober.Config.Api" Version="2.0.0.2" />
+    <PackageReference Include="Goober.Core" Version="2.0.1" />
+    <PackageReference Include="Goober.Http" Version="2.0.0.1" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="NLog" Version="4.7.9" />
     <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
@@ -13,16 +34,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Goober.Config\Goober.Config.Api\Goober.Config.Api.csproj" />
-    <ProjectReference Include="..\..\Goober.Standard\Goober.Caching\Goober.Caching.csproj" />
-    <ProjectReference Include="..\..\Goober.Standard\Goober.Core\Goober.Core.csproj" />
-    <ProjectReference Include="..\..\Goober.Standard\Goober.Http\Goober.Http.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="nlog.config">
+    <Resource Include="nlog-json.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Resource>
   </ItemGroup>
 
 </Project>

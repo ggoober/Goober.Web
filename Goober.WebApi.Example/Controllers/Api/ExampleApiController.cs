@@ -91,6 +91,13 @@ namespace Goober.WebApi.Example.Controllers.Api
         [Route("post-json-through-http")]
         public async Task<PostJsonResponse> PostJsonExecuteThroughHttpAsync([FromBody] PostJsonRequest request)
         {
+            request.RequiredNotNull(nameof(request));
+            request.RequiredNotNull(() => request.StringValue);
+            request.RequiredArgumentEnumIsDefinedValue(() => request.EnumValue);
+            request.RequiredArgumentNotDefaultValue(() => request.IntValue);
+            request.RequiredArgumentListNotEmpty(() => request.IntList);
+            request.RequiredArgumentNotDefaultValue(() => request.FloatValue);
+
             _logger.LogError("json readed");
 
             return await _exampleHttpService.PostJsonAsync(request);
