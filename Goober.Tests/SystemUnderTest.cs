@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
+using AutoFixture.AutoNSubstitute;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
-using Castle.Core.Logging;
 using Goober.Core.Services;
 using Goober.Http;
 using Goober.Http.Services;
@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -55,7 +56,7 @@ namespace Goober.Tests
 
         #region public properties
 
-        public IServiceProvider ServiceProviderAfterMocks { get; private set; }
+        public IServiceProvider ServiceProvider { get; private set; }
 
         public IServiceProvider ServiceProviderBeforeMocks { get; private set; }
 
@@ -90,18 +91,23 @@ namespace Goober.Tests
             Init<TStartup>(configureServices: configureServices, configureTestServices: (services) => { });
         }
 
+        public TService GetRequiredService<TService>()
+        {
+            return ServiceProvider.GetRequiredService<TService>();
+        }
+
         public void Init<TStartup>(Action<IServiceCollection> configureServices, Action<IServiceCollection> configureTestServices)
             where TStartup : class
         {
             SessionKey = Guid.NewGuid().ToString();
+
+            IServiceProvider localServiceProvider = null;
 
             var server = new TestServer(WebHost.CreateDefaultBuilder()
                     .UseStartup<TStartup>()
                     .ConfigureServices(configureServices)
                     .ConfigureTestServices(services =>
                     {
-                        ServiceProviderBeforeMocks = services.BuildServiceProvider();
-
                         services.TryAddScoped<IHttpContextAccessor, HttpContextAccessor>();
 
                         RemoveServicesFromServiceCollection(services, typeof(IHttpClientFactory));
@@ -120,7 +126,7 @@ namespace Goober.Tests
 
                         configureTestServices(services);
 
-                        ServiceProviderAfterMocks = services.BuildServiceProvider();
+                        ServiceProvider = services.BuildServiceProvider();
                     }));
 
             Server = server;
@@ -332,7 +338,7 @@ namespace Goober.Tests
                 services.Remove(iDateTimeService);
             }
 
-            services.AddSingleton(new ServiceDescriptor(serviceType: typeof(IDateTimeService), instance: Fixture.Create<IDateTimeService>()));
+            services.Add(new ServiceDescriptor(serviceType: typeof(IDateTimeService), instance: Fixture.Create<IDateTimeService>()));
         }
 
         private static void RemoveHostedServices(IServiceCollection services)
