@@ -4,6 +4,9 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Goober.WebJobs</AssemblyName>
     <RootNamespace>Goober.WebJobs</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>3.1.0.1</Version>
+    <Authors>Goober</Authors>
   </PropertyGroup>
 
   <ItemGroup>
