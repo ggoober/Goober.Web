@@ -63,7 +63,7 @@ namespace Goober.WebApi.Example.Tests.ExampleApiControllerTests
                 Message = $"post-json {request.Serialize()}"
             };
 
-            var exampleHttpService = sut.ServiceProviderAfterMocks.GetRequiredService<IExampleHttpService>();
+            var exampleHttpService = sut.GetRequiredService<IExampleHttpService>();
             exampleHttpService
                 .PostJsonAsync(request: Arg.Is<PostJsonRequest>(predicate: x => x.Serialize(null) == request.Serialize(null)), callerMethodName: Arg.Any<string>())
                 .Returns(expectedResult);

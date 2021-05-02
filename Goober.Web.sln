@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApp", "Goober.WebApp\Goober.WebApp.csproj", "{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.BackgroundWorker", "Goober.BackgroundWorker\Goober.BackgroundWorker.csproj", "{F85C972A-E7C2-4B4D-95B9-65284B4079FC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.Example", "Goober.WebApi.Example\Goober.WebApi.Example.csproj", "{3001D8A0-E12F-4B4C-B56A-43F0685853EA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.FileExample", "Goober.WebApi.FileExample\Goober.WebApi.FileExample.csproj", "{60CA10F6-B748-4EF2-9C9C-F3E8C13D87E1}"
@@ -19,6 +17,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2CD03D02
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.Example.Tests", "Goober.WebApi.Example.Tests\Goober.WebApi.Example.Tests.csproj", "{D3D01ED9-903F-40CF-A5A6-D5947CFC571F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebJobs", "Goober.WebJobs\Goober.WebJobs.csproj", "{7D155B9B-5A91-4810-A579-1EFDEEEEC73B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.WebJobs.Example", "Goober.WebJobs.Example\Goober.WebJobs.Example.csproj", "{9F59B867-D136-4B53-BD01-BC4404A4876A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +31,6 @@ Global
 		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F85C972A-E7C2-4B4D-95B9-65284B4079FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F85C972A-E7C2-4B4D-95B9-65284B4079FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F85C972A-E7C2-4B4D-95B9-65284B4079FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F85C972A-E7C2-4B4D-95B9-65284B4079FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -53,6 +51,14 @@ Global
 		{D3D01ED9-903F-40CF-A5A6-D5947CFC571F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3D01ED9-903F-40CF-A5A6-D5947CFC571F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3D01ED9-903F-40CF-A5A6-D5947CFC571F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D155B9B-5A91-4810-A579-1EFDEEEEC73B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D155B9B-5A91-4810-A579-1EFDEEEEC73B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D155B9B-5A91-4810-A579-1EFDEEEEC73B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D155B9B-5A91-4810-A579-1EFDEEEEC73B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

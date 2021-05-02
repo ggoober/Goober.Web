@@ -48,12 +48,13 @@ namespace Goober.Web.LoggingMiddleware
             if (request.Method == "GET")
                 return null;
 
-            if (request.ContentType.Contains("form-data") == false)
+            if (request.ContentType  == null 
+                || request.ContentType.Contains("form-data") == false)
                 return null;
 
             var sb = new StringBuilder();
 
-            if (request.Form.Files.Count > 0)
+            if (request.Form.Files?.Count > 0)
             {
                 var fileNames = request.Form.Files.Select(x => x.FileName).ToList();
                 sb.AppendLine($"files: {string.Join(";", fileNames)}");
