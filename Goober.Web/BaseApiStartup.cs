@@ -31,11 +31,7 @@ namespace Goober.Web
             IsAppSettingsFileOptional = false,
             CacheExpirationTimeInMinutes = null,
             CacheRefreshTimeInMinutes = 5,
-            ConfigApiEnvironmentAndHostMappings = new Dictionary<string, string> { 
-                { "Production", ConfigGlossary.ProductionConfigApiSchemeAndHost },
-                { "Development", ConfigGlossary.DevelopmentConfigApiSchemeAndHost },
-                { "Staging", ConfigGlossary.StagingConfigApiSchemeAndHost } 
-            }
+            ConfigApiEnvironmentAndHostMappings = ConfigGlossary.ConfigApiEnvironmentAndHostMappings
         };
 
         private long? _memoryCacheSizeLimitInBytes = null;
