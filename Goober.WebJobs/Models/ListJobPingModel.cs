@@ -6,6 +6,8 @@ namespace Goober.WebJobs.Models
     {
         public uint MaxDegreeOfParallelism { get; set; }
 
+        public bool UseSemaphoreParallelism { get; set; }
+
         public long? LastIterationListItemsCount { get; set; }
 
         public DateTime? LastIterationListItemExecuteDateTime { get; set; }

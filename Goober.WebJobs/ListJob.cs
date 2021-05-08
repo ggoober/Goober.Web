@@ -1,6 +1,5 @@
 ﻿using Goober.WebJobs.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
@@ -12,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Goober.WebJobs
 {
-    public abstract class ListJob<TItem, TListJobService> : BaseJob, IHostedService, IListJobMetrics, IIterateJobMetrics
+    public abstract class ListJob<TItem, TListJobService> : BaseJob, IListJobMetrics, IIterateJobMetrics
         where TListJobService : IListJobService<TItem>
     {
         #region fields
@@ -33,16 +32,16 @@ namespace Goober.WebJobs
 
         }
 
-
         #endregion
 
         #region public properties IIterateJobMetrics
-
-        public virtual TimeSpan TaskDelay { get; private set; }
+        public int TaskDelayInMilliseconds { get; protected set; }
 
         public long IteratedCount { get; private set; }
 
         public long SuccessIteratedCount { get; private set; }
+
+        public long ErrorIteratedCount { get; private set; }
 
         public DateTime? LastIterationStartDateTime { get; private set; }
 
@@ -56,7 +55,9 @@ namespace Goober.WebJobs
 
         #region public properties IListJobMetrics
 
-        public uint MaxDegreeOfParallelism { get; protected set; }
+        public ushort MaxDegreeOfParallelism { get; protected set; }
+
+        public bool UseSemaphoreParallelism { get; protected set; }
 
         public long? LastIterationListItemsCount { get; private set; }
 
@@ -75,6 +76,8 @@ namespace Goober.WebJobs
         private long _lastIterationListItemsSuccessProcessedCount;
         public long LastIterationListItemsSuccessProcessedCount => _lastIterationListItemsSuccessProcessedCount;
 
+        private long _lastIterationListItemsErrorsCount;
+        public long LastIterationListItemsErrorsCount => _lastIterationListItemsErrorsCount;
 
         private long _lastIterationListItemsProcessedCount;
         public long LastIterationListItemsProcessedCount => _lastIterationListItemsProcessedCount;
@@ -97,155 +100,159 @@ namespace Goober.WebJobs
 
         #endregion
 
-        public Task StartAsync(CancellationToken cancellationToken)
+        #region BaseJob methods
+
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            if (IsRunning == true)
-                return Task.CompletedTask;
-
-            IsRunning = true;
-
-            StoppingCts = new CancellationTokenSource();
-
-            Action<Task> repeatAction = null;
-            repeatAction = _ignored1 =>
+            while (cancellationToken.IsCancellationRequested == false)
             {
-                try
-                {
-                    var parameters = GetOptionModelFromConfiguration(WebJobsGlossary.ParametersConfigSectionKey);
-                    IsEnabled = parameters.IsEnabled;
-                    TaskDelay = TimeSpan.FromMilliseconds(parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds);
-                    MaxDegreeOfParallelism = parameters.ListMaxDegreeOfParallelism ?? WebJobsGlossary.DefaultListMaxDegreeOfParallelism;
+                await ExecuteIterationSafetyAsync(cancellationToken);
 
-                    if (StoppingCts.IsCancellationRequested == true)
-                    {
-                        IsEnabled = false;
-                    }
-
-                    if (IsEnabled == true)
-                    {
-                        SetWorkerIsStarted();
-
-                        ExecuteIteration();
-                    }
-                    else
-                    {
-                        SetWorkerIsStopped();
-                    }
-                }
-                catch (Exception exc)
-                {
-                    Logger.LogError(message: $"Error ListJob.ExecuteIteration {this.GetType().Name} iteration ({IteratedCount})",
-                        exception: exc);
-                }
-
-                Task.Delay(TaskDelay, StoppingCts.Token)
-                    .ContinueWith(_ignored2 => repeatAction(_ignored2), StoppingCts.Token);
-            };
-
-            Task.Delay((int)WebJobsGlossary.FirstRunDelayInMilliseconds, StoppingCts.Token)
-                .ContinueWith(continuationAction: repeatAction, cancellationToken: StoppingCts.Token);
-
-            return Task.CompletedTask;
+                await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds, cancellationToken: cancellationToken);
+            }
         }
 
-        private void ExecuteIteration()
+        protected override void LoadJobParametersFromConfiguration(string configSectionKey)
+        {
+            base.LoadJobParametersFromConfiguration(configSectionKey);
+
+            TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
+            MaxDegreeOfParallelism = Parameters.ListMaxDegreeOfParallelism ?? WebJobsGlossary.DefaultListMaxDegreeOfParallelism;
+            UseSemaphoreParallelism = Parameters.UseSemaphoreParallelism ?? false;
+        }
+
+        #endregion
+
+        private async Task ExecuteIterationSafetyAsync(CancellationToken cancellationToken)
         {
             IteratedCount++;
             LastIterationStartDateTime = DateTime.Now;
-
             var iterationWatch = new Stopwatch(); ;
             iterationWatch.Start();
 
-            var items = GetItemsListAsync();
-            LastIterationListItemsCount = items.Count;
+            try
+            {
+                var items = await GetItemsListAsync();
+                LastIterationListItemsCount = items.Count;
 
-            ProcessParallel(items);
+                if (UseSemaphoreParallelism == true)
+                {
+                    await ProcessListBySemaphoreAsync(items: items, cancellationToken: cancellationToken);
+                }
+                else
+                {
+                    ProcessParallel(items: items, cancellationToken: cancellationToken);
+                }
 
-            iterationWatch.Stop();
-            LastIterationFinishDateTime = DateTime.Now;
-            SuccessIteratedCount++;
-            LastIterationDurationInMilliseconds = iterationWatch.ElapsedMilliseconds;
-            _sumIterationsDurationInMilliseconds += LastIterationDurationInMilliseconds.Value;
-            AvgIterationDurationInMilliseconds = _sumIterationsDurationInMilliseconds / SuccessIteratedCount;
+                SuccessIteratedCount++;
+            }
+            catch (Exception exc)
+            {
+                ErrorIteratedCount++;
+                Logger.LogError(exception: exc, message: $"{ClassName} fail to execute iteration");
+            }
+            finally
+            {
+                iterationWatch.Stop();
+                LastIterationFinishDateTime = DateTime.Now;
+                LastIterationDurationInMilliseconds = iterationWatch.ElapsedMilliseconds;
+                _sumIterationsDurationInMilliseconds += LastIterationDurationInMilliseconds.Value;
+                AvgIterationDurationInMilliseconds = _sumIterationsDurationInMilliseconds / IteratedCount;
 
-            ResetListMetrics();
+                ResetListMetrics();
+            }
         }
 
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            if (StoppingCts.IsCancellationRequested == true)
-                return Task.CompletedTask;
-
-            IsRunning = false;
-
-            StoppingCts.Cancel();
-
-            return Task.CompletedTask;
-        }
-
-        private List<TItem> GetItemsListAsync()
+        private async Task<List<TItem>> GetItemsListAsync()
         {
             using (var scope = ServiceScopeFactory.CreateScope())
             {
                 var service = scope.ServiceProvider.GetRequiredService<TListJobService>() as IListJobService<TItem>;
                 if (service == null)
-                    throw new InvalidOperationException($"Error resolve service {typeof(TListJobService).Name} ListJob.ExecuteAsync {this.GetType().Name} iteration ({IteratedCount})");
+                    throw new InvalidOperationException($"{ClassName} error resolve service: {typeof(TListJobService).Name}");
 
-                var task = Task.Run(() => service.GetItemsAsync());
-
-                task.Wait();
-
-                return task.Result;
+                return await service.GetItemsAsync();
             }
         }
 
-        private TItem ExecuteItemMethodSafety(TItem item, long iterationId, CancellationToken stoppingToken)
+        private async Task<TItem> ExecuteItemMethodSafety(TItem item, CancellationToken stoppingToken, SemaphoreSlim semaphore = null)
         {
             Interlocked.Increment(ref _lastIterationListItemsProcessedCount);
             Interlocked.Exchange(ref _lastIterationListItemExecuteDateTimeInBinnary, DateTime.Now.ToBinary());
 
+            var itemWatcher = new Stopwatch();
+            itemWatcher.Start();
+
             try
             {
-                var itemWatcher = new Stopwatch();
-                itemWatcher.Start();
-
                 using (var scope = ServiceScopeFactory.CreateScope())
                 {
                     var service = scope.ServiceProvider.GetRequiredService<TListJobService>() as IListJobService<TItem>;
                     if (service == null)
-                        throw new InvalidOperationException($"ListJob.ExecuteItemMethodSafety {this.GetType().Name} iteration ({iterationId}) service {typeof(TListJobService).Name}");
+                        throw new InvalidOperationException($"{ClassName} fail to get service: {typeof(TListJobService).Name}");
 
 
-                    var processTask = Task.Run(() => service.ProcessItemAsync(item, stoppingToken));
-                    processTask.Wait();
+                    await service.ProcessItemAsync(item, stoppingToken);
                 }
-
-                itemWatcher.Stop();
-
                 Interlocked.Increment(ref _lastIterationListItemsSuccessProcessedCount);
-                Interlocked.Exchange(ref _lastIterationListItemsLastDurationInMilliseconds, itemWatcher.ElapsedMilliseconds);
-                Interlocked.Add(ref _lastIterationListItemsSumDurationInMilliseconds, _lastIterationListItemsLastDurationInMilliseconds);
             }
             catch (Exception exc)
             {
-                this.Logger.LogError(exception: exc, message: $"ListJob.ExecuteItemMethodSafety {this.GetType().Name} iteration ({iterationId}) fail, item: {JsonConvert.SerializeObject(item)}");
+                Interlocked.Increment(ref _lastIterationListItemsErrorsCount);
+                Logger.LogError(exception: exc, message: $"{ClassName} fail to execute item: {JsonConvert.SerializeObject(item)}");
+            }
+            finally
+            {
+                itemWatcher.Stop();
+                Interlocked.Exchange(ref _lastIterationListItemsLastDurationInMilliseconds, itemWatcher.ElapsedMilliseconds);
+                Interlocked.Add(ref _lastIterationListItemsSumDurationInMilliseconds, _lastIterationListItemsLastDurationInMilliseconds);
+
+                if (semaphore != null)
+                {
+                    semaphore.Release();
+                }
             }
 
             return item;
         }
 
-        private void ProcessParallel(List<TItem> items)
+        private void ProcessParallel(List<TItem> items, CancellationToken cancellationToken)
         {
             var query = items
                 .AsParallel()
-                .WithDegreeOfParallelism((int)MaxDegreeOfParallelism)
-                .WithExecutionMode(ParallelExecutionMode.ForceParallelism)
-                .WithCancellation(StoppingCts.Token)
+                .WithDegreeOfParallelism(MaxDegreeOfParallelism)
+                .WithCancellation(cancellationToken)
                 .Select(x => ExecuteItemMethodSafety(item: x,
-                                iterationId: IteratedCount,
-                                stoppingToken: StoppingCts.Token));
+                                stoppingToken: cancellationToken));
 
             var res = query.ToList();
+        }
+
+        private async Task ProcessListBySemaphoreAsync(List<TItem> items, CancellationToken cancellationToken)
+        {
+            var tasks = new List<Task>();
+
+            using (var semaphore = new SemaphoreSlim(initialCount: MaxDegreeOfParallelism))
+            {
+                foreach (var item in items)
+                {
+                    if (cancellationToken.IsCancellationRequested == true)
+                    {
+                        break;
+                    }
+
+                    await semaphore.WaitAsync();
+
+                    var task = ExecuteItemMethodSafety(
+                            item: item,
+                            semaphore: semaphore,
+                            stoppingToken: cancellationToken);
+
+                    tasks.Add(task);
+                }
+
+                await Task.WhenAll(tasks);
+            }
         }
 
         protected override void SetWorkerIsStarted()
@@ -259,13 +266,16 @@ namespace Goober.WebJobs
         {
             IteratedCount = 0;
             SuccessIteratedCount = 0;
+            ErrorIteratedCount = 0;
 
             LastIterationStartDateTime = null;
             LastIterationFinishDateTime = null;
 
             LastIterationDurationInMilliseconds = 0;
             _sumIterationsDurationInMilliseconds = 0;
+
             AvgIterationDurationInMilliseconds = 0;
+            _sumIterationsDurationInMilliseconds = 0;
 
             base.SetWorkerIsStopped();
         }
@@ -273,6 +283,7 @@ namespace Goober.WebJobs
         private void ResetListMetrics()
         {
             LastIterationListItemsCount = 0;
+            _lastIterationListItemsErrorsCount = 0;
             _lastIterationListItemsProcessedCount = 0;
             _lastIterationListItemsSuccessProcessedCount = 0;
 

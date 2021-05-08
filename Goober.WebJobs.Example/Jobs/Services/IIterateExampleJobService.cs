@@ -1,4 +1,4 @@
-﻿namespace Goober.WebJobs.Example.Services
+﻿namespace Goober.WebJobs.Example.Jobs.Services
 {
     interface IIterateExampleJobService: Goober.WebJobs.Abstractions.IIterateJobService
     {

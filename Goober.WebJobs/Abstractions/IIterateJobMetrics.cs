@@ -4,11 +4,13 @@ namespace Goober.WebJobs.Abstractions
 {
     public interface IIterateJobMetrics
     {
-        TimeSpan TaskDelay { get; }
+        int TaskDelayInMilliseconds { get; }
 
         long IteratedCount { get; }
 
         long SuccessIteratedCount { get; }
+
+        long ErrorIteratedCount { get; }
 
         DateTime? LastIterationStartDateTime { get; }
 

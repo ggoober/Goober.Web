@@ -1,6 +1,5 @@
 ﻿using Goober.WebJobs.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Goober.WebJobs
 {
-    public abstract class IterateJob<TIterateJobService> : BaseJob, IHostedService, IIterateJobMetrics
+    public abstract class IterateJob<TIterateJobService> : BaseJob, IIterateJobMetrics
         where TIterateJobService : IIterateJobService
     {
         #region fields
@@ -20,11 +19,13 @@ namespace Goober.WebJobs
 
         #region public properties IIterateJobMetrics
 
-        public TimeSpan TaskDelay { get; protected set; }
+        public int TaskDelayInMilliseconds { get; protected set; }
 
         public long IteratedCount { get; protected set; }
 
         public long SuccessIteratedCount { get; protected set; }
+
+        public long ErrorIteratedCount { get; protected set; }
 
         public DateTime? LastIterationStartDateTime { get; protected set; }
 
@@ -38,104 +39,16 @@ namespace Goober.WebJobs
 
         #region ctor
 
-        public IterateJob(ILogger logger, 
+        public IterateJob(ILogger logger,
             IServiceProvider serviceProvider)
             : base(logger, serviceProvider)
         {
-            IsRunning = false;
         }
 
         #endregion
 
-        #region IHostedService
+        #region BaseJob methods
 
-        public Task StartAsync(CancellationToken cancellationToken)
-        {
-            if (IsRunning == true)
-                return Task.CompletedTask;
-
-            IsRunning = true;
-
-            StoppingCts = new CancellationTokenSource();
-
-            Action<Task> repeatAction = null;
-            repeatAction = _ignored1 =>
-            {
-                try
-                {
-                    var parameters = GetOptionModelFromConfiguration(configSectionKey: WebJobsGlossary.ParametersConfigSectionKey);
-
-                    IsEnabled = parameters.IsEnabled;
-                    TaskDelay = TimeSpan.FromMilliseconds(parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds);
-
-                    if (StoppingCts.IsCancellationRequested == true)
-                    {
-                        IsEnabled = false;
-                    }
-
-                    if (IsEnabled == true)
-                    {
-                        SetWorkerIsStarted();
-
-                        ExecuteIteration();
-                    }
-                    else
-                    {
-                        SetWorkerIsStopped();
-                    }
-                }
-                catch (Exception exc)
-                {
-                    Logger.LogError(exception: exc,
-                        message: $"Error executeIteration for worker {ClassName} iterate ({IteratedCount})");
-                }
-
-                Task.Delay(TaskDelay, StoppingCts.Token)
-                    .ContinueWith(_ignored2 => repeatAction(_ignored2), StoppingCts.Token);
-            };
-
-            Task.Delay((int) WebJobsGlossary.FirstRunDelayInMilliseconds, StoppingCts.Token)
-                .ContinueWith(continuationAction: repeatAction, cancellationToken: StoppingCts.Token);
-
-            return Task.CompletedTask;
-        }
-
-        public Task StopAsync(CancellationToken cancellationToken)
-        {
-            IsRunning = false;
-            
-            StoppingCts.Cancel();
-
-            return Task.CompletedTask;
-        }
-
-        #endregion
-
-        private void ExecuteIteration()
-        {
-            IteratedCount++;
-            var iterationWatch = new Stopwatch();
-            iterationWatch.Start();
-            LastIterationStartDateTime = DateTime.Now;
-
-            using (var scope = ServiceScopeFactory.CreateScope())
-            {
-                var service = scope.ServiceProvider.GetRequiredService<TIterateJobService>() as IIterateJobService;
-                if (service == null)
-                    throw new InvalidOperationException($"Can't resolve service {typeof(TIterateJobService).Name} for worker {ClassName} iterate ({IteratedCount})");
-
-                var executeTask = Task.Run(() => service.ExecuteIterationAsync(StoppingCts.Token));
-
-                executeTask.Wait();
-            }
-
-            iterationWatch.Stop();
-            SuccessIteratedCount++;
-            LastIterationFinishDateTime = DateTime.Now;
-            LastIterationDurationInMilliseconds = iterationWatch.ElapsedMilliseconds;
-            _sumIterationsDurationInMilliseconds += LastIterationDurationInMilliseconds.Value;
-            AvgIterationDurationInMilliseconds = _sumIterationsDurationInMilliseconds / SuccessIteratedCount;
-        }
 
         protected override void SetWorkerIsStarted()
         {
@@ -146,6 +59,7 @@ namespace Goober.WebJobs
         {
             IteratedCount = 0;
             SuccessIteratedCount = 0;
+            ErrorIteratedCount = 0;
 
             LastIterationStartDateTime = null;
             LastIterationFinishDateTime = null;
@@ -157,6 +71,61 @@ namespace Goober.WebJobs
             _sumIterationsDurationInMilliseconds = 0;
 
             base.SetWorkerIsStopped();
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        {
+            while (cancellationToken.IsCancellationRequested == false)
+            {
+                await ExecuteIterationSafetyAsync(cancellationToken);
+
+                await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds, cancellationToken: cancellationToken);
+            }
+        }
+
+        protected override void LoadJobParametersFromConfiguration(string configSectionKey)
+        {
+            base.LoadJobParametersFromConfiguration(configSectionKey);
+
+            TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
+        }
+
+        #endregion
+
+        private async Task ExecuteIterationSafetyAsync(CancellationToken cancellationToken)
+        {
+            IteratedCount++;
+            var iterationWatch = new Stopwatch();
+            iterationWatch.Start();
+            LastIterationStartDateTime = DateTime.Now;
+
+            try
+            {
+                using (var scope = ServiceScopeFactory.CreateScope())
+                {
+                    var service = scope.ServiceProvider.GetRequiredService<TIterateJobService>() as IIterateJobService;
+                    if (service == null)
+                        throw new InvalidOperationException($"Can't resolve service {typeof(TIterateJobService).Name} for worker {ClassName} iterate ({IteratedCount})");
+
+                    await service.ExecuteIterationAsync(cancellationToken);
+                }
+
+                SuccessIteratedCount++;
+            }
+            catch(Exception exc)
+            {
+                ErrorIteratedCount++;
+
+                Logger.LogError(exception: exc, message: $"Fail to execute iteration {IteratedCount} on job {ClassName}");
+            }
+            finally
+            {
+                iterationWatch.Stop();
+                LastIterationFinishDateTime = DateTime.Now;
+                LastIterationDurationInMilliseconds = iterationWatch.ElapsedMilliseconds;
+                _sumIterationsDurationInMilliseconds += LastIterationDurationInMilliseconds.Value;
+                AvgIterationDurationInMilliseconds = _sumIterationsDurationInMilliseconds / IteratedCount;
+            }
         }
     }
 }

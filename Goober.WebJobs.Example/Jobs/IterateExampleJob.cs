@@ -1,4 +1,4 @@
-﻿using Goober.WebJobs.Example.Services;
+﻿using Goober.WebJobs.Example.Jobs.Services;
 using Microsoft.Extensions.Logging;
 using System;
 

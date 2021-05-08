@@ -2,17 +2,21 @@
 using Goober.WebJobs.Parameters;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Goober.WebJobs
 {
-    public abstract class BaseJob : ISimpleJobMetrics
+    public abstract class BaseJob : IBaseJobMetrics, IHostedService
     {
         #region fields
+
+        private CancellationTokenSource StoppingCts;
 
         private Stopwatch _serviceWatch = new Stopwatch();
 
@@ -20,9 +24,9 @@ namespace Goober.WebJobs
 
         #region protected properties
 
-        protected string ClassName { get; private set; }
+        protected SingleJobParameters Parameters { get; set; }
 
-        protected CancellationTokenSource StoppingCts;
+        protected string ClassName { get; private set; }
 
         protected IServiceProvider ServiceProvider { get; private set; }
 
@@ -56,11 +60,79 @@ namespace Goober.WebJobs
         {
             ClassName = this.GetType().Name;
             StoppingCts = new CancellationTokenSource();
-
+            IsRunning = false;
+            IsEnabled = false;
             Logger = logger;
             ServiceProvider = serviceProvider;
             ServiceScopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
             Configuration = serviceProvider.GetRequiredService<IConfiguration>();
+        }
+
+        #endregion
+
+        #region IHostedService methods
+
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            if (IsRunning == true)
+                return Task.CompletedTask;
+
+            Action<Task> executeAction = null;
+            executeAction = async _ignored1 =>
+            {
+                try
+                {
+                    await StartNotSafetyAsync();
+                }
+                catch (Exception exc)
+                {
+                    Logger.LogError(exception: exc, message: $"Fail to execute {this.GetType().Name}");
+
+                    await Task.Delay(delay: WebJobsGlossary.RetryIntervalOnException,
+                                cancellationToken: StoppingCts.Token)
+                        .ContinueWith(continuationAction: _ignored2 => executeAction(_ignored2),
+                                cancellationToken: StoppingCts.Token);
+                }
+            };
+
+            Task.Delay(millisecondsDelay: (int)WebJobsGlossary.FirstRunDelayInMilliseconds,
+                        cancellationToken: StoppingCts.Token)
+                .ContinueWith(continuationAction: executeAction,
+                        cancellationToken: StoppingCts.Token);
+
+            return Task.CompletedTask;
+        }
+
+        private Task StartNotSafetyAsync()
+        {
+            LoadJobParametersFromConfiguration(configSectionKey: WebJobsGlossary.ParametersConfigSectionKey);
+
+            if (StoppingCts.IsCancellationRequested == true)
+            {
+                IsEnabled = false;
+            }
+
+            if (IsEnabled == true)
+            {
+                SetWorkerIsStarted();
+
+                var resTask = ExecuteAsync(StoppingCts.Token);
+
+                return resTask;
+            }
+            else
+            {
+                SetWorkerIsStopped();
+            }
+
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            SetWorkerIsStopped();
+
+            return Task.CompletedTask;
         }
 
         #endregion
@@ -76,6 +148,7 @@ namespace Goober.WebJobs
 
             StopDateTime = null;
             StartDateTime = DateTime.Now;
+            IsRunning = true;
         }
 
         protected virtual void SetWorkerIsStopped()
@@ -83,14 +156,17 @@ namespace Goober.WebJobs
             if (StopDateTime.HasValue == true)
                 return;
 
+            StoppingCts.Cancel();
+
             StoppingCts = new CancellationTokenSource();
             _serviceWatch.Stop();
 
             StartDateTime = null;
             StopDateTime = DateTime.Now;
+            IsRunning = false;
         }
 
-        protected virtual SingleJobParameters GetOptionModelFromConfiguration(string configSectionKey)
+        protected virtual void LoadJobParametersFromConfiguration(string configSectionKey)
         {
             var section = Configuration.GetSection(configSectionKey);
             var parameters = section.Get<WebJobsParameters>();
@@ -99,18 +175,24 @@ namespace Goober.WebJobs
                 throw new InvalidOperationException($"Can't find job configuration parameters by sectionKey = {configSectionKey}");
             }
 
-            var ret = parameters.Jobs?.FirstOrDefault(x => x.ClassName == ClassName);
-            if (ret == null)
+            Parameters = parameters.Jobs?.FirstOrDefault(x => x.ClassName == ClassName);
+            if (Parameters == null)
             {
-                ret = new SingleJobParameters 
-                { 
-                    ClassName = ClassName, 
+                Parameters = new SingleJobParameters
+                {
+                    ClassName = ClassName,
                     IsEnabled = false
                 };
             }
 
-            return ret;
+            IsEnabled = Parameters.IsEnabled;
         }
+
+        #endregion
+
+        #region abstract methods
+
+        protected abstract Task ExecuteAsync(CancellationToken cancellationToken);
 
         #endregion
     }

@@ -47,7 +47,7 @@ namespace Goober.WebJobs.Controllers
                 {
                     var iterateMetrics = new IterateJobPingModel
                     {
-                        TaskDelayInMilliseconds = Convert.ToInt64(iterateJob.TaskDelay.TotalMilliseconds),
+                        TaskDelayInMilliseconds = iterateJob.TaskDelayInMilliseconds,
                         IteratedCount = iterateJob.IteratedCount,
                         SuccessIteratedCount = iterateJob.SuccessIteratedCount,
                         LastIterationStartDateTime = iterateJob.LastIterationStartDateTime,
@@ -64,6 +64,7 @@ namespace Goober.WebJobs.Controllers
                     var listMetrics = new ListJobPingModel
                     {
                         MaxDegreeOfParallelism = listJob.MaxDegreeOfParallelism,
+                        UseSemaphoreParallelism = listJob.UseSemaphoreParallelism,
                         LastIterationListItemsCount = listJob.LastIterationListItemsCount,
                         LastIterationListItemsProcessedCount = listJob.LastIterationListItemsProcessedCount,
                         LastIterationListItemsSuccessProcessedCount = listJob.LastIterationListItemsSuccessProcessedCount,

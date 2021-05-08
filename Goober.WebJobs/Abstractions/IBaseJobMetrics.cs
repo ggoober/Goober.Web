@@ -2,7 +2,7 @@
 
 namespace Goober.WebJobs.Abstractions
 {
-    public interface ISimpleJobMetrics
+    public interface IBaseJobMetrics
     {
         DateTime? StartDateTime { get; }
 

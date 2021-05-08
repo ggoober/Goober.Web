@@ -6,8 +6,10 @@
 
         public string ClassName { get; set; }
 
-        public uint? IterationDelayInMilliseconds { get; set; }
+        public int? IterationDelayInMilliseconds { get; set; }
 
-        public uint? ListMaxDegreeOfParallelism { get; set; }
+        public ushort? ListMaxDegreeOfParallelism { get; set; }
+
+        public bool? UseSemaphoreParallelism { get; set; }
     }
 }

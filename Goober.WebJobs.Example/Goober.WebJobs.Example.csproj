@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Goober.Web" Version="3.1.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\Goober.WebJobs\Goober.WebJobs.csproj" />
     <ProjectReference Include="..\Goober.Web\Goober.Web.csproj" />
   </ItemGroup>
