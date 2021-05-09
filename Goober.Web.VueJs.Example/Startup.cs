@@ -1,14 +1,13 @@
-using Goober.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
-namespace Goober.WebApi.FileExample
+namespace Goober.Web.VueJs.Example
 {
     public class Startup : BaseStartup
     {
-        public Startup() : base(
+        public Startup()
+            : base(
                 configSettings:
                     new Goober.Web.Models.BaseStartupConfigSettings
                     {
@@ -31,6 +30,8 @@ namespace Goober.WebApi.FileExample
 
         protected override void MapControllerRoutes(IEndpointRouteBuilder endpoints)
         {
+            endpoints.MapControllerRoute("default",
+                                     "{controller=Home}/{action=Index}");
         }
     }
 }

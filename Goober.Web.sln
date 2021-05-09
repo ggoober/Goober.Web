@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebJobs", "Goober.We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebJobs.Example", "Goober.WebJobs.Example\Goober.WebJobs.Example.csproj", "{9F59B867-D136-4B53-BD01-BC4404A4876A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Web.VueJs", "Goober.Web.VueJs\Goober.Web.VueJs.csproj", "{A0337674-0BDA-4EBC-BF1B-2B1A2C9461E1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.Web.VueJs.Example", "Goober.Web.VueJs.Example\Goober.Web.VueJs.Example.csproj", "{397CCEC3-FD0A-45E6-8B64-67919C30C7A2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +57,14 @@ Global
 		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9F59B867-D136-4B53-BD01-BC4404A4876A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0337674-0BDA-4EBC-BF1B-2B1A2C9461E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0337674-0BDA-4EBC-BF1B-2B1A2C9461E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0337674-0BDA-4EBC-BF1B-2B1A2C9461E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0337674-0BDA-4EBC-BF1B-2B1A2C9461E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{397CCEC3-FD0A-45E6-8B64-67919C30C7A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{397CCEC3-FD0A-45E6-8B64-67919C30C7A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{397CCEC3-FD0A-45E6-8B64-67919C30C7A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{397CCEC3-FD0A-45E6-8B64-67919C30C7A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -7,7 +7,7 @@ using Goober.Core.Extensions;
 
 namespace Goober.WebJobs.Example
 {
-    public class Startup : BaseApiStartup
+    public class Startup : BaseStartup
     {
         public Startup()
             : base(configSettings:

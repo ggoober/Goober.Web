@@ -12,10 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Goober.Web.Models;
 using Goober.Web.Glossary;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Routing;
 
 namespace Goober.Web
 {
-    public abstract class BaseApiStartup
+    public abstract class BaseStartup
     {
         #region props
 
@@ -40,11 +41,11 @@ namespace Goober.Web
 
         #region ctor
 
-        public BaseApiStartup()
+        public BaseStartup()
         { 
         }
 
-        public BaseApiStartup(
+        public BaseStartup(
             BaseStartupSwaggerSettings swaggerSettings = null, 
             BaseStartupConfigSettings configSettings = null, 
             int? memoryCacheSizeLimitInMB = null)
@@ -79,9 +80,9 @@ namespace Goober.Web
             }
 
             services
-                .AddControllers(o =>
-                {
-                    o.ModelBinderProviders.Insert(0, new DateCultureIsoModelBinderProvider());
+                .AddControllersWithViews(o => 
+                { 
+                        o.ModelBinderProviders.Insert(0, new DateCultureIsoModelBinderProvider()); 
                 })
                 .AddJsonOptions(o =>
                 {
@@ -127,11 +128,17 @@ namespace Goober.Web
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}");
+
+                MapControllerRoutes(endpoints);
+
                 endpoints.MapControllers();
             });
 
             ConfigurePipelineAfterMvc(app);
         }
+
+        protected abstract void MapControllerRoutes(IEndpointRouteBuilder endpoints);
 
         protected abstract void ConfigureServiceCollections(IServiceCollection services);
 

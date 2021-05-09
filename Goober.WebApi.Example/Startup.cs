@@ -3,21 +3,19 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.Core.Extensions;
 using Goober.Web.Glossary;
+using Microsoft.AspNetCore.Routing;
 
 namespace Goober.WebApi.Example
 {
-    public class Startup : Goober.Web.BaseApiStartup
+    public class Startup : Goober.Web.BaseStartup
     {
         public Startup() 
-            : 
+            :
             base(
-                configSettings: 
-                    new Goober.Web.Models.BaseStartupConfigSettings { 
-                        ConfigApiEnvironmentAndHostMappings = new System.Collections.Generic.Dictionary<string, string> { 
-                            { "Production",  ConfigGlossary.ProductionConfigApiSchemeAndHost },
-                            { "Staging", ConfigGlossary.StagingConfigApiSchemeAndHost },
-                            { "Development", "http://localhost:55260/" }
-                        }
+                configSettings:
+                    new Goober.Web.Models.BaseStartupConfigSettings
+                    {
+                        ConfigApiEnvironmentAndHostMappings = null
                     })
         {
            
@@ -34,6 +32,10 @@ namespace Goober.WebApi.Example
         protected override void ConfigureServiceCollections(IServiceCollection services)
         {
             services.RegisterAssemblyClasses<Startup>();
+        }
+
+        protected override void MapControllerRoutes(IEndpointRouteBuilder endpoints)
+        {
         }
     }
 }
