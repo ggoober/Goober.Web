@@ -1,5 +1,4 @@
 ﻿using AutoFixture;
-using AutoFixture.AutoNSubstitute;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
 using Goober.Core.Services;
@@ -100,8 +99,6 @@ namespace Goober.Tests
             where TStartup : class
         {
             SessionKey = Guid.NewGuid().ToString();
-
-            IServiceProvider localServiceProvider = null;
 
             var server = new TestServer(WebHost.CreateDefaultBuilder()
                     .UseStartup<TStartup>()
