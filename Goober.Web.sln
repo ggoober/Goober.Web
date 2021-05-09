@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApp", "Goober.WebApp\Goober.WebApp.csproj", "{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.Example", "Goober.WebApi.Example\Goober.WebApi.Example.csproj", "{3001D8A0-E12F-4B4C-B56A-43F0685853EA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.FileExample", "Goober.WebApi.FileExample\Goober.WebApi.FileExample.csproj", "{60CA10F6-B748-4EF2-9C9C-F3E8C13D87E1}"
@@ -19,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebApi.Example.Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebJobs", "Goober.WebJobs\Goober.WebJobs.csproj", "{7D155B9B-5A91-4810-A579-1EFDEEEEC73B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Goober.WebJobs.Example", "Goober.WebJobs.Example\Goober.WebJobs.Example.csproj", "{9F59B867-D136-4B53-BD01-BC4404A4876A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Goober.WebJobs.Example", "Goober.WebJobs.Example\Goober.WebJobs.Example.csproj", "{9F59B867-D136-4B53-BD01-BC4404A4876A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3A8A6F56-152E-4B1C-93DE-14B2CAC9B695}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3001D8A0-E12F-4B4C-B56A-43F0685853EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
