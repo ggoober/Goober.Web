@@ -30,8 +30,6 @@ namespace Goober.Web.VueJs.Example
 
         protected override void MapControllerRoutes(IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapControllerRoute("default",
-                                     "{controller=Home}/{action=Index}");
         }
     }
 }

@@ -11,7 +11,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.Web.Models;
 using Goober.Web.Glossary;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Routing;
 
 namespace Goober.Web

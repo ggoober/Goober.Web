@@ -8,4 +8,10 @@
     <ProjectReference Include="..\Goober.Web.VueJs\Goober.Web.VueJs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
