@@ -26,8 +26,6 @@ namespace Goober.WebJobs
 
         protected SingleJobParameters Parameters { get; set; }
 
-        protected string ClassName { get; private set; }
-
         protected IServiceProvider ServiceProvider { get; private set; }
 
         protected IServiceScopeFactory ServiceScopeFactory { get; private set; }
@@ -39,6 +37,8 @@ namespace Goober.WebJobs
         #endregion
 
         #region public properties ISimpleJobMetrics
+
+        public string ClassName { get; private set; }
 
         public bool IsRunning { get; protected set; }
 
@@ -58,7 +58,7 @@ namespace Goober.WebJobs
 
         public BaseJob(ILogger logger, IServiceProvider serviceProvider)
         {
-            ClassName = this.GetType().Name;
+            ClassName = GetType().FullName;
             StoppingCts = new CancellationTokenSource();
             IsRunning = false;
             IsEnabled = false;
@@ -77,37 +77,40 @@ namespace Goober.WebJobs
             if (IsRunning == true)
                 return Task.CompletedTask;
 
+            StoppingCts = new CancellationTokenSource();
+
             Action<Task> executeAction = null;
             executeAction = async _ignored1 =>
             {
                 try
                 {
-                    await StartNotSafetyAsync();
+                    await StartNotSafetyAsync(StoppingCts.Token);
                 }
                 catch (Exception exc)
                 {
                     Logger.LogError(exception: exc, message: $"Fail to execute {this.GetType().Name}");
 
-                    await Task.Delay(delay: WebJobsGlossary.RetryIntervalOnException,
-                                cancellationToken: StoppingCts.Token)
-                        .ContinueWith(continuationAction: _ignored2 => executeAction(_ignored2),
-                                cancellationToken: StoppingCts.Token);
+                    if (StoppingCts.IsCancellationRequested == false)
+                    {
+                        await Task.Delay(delay: WebJobsGlossary.RetryIntervalOnException)
+                                  .ContinueWith(continuationAction: _ignored2 => executeAction(_ignored2));
+                    }
                 }
+
+                SetWorkerIsStopped();
             };
 
-            Task.Delay(millisecondsDelay: (int)WebJobsGlossary.FirstRunDelayInMilliseconds,
-                        cancellationToken: StoppingCts.Token)
-                .ContinueWith(continuationAction: executeAction,
-                        cancellationToken: StoppingCts.Token);
+            Task.Delay(millisecondsDelay: WebJobsGlossary.FirstRunDelayInMilliseconds)
+                .ContinueWith(continuationAction: executeAction);
 
             return Task.CompletedTask;
         }
 
-        private Task StartNotSafetyAsync()
+        private async Task StartNotSafetyAsync(CancellationToken cancellationToken)
         {
             LoadJobParametersFromConfiguration(configSectionKey: WebJobsGlossary.ParametersConfigSectionKey);
 
-            if (StoppingCts.IsCancellationRequested == true)
+            if (cancellationToken.IsCancellationRequested == true)
             {
                 IsEnabled = false;
             }
@@ -116,21 +119,17 @@ namespace Goober.WebJobs
             {
                 SetWorkerIsStarted();
 
-                var resTask = ExecuteAsync(StoppingCts.Token);
-
-                return resTask;
+                await ExecuteAsync(cancellationToken);
             }
             else
             {
                 SetWorkerIsStopped();
             }
-
-            return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            SetWorkerIsStopped();
+            StoppingCts.Cancel();
 
             return Task.CompletedTask;
         }
@@ -141,27 +140,24 @@ namespace Goober.WebJobs
 
         protected virtual void SetWorkerIsStarted()
         {
-            if (StartDateTime.HasValue == true)
+            if (IsRunning == true)
                 return;
 
             _serviceWatch.Start();
 
-            StopDateTime = null;
             StartDateTime = DateTime.Now;
+            StopDateTime = null;
+
             IsRunning = true;
         }
 
         protected virtual void SetWorkerIsStopped()
         {
-            if (StopDateTime.HasValue == true)
+            if (IsRunning == false)
                 return;
 
-            StoppingCts.Cancel();
-
-            StoppingCts = new CancellationTokenSource();
             _serviceWatch.Stop();
 
-            StartDateTime = null;
             StopDateTime = DateTime.Now;
             IsRunning = false;
         }

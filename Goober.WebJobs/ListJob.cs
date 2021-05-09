@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polly;
+using Polly.Retry;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,6 +21,8 @@ namespace Goober.WebJobs
         private long _sumIterationsDurationInMilliseconds;
 
         private long _lastIterationListItemsSumDurationInMilliseconds;
+
+        private AsyncRetryPolicy _defaultRetryPolicyAsync;
 
         #endregion
 
@@ -108,8 +112,10 @@ namespace Goober.WebJobs
             {
                 await ExecuteIterationSafetyAsync(cancellationToken);
 
-                await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds, cancellationToken: cancellationToken);
+                await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds);
             }
+
+            SetWorkerIsStopped();
         }
 
         protected override void LoadJobParametersFromConfiguration(string configSectionKey)
@@ -119,6 +125,12 @@ namespace Goober.WebJobs
             TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
             MaxDegreeOfParallelism = Parameters.ListMaxDegreeOfParallelism ?? WebJobsGlossary.DefaultListMaxDegreeOfParallelism;
             UseSemaphoreParallelism = Parameters.UseSemaphoreParallelism ?? false;
+
+            _defaultRetryPolicyAsync = Policy
+                .Handle<Exception>()
+                .WaitAndRetryAsync(
+                    retryCount: WebJobsGlossary.DefaultListItemProcessingRetryCount,
+                    sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(WebJobsGlossary.DefaultListItemProcessingRetryDelayInMilliseconds));
         }
 
         #endregion
@@ -133,6 +145,9 @@ namespace Goober.WebJobs
             try
             {
                 var items = await GetItemsListAsync();
+
+                ResetListMetrics();
+
                 LastIterationListItemsCount = items.Count;
 
                 if (UseSemaphoreParallelism == true)
@@ -157,9 +172,7 @@ namespace Goober.WebJobs
                 LastIterationFinishDateTime = DateTime.Now;
                 LastIterationDurationInMilliseconds = iterationWatch.ElapsedMilliseconds;
                 _sumIterationsDurationInMilliseconds += LastIterationDurationInMilliseconds.Value;
-                AvgIterationDurationInMilliseconds = _sumIterationsDurationInMilliseconds / IteratedCount;
-
-                ResetListMetrics();
+                AvgIterationDurationInMilliseconds = IteratedCount > 0 ? (_sumIterationsDurationInMilliseconds / IteratedCount) : 0;
             }
         }
 
@@ -175,7 +188,7 @@ namespace Goober.WebJobs
             }
         }
 
-        private async Task<TItem> ExecuteItemMethodSafety(TItem item, CancellationToken stoppingToken, SemaphoreSlim semaphore = null)
+        private async Task<TItem> ExecuteItemMethodSafety(TItem item, CancellationToken cancellationToken, SemaphoreSlim semaphore = null)
         {
             Interlocked.Increment(ref _lastIterationListItemsProcessedCount);
             Interlocked.Exchange(ref _lastIterationListItemExecuteDateTimeInBinnary, DateTime.Now.ToBinary());
@@ -185,15 +198,10 @@ namespace Goober.WebJobs
 
             try
             {
-                using (var scope = ServiceScopeFactory.CreateScope())
-                {
-                    var service = scope.ServiceProvider.GetRequiredService<TListJobService>() as IListJobService<TItem>;
-                    if (service == null)
-                        throw new InvalidOperationException($"{ClassName} fail to get service: {typeof(TListJobService).Name}");
+                await _defaultRetryPolicyAsync.ExecuteAsync(
+                                () => ExecuteProcessItemWithoutRetryPolicyAsync(item, cancellationToken)
+                            );
 
-
-                    await service.ProcessItemAsync(item, stoppingToken);
-                }
                 Interlocked.Increment(ref _lastIterationListItemsSuccessProcessedCount);
             }
             catch (Exception exc)
@@ -216,6 +224,18 @@ namespace Goober.WebJobs
             return item;
         }
 
+        private async Task ExecuteProcessItemWithoutRetryPolicyAsync(TItem item, CancellationToken stoppingToken)
+        {
+            using (var scope = ServiceScopeFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<TListJobService>() as IListJobService<TItem>;
+                if (service == null)
+                    throw new InvalidOperationException($"{ClassName} fail to get service: {typeof(TListJobService).Name}");
+
+                await service.ProcessItemAsync(item, stoppingToken);
+            }
+        }
+
         private void ProcessParallel(List<TItem> items, CancellationToken cancellationToken)
         {
             var query = items
@@ -223,7 +243,7 @@ namespace Goober.WebJobs
                 .WithDegreeOfParallelism(MaxDegreeOfParallelism)
                 .WithCancellation(cancellationToken)
                 .Select(x => ExecuteItemMethodSafety(item: x,
-                                stoppingToken: cancellationToken));
+                                cancellationToken: cancellationToken));
 
             var res = query.ToList();
         }
@@ -246,7 +266,7 @@ namespace Goober.WebJobs
                     var task = ExecuteItemMethodSafety(
                             item: item,
                             semaphore: semaphore,
-                            stoppingToken: cancellationToken);
+                            cancellationToken: cancellationToken);
 
                     tasks.Add(task);
                 }
@@ -257,26 +277,11 @@ namespace Goober.WebJobs
 
         protected override void SetWorkerIsStarted()
         {
-            ResetListMetrics();
-
             base.SetWorkerIsStarted();
         }
 
         protected override void SetWorkerIsStopped()
         {
-            IteratedCount = 0;
-            SuccessIteratedCount = 0;
-            ErrorIteratedCount = 0;
-
-            LastIterationStartDateTime = null;
-            LastIterationFinishDateTime = null;
-
-            LastIterationDurationInMilliseconds = 0;
-            _sumIterationsDurationInMilliseconds = 0;
-
-            AvgIterationDurationInMilliseconds = 0;
-            _sumIterationsDurationInMilliseconds = 0;
-
             base.SetWorkerIsStopped();
         }
 

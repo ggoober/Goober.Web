@@ -25,6 +25,16 @@ namespace Goober.WebJobs
         public static ushort DefaultListMaxDegreeOfParallelism { get; set; } = 1;
 
         /// <summary>
+        /// By default: 5
+        /// </summary>
+        public static ushort DefaultListItemProcessingRetryCount { get; set; } = 5;
+
+        /// <summary>
+        /// By default: 30000 (3 sec)
+        /// </summary>
+        public static int DefaultListItemProcessingRetryDelayInMilliseconds { get; set; } = 30000;
+
+        /// <summary>
         /// By default: 5 sec
         /// </summary>
         public static TimeSpan RetryIntervalOnException { get; set; } = TimeSpan.FromSeconds(5);

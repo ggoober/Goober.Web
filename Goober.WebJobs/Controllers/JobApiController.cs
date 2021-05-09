@@ -83,7 +83,7 @@ namespace Goober.WebJobs.Controllers
 
         [HttpPost]
         [Route("api/job/start")]
-        public virtual async Task StartJobAsync([FromBody]StartJobRequest request)
+        public virtual async Task<StartJobResponse> StartJobAsync([FromBody]StartJobRequest request)
         {
             if (request == null)
                 throw new InvalidOperationException("request can't be empty");
@@ -91,17 +91,21 @@ namespace Goober.WebJobs.Controllers
             if (string.IsNullOrEmpty(request.JobClassName) == true)
                 throw new ArgumentNullException("request.JobClassName");
 
-            var worker = GetJobByFullName(request.JobClassName);
+            var job = GetJobByClassName(request.JobClassName);
 
-            if (worker == null)
+            if (job == null)
                 throw new InvalidOperationException($"Can't find job by name = {request.JobClassName}");
 
-            await worker.StartAsync(new CancellationToken());
+            var isStarted = job.IsRunning == false;
+
+            await job.StartAsync(new CancellationToken());
+
+            return new StartJobResponse { IsStarted = isStarted };
         }
 
         [HttpPost]
         [Route("api/job/stop")]
-        public virtual async Task StopJobAsync([FromBody]StopJobRequest request)
+        public virtual async Task<StopJobResponse> StopJobAsync([FromBody]StopJobRequest request)
         {
             if (request == null)
                 throw new InvalidOperationException("request can't be empty");
@@ -109,30 +113,31 @@ namespace Goober.WebJobs.Controllers
             if (string.IsNullOrEmpty(request.JobClassName) == true)
                 throw new ArgumentNullException("request.JobClassName");
             
-            var worker = GetJobByFullName(request.JobClassName);
+            var job = GetJobByClassName(request.JobClassName);
 
-            if (worker == null)
+            if (job == null)
                 throw new InvalidOperationException($"Can't find job by name = {request.JobClassName}");
 
-            await worker.StopAsync(new CancellationToken());
+            var isStopped = job.IsRunning == true;
+
+            await job.StopAsync(new CancellationToken());
+
+            return new StopJobResponse { IsStopped = isStopped };
         }
 
-        private IHostedService GetJobByFullName(string name)
+        private BaseJob GetJobByClassName(string name)
         {
-            var jobs = _serviceProvider.GetServices<IHostedService>();
+            var hostedServices = _serviceProvider.GetServices<IHostedService>();
 
-            foreach (var iJob in jobs)
+            foreach (var iHostedService in hostedServices)
             {
-                if ((iJob is BaseJob) == false)
+                var baseJob = iHostedService as BaseJob;
+
+                if (baseJob == null)
                     continue;
 
-                var jobAsHostedService = iJob as IHostedService;
-                
-                if (jobAsHostedService == null)
-                    continue;
-
-                if (jobAsHostedService.GetType().Name == name)
-                    return jobAsHostedService;
+                if (baseJob.ClassName == name)
+                    return baseJob;
             }
 
             return null;

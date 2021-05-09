@@ -57,19 +57,6 @@ namespace Goober.WebJobs
 
         protected override void SetWorkerIsStopped()
         {
-            IteratedCount = 0;
-            SuccessIteratedCount = 0;
-            ErrorIteratedCount = 0;
-
-            LastIterationStartDateTime = null;
-            LastIterationFinishDateTime = null;
-
-            LastIterationDurationInMilliseconds = 0;
-            _sumIterationsDurationInMilliseconds = 0;
-
-            AvgIterationDurationInMilliseconds = 0;
-            _sumIterationsDurationInMilliseconds = 0;
-
             base.SetWorkerIsStopped();
         }
 
@@ -81,6 +68,8 @@ namespace Goober.WebJobs
 
                 await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds, cancellationToken: cancellationToken);
             }
+
+            SetWorkerIsStopped();
         }
 
         protected override void LoadJobParametersFromConfiguration(string configSectionKey)
