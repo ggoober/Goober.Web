@@ -1,0 +1,38 @@
+{
+  "name": "goober.web.vuejs.example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "bootstrap-vue": "^2.21.2",
+    "vue": "^2.6.12",
+    "vue-async-computed": "^3.9.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.13.10",
+    "babel-plugin-transform-regenerator": "^6.26.0",
+    "babelify": "^10.0.0",
+    "browserify": "^17.0.0",
+    "browserify-css": "^0.15.0",
+    "uglifyify": "^5.0.2",
+    "gulp": "4.0.2",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-concat": "2.6.1",
+    "gulp-concat-css": "^3.1.0",
+    "gulp-nop": "0.0.3",
+    "gulp-sass": "4.0.2",
+    "merge-stream": "^2.0.0",
+    "rimraf": "3.0.0",
+    "vinyl-source-stream": "^2.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

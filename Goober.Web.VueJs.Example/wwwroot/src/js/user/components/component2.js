@@ -1,0 +1,1 @@
+﻿let component2 = function () { };

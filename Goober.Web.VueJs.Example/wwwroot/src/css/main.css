@@ -1,0 +1,110 @@
+.text-center {
+    text-align: center
+}
+
+.gh-top-line {
+    background: #0090cd;
+    padding: 10px 0;
+}
+
+.gh-phone {
+    display: block;
+    font-family: 'albert-bold', serif;
+    font-weight: normal;
+    font-size: 16px;
+    color: #fff;
+    line-height: 16px;
+}
+
+a:hover.gh-phone {
+    color: #fff;
+    text-decoration: none;
+}
+
+.gh-main-line {
+    padding-top: 25px;
+}
+
+.gh-title {
+    font-family: 'albert-bold', serif;
+    font-weight: normal;
+    font-size: 30px;
+    color: #3c3c41;
+}
+
+.gh {
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dcdfe2;
+    background: #fff;
+}
+
+.page-default {
+    background: #fff;
+    padding-top: 25px;
+}
+
+.page-wrapper {
+    min-height: 80%;
+}
+
+.gf-item {
+    display: block;
+    font-family: 'albert', serif;
+    font-weight: normal;
+    font-size: 14px;
+    color: #909aa0;
+    line-height: 16px;
+    padding: 11px;
+}
+
+.gf {
+    display: block;
+    padding: 15px 0;
+    border-top: 1px solid #dcdfe2;
+    background: #eee;
+}
+
+.gf-list {
+    padding: 10px 0 10px 0;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -ms-flex-wrap: nowrap;
+    flex-wrap: nowrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+.btn-blue {
+    background-color: #0090cd;
+    border-color: #0090cd;
+}
+
+    .btn-blue:disabled {
+        background-color: #007eb3;
+        border-color: #007eb3;
+    }
+
+@font-face {
+    font-family: 'albert';
+    src: url("/fonts/albert.woff2") format("woff2"),url("/fonts/albert.woff") format("woff");
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'albert-bold';
+    src: url("/fonts/albert-bold.woff2") format("woff2"),url("/fonts/albert-bold.woff") format("woff");
+    font-weight: normal;
+    font-style: normal
+}
+
+@font-face {
+    font-family: 'albert-light';
+    src: url("/fonts/albert-light.woff2") format("woff2"),url("/fonts/albert-light.woff") format("woff");
+    font-weight: normal;
+    font-style: normal
+}

@@ -4,6 +4,7 @@ using Goober.Web.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Goober.Core.Extensions;
+using Microsoft.AspNetCore.Routing;
 
 namespace Goober.WebJobs.Example
 {
@@ -32,6 +33,10 @@ namespace Goober.WebJobs.Example
         {
             services.AddWebJobs<Goober.WebJobs.Example.Startup>();
             services.RegisterAssemblyClasses<Goober.WebJobs.Example.Startup>();
+        }
+
+        protected override void MapControllerRoutes(IEndpointRouteBuilder endpoints)
+        {
         }
     }
 }
