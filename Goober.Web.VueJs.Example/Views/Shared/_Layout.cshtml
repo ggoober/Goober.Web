@@ -1,0 +1,57 @@
+﻿<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="~/dist/js/vendor.js" asp-append-version="true"></script>
+    <link rel="stylesheet" href="~/dist/css/vendor.css" asp-append-version="true" />
+
+    <title>@ViewData["Title"] - Application name</title>
+    @RenderSection("Styles", required: false)
+</head>
+
+<body id="body">
+    <div style="display: none">
+        @RenderSection("Components", required: false)
+    </div>
+
+    <div class="gh">
+        <div class="row align-items-center gh-main-line">
+            <div class="col-md-6">
+                <div class="text-center gh-title">@ViewData["Title"]</div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row page-wrapper">
+        <div class="col page-default">
+            @RenderBody()
+        </div>
+    </div>
+
+    <div class="gf">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="gf-list">
+                    <div class="gf-item">
+                        © 2009 - 2021 Application name
+                    </div>
+                    <a class="gf-item" href="/">
+                        Правила пользования сайтом
+                    </a>
+                    <a class="gf-item" href="/">
+                        Правила пользования cookie
+                    </a>
+                    <a class="gf-item" href="">
+                        Карта сайта
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        @RenderSection("Scripts", required: false)
+    </div>
+</body>
+</html>
+
