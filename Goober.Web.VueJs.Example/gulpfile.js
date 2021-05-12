@@ -217,6 +217,8 @@ const commonCssName = 'common.css';
 const vendorCssName = 'vendor.css';
 const bundleCssName = 'style.css';
 
+console.log(packageDependencies);
+
 const browserify_config = {
     debug: debug,
     transform: [
@@ -253,6 +255,8 @@ function resolveLib(lib) {
         }
     }
 
+    console.log('resolvedLib => ' + lib + ' toResolve:'+ toResolve);
+
     return resolve.sync(toResolve);
 }
 
@@ -265,7 +269,7 @@ gulp.task('build:js:vendor', function () {
     }
 
     packageDependencies.forEach(lib => b.require(resolveLib(lib), { expose: lib, transform: false }));
-
+    
     return b.bundle()
         .pipe(source(vendorJsName))
         .pipe(gulp.dest(paths.js.root));
