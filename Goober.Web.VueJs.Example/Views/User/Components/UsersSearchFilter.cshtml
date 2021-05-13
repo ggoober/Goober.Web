@@ -1,28 +1,18 @@
 ﻿<script id="usersSearchFilter" type="text/html">
-    <b-card class="mt-0 under-tab-card">
-        <b-alert variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>
-
-        <b-card-text>
-            <b-container fluid class="pt-3">
-                <b-row cols="6">
-                    <b-col>
-                        <b-row>
-                            <b-col cols="4" class="text-right">
-                                Дата создания с:
-                            </b-col>
-                            <b-col>
-                                <b-datepicker v-model="createdDateFrom"
-                                              @*v-on:input="loadFilterStatistics"*@
-                                              start-weekday="1"
-                                              placeholder="Выберите дату"
-                                              nav-button-variant="primary"></b-datepicker>
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                </b-row>
-            </b-container>
-        </b-card-text>
-        <b-overlay :show="false" no-wrap>
-        </b-overlay>
-    </b-card>
+    <form class="card">
+        <div class="card-body">
+            <div class="form-group row col-6">
+                <div class="col-sm-4 col-form-label text-right">Дата создания с:</div>
+                <div class="col-sm-8">
+                    <b-datepicker v-model="createdDateFrom"
+                                  start-weekday="1"
+                                  v-on:input="input"
+                                  placeholder="Выберите дату"
+                                  nav-button-variant="primary"></b-datepicker>
+                </div>
+            </div>
+            <b-overlay :show="false" no-wrap>
+            </b-overlay>
+        </div>
+    </form>
 </script>

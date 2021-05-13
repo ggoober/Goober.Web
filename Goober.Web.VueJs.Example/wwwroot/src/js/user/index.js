@@ -1,7 +1,7 @@
 ﻿import Vue from 'vue';
 import axios from 'axios';
 
-import usersSearchFilter from './components/usersSearchFilter';
+import usersSearchFilter from './components/users-search-filter';
 
 var vueApp = new Vue({
     el: '#users-search',
@@ -9,7 +9,7 @@ var vueApp = new Vue({
         return {
             backendUrls: globalThis.backendUrls,
             errorMessage: null,
-            searchFilter: null
+            searchFilter: {}
         };
     },
     components: {

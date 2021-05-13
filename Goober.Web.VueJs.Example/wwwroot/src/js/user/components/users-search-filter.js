@@ -2,29 +2,28 @@
 
 export default {
     template: '#usersSearchFilter',
-    props:
-    {
-        value:
-        {
+    props: {
+        value: {
             type: Object,
             default: function () {
                 return {
-                    createdDateFrom: null
+                    createdDateFrom: null,
+                    errorMessage: null
                 };
             },
         }
     },
-    data()
-    {
+    data() {
         return {
-            errorMessage: null,
-            createdDateFrom
+            createdDateFrom: null,
+            errorMessage: null
         };
     },
     methods: {
         input() {
             this.$emit('input', {
-                createdDateFrom: this.createdDateFrom
+                createdDateFrom: this.createdDateFrom,
+                errorMessage: this.errorMessage
             });
         }
     }
