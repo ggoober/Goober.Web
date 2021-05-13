@@ -2,8 +2,10 @@
 
 export default {
     template: '#usersSearchFilter',
-    props: {
-        value: {
+    props:
+    {
+        value:
+        {
             type: Object,
             default: function () {
                 return {
@@ -12,16 +14,17 @@ export default {
             },
         }
     },
-    data() {
+    data()
+    {
         return {
-            createdDateFrom: null,
             errorMessage: null,
+            createdDateFrom
         };
     },
     methods: {
         input() {
             this.$emit('input', {
-                createdDateFrom: this.createdDateFrom,
+                createdDateFrom: this.createdDateFrom
             });
         }
     }

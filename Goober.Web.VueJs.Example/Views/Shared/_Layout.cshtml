@@ -15,43 +15,28 @@
         @RenderSection("Components", required: false)
     </div>
 
-    <div class="gh">
-        <div class="row align-items-center gh-main-line">
-            <div class="col-md-6">
-                <div class="text-center gh-title">@ViewData["Title"]</div>
+    <header class="p-3 mb-3 border-bottom">
+        <div class="container">
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+                <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="/users/" class="nav-link px-2 link-secondary">Users</a></li>
+                </ul>
             </div>
         </div>
+    </header>
+
+    <div class="container-fluid">
+        @RenderBody()
     </div>
 
-
-    <div class="row page-wrapper">
-        <div class="col page-default">
-            @RenderBody()
+    <footer class="bg-light text-center text-lg-start">
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © @DateTime.Now.Year Copyright:
+            <a class="text-dark" href="/">company</a>
         </div>
-    </div>
-
-    <div class="gf">
-        <div class="row">
-            <div class="col-md-6 offset-md-3">
-                <div class="gf-list">
-                    <div class="gf-item">
-                        © 2009 - 2021 Application name
-                    </div>
-                    <a class="gf-item" href="/">
-                        Правила пользования сайтом
-                    </a>
-                    <a class="gf-item" href="/">
-                        Правила пользования cookie
-                    </a>
-                    <a class="gf-item" href="">
-                        Карта сайта
-                    </a>
-                </div>
-            </div>
-        </div>
-
         @RenderSection("Scripts", required: false)
-    </div>
+    </footer>
+    
 </body>
 </html>
 

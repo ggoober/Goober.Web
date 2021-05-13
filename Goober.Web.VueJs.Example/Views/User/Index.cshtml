@@ -15,28 +15,30 @@
 <div id="users-search" v-cloak>
     @*<b-alert variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>*@
 
-    <users-search-filter></users-search-filter>
+    <users-search-filter v-model="searchFilter"></users-search-filter>
 
-    <div class="tab-content">
-        <b-card class="my-2 w-100" header="Отчеты">
-            <b-button-toolbar>
-                <b-button-group>
-                    <b-button>
-                        <slot>Заказы, отгруженные из ПВЗ(FM)</slot>
-                        <b-overlay :show="false" no-wrap>
-                        </b-overlay>
-                    </b-button>
-                </b-button-group>
-                <b-button-group class="px-2">
-                    <b-button>
-                        <slot>
-                            Выгрузить в Excel
-                        </slot>
-                        <b-overlay :show="false" no-wrap>
-                        </b-overlay>
-                    </b-button>
-                </b-button-group>
-            </b-button-toolbar>
-        </b-card>
+    <div class="row">
+        <div class="col">
+            <b-card class="my-2 w-100" header="Отчеты">
+                <b-button-toolbar>
+                    <b-button-group>
+                        <b-button>
+                            <slot>Заказы, отгруженные из ПВЗ(FM)</slot>
+                            <b-overlay :show="false" no-wrap>
+                            </b-overlay>
+                        </b-button>
+                    </b-button-group>
+                    <b-button-group class="px-2">
+                        <b-button>
+                            <slot>
+                                Выгрузить в Excel
+                            </slot>
+                            <b-overlay :show="false" no-wrap>
+                            </b-overlay>
+                        </b-button>
+                    </b-button-group>
+                </b-button-toolbar>
+            </b-card>
+        </div>
     </div>
 </div>
