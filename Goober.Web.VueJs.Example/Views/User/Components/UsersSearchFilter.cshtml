@@ -1,16 +1,45 @@
 ﻿<script id="usersSearchFilter" type="text/html">
     <form class="card">
         <div class="card-body">
-            <div class="form-group row col-6">
-                <div class="col-sm-4 col-form-label text-right">Дата создания с:</div>
-                <div class="col-sm-8">
-                    <b-datepicker v-model="createdDateFrom"
-                                  start-weekday="1"
-                                  v-on:input="input"
-                                  placeholder="Выберите дату"
-                                  nav-button-variant="primary"></b-datepicker>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group row">
+                        <div class="col-sm-2 col-form-label text-right">Scope:</div>
+                        <div class="col-sm-10">
+                            <vue-multiselect placeholder="Укажите scope"
+                                             v-model="scopes"
+                                             :options="scopesList.map(x => x.id)"
+                                             :multiple="true">
+                            </vue-multiselect>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-form-label text-right">Дата создания с:</div>
+                        <div class="col-sm-8">
+                            <b-datepicker v-model="createdDateFrom"
+                                          start-weekday="1"
+                                          placeholder="Выберите дату"
+                                          nav-button-variant="primary"></b-datepicker>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-form-label text-right">Дата создания по:</div>
+                        <div class="col-sm-8">
+                            <b-datepicker v-model="createdDateTo"
+                                          start-weekday="1"
+                                          placeholder="Выберите дату"
+                                          nav-button-variant="primary"></b-datepicker>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <b-overlay :show="false" no-wrap>
             </b-overlay>
         </div>

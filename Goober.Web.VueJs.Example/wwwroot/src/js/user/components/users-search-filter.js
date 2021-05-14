@@ -8,23 +8,41 @@ export default {
             default: function () {
                 return {
                     createdDateFrom: null,
-                    errorMessage: null
+                    errorMessage: null,
+                    createdDateTo: null,
+                    scopes: null
                 };
             },
         }
     },
     data() {
         return {
+            createdDateTo: null,
             createdDateFrom: null,
-            errorMessage: null
+            errorMessage: null,
+            scopes: null,
+            scopesList: [
+                {
+                    id: 1,
+                    name: "name 1"
+                },
+                {
+                    id: 2,
+                    name: 'name 2'
+                },
+                {
+                    id: 3,
+                    name: 'name 3'
+                },
+                {
+                    id: 4,
+                    name: 'name 4'
+                },
+                {
+                    id: 5,
+                    name: 'name 5'
+                }
+            ]
         };
-    },
-    methods: {
-        input() {
-            this.$emit('input', {
-                createdDateFrom: this.createdDateFrom,
-                errorMessage: this.errorMessage
-            });
-        }
     }
 };

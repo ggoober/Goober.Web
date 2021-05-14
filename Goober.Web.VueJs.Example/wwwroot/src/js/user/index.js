@@ -1,5 +1,8 @@
 ﻿import Vue from 'vue';
 import axios from 'axios';
+import Multiselect from 'vue-multiselect'
+
+Vue.component('vue-multiselect', Multiselect)
 
 import usersSearchFilter from './components/users-search-filter';
 
