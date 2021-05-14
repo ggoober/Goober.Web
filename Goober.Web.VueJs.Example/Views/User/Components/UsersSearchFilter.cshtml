@@ -7,9 +7,43 @@
                         <div class="col-sm-2 col-form-label text-right">Scope:</div>
                         <div class="col-sm-10">
                             <vue-multiselect placeholder="Укажите scope"
+                                             select-Label=""
+                                             selected-Label=""
+                                             deselect-Label=""
                                              v-model="scopes"
-                                             :options="scopesList.map(x => x.id)"
-                                             :multiple="true">
+                                             :options="scopesList"
+                                             :multiple="true"
+                                             :close-on-select="false"
+                                             :clear-on-select="false"
+                                             :hide-selected="true"
+                                             :show-no-results="false"
+                                             track-by="id"
+                                             selectGroupLabel="Нажмите Enter чтобы выбрать несколько"
+                                             label="name">
+                            </vue-multiselect>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group row">
+                        <div class="col-sm-2 col-form-label text-right">Claims:</div>
+                        <div class="col-sm-10">
+                            <vue-multiselect placeholder="Укажите claim"
+                                             v-model="claims"
+                                             :options="claimsList"
+                                             :hide-selected="true"
+                                             :show-no-results="false"
+                                             :options-limit="300"
+                                             :limit="15"
+                                             :loading="isClaimsLoading"
+                                             :searchable="true"
+                                             :internal-search="false"
+                                             track-by="id"
+                                             @@search-change="findClaimsAsync"
+                                             selectGroupLabel="Нажмите Enter чтобы выбрать несколько"
+                                             label="name">
                             </vue-multiselect>
                         </div>
                     </div>
@@ -23,6 +57,7 @@
                             <b-datepicker v-model="createdDateFrom"
                                           start-weekday="1"
                                           placeholder="Выберите дату"
+                                          locale="ru-RU"
                                           nav-button-variant="primary"></b-datepicker>
                         </div>
                     </div>
@@ -37,6 +72,20 @@
                                           nav-button-variant="primary"></b-datepicker>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group row">
+                        <div class="col-sm-4 col-form-label text-right">Только актуальные:</div>
+                        <div class="col-sm-8 m-md-auto">
+                            <b-checkbox v-model="onlyActual"></b-checkbox>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+
                 </div>
             </div>
 
