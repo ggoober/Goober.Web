@@ -54,10 +54,7 @@ export default {
                     name: 'scope 10'
                 }
             ],
-            selectedScopes: [],
-
             claimsList: [],
-            selectedClaims: [],
             isClaimsLoading: false
         };
     },
