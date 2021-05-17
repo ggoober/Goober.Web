@@ -10,7 +10,7 @@
                                              select-Label=""
                                              selected-Label=""
                                              deselect-Label=""
-                                             v-model="selectedScopes"
+                                             v-model="scopesComputed"
                                              :options="scopesList"
                                              :multiple="true"
                                              :close-on-select="false"
@@ -31,7 +31,7 @@
                         <div class="col-sm-2 col-form-label text-right">Claims:</div>
                         <div class="col-sm-10">
                             <vue-multiselect placeholder="Укажите claim"
-                                             v-model="selectedClaims"
+                                             v-model="claims"
                                              :options="claimsList"
                                              :hide-selected="true"
                                              :show-no-results="false"

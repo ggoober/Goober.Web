@@ -12,10 +12,23 @@ var vueApp = new Vue({
         return {
             backendUrls: globalThis.backendUrls,
             errorMessage: null,
-            searchFilter: {}
+            searchFilter: {
+                createdDateTo: null,
+                createdDateFrom: null,
+                errorMessage: null,
+                scopes: [{ id: 1, name: "scope 1"}],
+                claims: [],
+                onlyActual: true
+            }
         };
     },
     components: {
         'users-search-filter': usersSearchFilter
     },
+    methods: {
+        searchFilterChange(event) {
+            console.log('searchFilterChange, event:' + JSON.stringify(event));
+            this.searchFilter.scopes = event;
+        }
+    }
 });

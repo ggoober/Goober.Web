@@ -3,11 +3,12 @@
 export default {
     template: '#usersSearchFilter',
     props: {
-        createdDateTo: null,
-        createdDateFrom: null,
-        errorMessage: null,
-        
-        onlyActual: true
+        createdDateTo: Date,
+        createdDateFrom: Date,
+        errorMessage: String,
+        scopes: Array,
+        claims: Array,
+        onlyActual: Boolean
     },
     data() {
         return {
@@ -68,12 +69,32 @@ export default {
 
             this.isClaimsLoading = false;
 
-            if (res.status == 200)
-            {
+            if (res.status == 200) {
                 this.claimsList = res.data.claims;
+            }
+            else
+            {
+                this.claimsList = [];
             }
 
         }
     },
-    
+    watch: {
+        selectedScopes(oldValue, newValue) {
+            
+            this.$emit('change:scopes', newValue)
+        }
+    },
+    computed:
+    {
+        scopesComputed: {
+            get: function () {
+                return this.scopes;
+            },
+            set: function (newValue) {
+                console.log('scopesComputed:set' + JSON.stringify(newValue));
+                this.$emit('change:scopes', newValue);
+            }
+        }
+    }
 };
