@@ -6,8 +6,7 @@ export default {
         createdDateTo: null,
         createdDateFrom: null,
         errorMessage: null,
-        scopes: [],
-        claims: [],
+        
         onlyActual: true
     },
     data() {
@@ -54,8 +53,11 @@ export default {
                     name: 'scope 10'
                 }
             ],
-            isClaimsLoading: false,
-            claimsList: []
+            selectedScopes: [],
+
+            claimsList: [],
+            selectedClaims: [],
+            isClaimsLoading: false
         };
     },
     methods: {
@@ -72,5 +74,6 @@ export default {
             }
 
         }
-    }
+    },
+    
 };
