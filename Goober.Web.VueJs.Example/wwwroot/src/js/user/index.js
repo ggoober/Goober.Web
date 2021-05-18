@@ -17,7 +17,7 @@ var vueApp = new Vue({
     },
     mounted: function ()
     {
-        this.searchFilter = this.$refs.searchFilter.getFilter();
+        this.searchFilter = this.$refs.usersSearchFilter.getFilter();
 
         this.searchFilter.scopes = [{ id: 3, name: "scope 3" }];
     },
