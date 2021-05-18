@@ -1,6 +1,6 @@
 ﻿import axios from 'axios';
 
-export default {
+export vc_usersSearchFilter {
     template: '#usersSearchFilter',
     data() {
         return {

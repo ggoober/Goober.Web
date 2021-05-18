@@ -4,7 +4,7 @@ import Multiselect from 'vue-multiselect'
 
 Vue.component('vue-multiselect', Multiselect)
 
-import usersSearchFilter from './components/users-search-filter';
+import vc_usersSearchFilter from './components/users-search-filter';
 
 var vueApp = new Vue({
     el: '#users-search',
@@ -12,21 +12,24 @@ var vueApp = new Vue({
         return {
             backendUrls: globalThis.backendUrls,
             errorMessage: null,
+            searchFilter: null
         };
     },
     mounted: function ()
     {
-        this.$refs.searchFilter.filter.scopes = [{ id: 3, name: "scope 3" }];
+        this.searchFilter = this.$refs.searchFilter.getFilter();
+
+        this.searchFilter.scopes = [{ id: 3, name: "scope 3" }];
     },
     methods:
     {
         findClick: function () {
-            var searchFilter = this.$refs.searchFilter.getFilter();
+            console.log('findClick: ' + JSON.stringify(this.searchFilter));
 
-            console.log('findClick: ' + JSON.stringify(searchFilter));
+            searchFilter.scopes = [{ id: 3, name: "scope 3" }];
         }
     },
     components: {
-        'users-search-filter': usersSearchFilter
+        'users-search-filter': vc_usersSearchFilter
     }
 });
