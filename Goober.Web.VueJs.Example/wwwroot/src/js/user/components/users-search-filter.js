@@ -2,16 +2,14 @@
 
 export default {
     template: '#usersSearchFilter',
-    props: {
-        createdDateTo: Date,
-        createdDateFrom: Date,
-        errorMessage: String,
-        scopes: Array,
-        claims: Array,
-        onlyActual: Boolean
-    },
     data() {
         return {
+            scopes: [],
+            claims: [],
+            createdDateTo: null,
+            createdDateFrom: null,
+            onlyActual: true,
+
             scopesList: [
                 {
                     id: 1,
@@ -72,25 +70,6 @@ export default {
             else
             {
                 this.claimsList = [];
-            }
-
-        }
-    },
-    watch: {
-        selectedScopes(oldValue, newValue) {
-            
-            this.$emit('change:scopes', newValue)
-        }
-    },
-    computed:
-    {
-        scopesComputed: {
-            get: function () {
-                return this.scopes;
-            },
-            set: function (newValue) {
-                console.log('scopesComputed:set' + JSON.stringify(newValue));
-                this.$emit('change:scopes', newValue);
             }
         }
     }
