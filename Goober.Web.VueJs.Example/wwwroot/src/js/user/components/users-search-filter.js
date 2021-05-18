@@ -4,12 +4,15 @@ export default {
     template: '#usersSearchFilter',
     data() {
         return {
-            scopes: [],
-            claims: [],
-            createdDateTo: null,
-            createdDateFrom: null,
-            onlyActual: true,
+            filter: {
+                scopes: [],
+                claims: [],
+                createdDateTo: null,
+                createdDateFrom: null,
+                onlyActual: true
+            },
 
+            claimsLimit: 15,
             scopesList: [
                 {
                     id: 1,
@@ -57,10 +60,11 @@ export default {
         };
     },
     methods: {
-        async findClaimsAsync(query) {
+        findClaimsAsync: async function(query) {
             this.isClaimsLoading = true;
 
-            var res = await axios.post('/api/claim/search', { textQuery: query, scopeIds: [], count: 15 });
+            var searchQuery = { textQuery: query, scopeIds: (this.filter.scopes === null ? [] : this.filter.scopes.map(x => x.id)), count: this.claimsLimit };
+            var res = await axios.post('/api/claim/search', searchQuery);
 
             this.isClaimsLoading = false;
 
@@ -71,6 +75,9 @@ export default {
             {
                 this.claimsList = [];
             }
+        },
+        getFilter: function () {
+            return this.filter;
         }
     }
 };

@@ -10,7 +10,7 @@
                                              select-Label=""
                                              selected-Label=""
                                              deselect-Label=""
-                                             v-model="scopes"
+                                             v-model="filter.scopes"
                                              :options="scopesList"
                                              :multiple="true"
                                              :close-on-select="false"
@@ -31,12 +31,12 @@
                         <div class="col-sm-2 col-form-label text-right">Claims:</div>
                         <div class="col-sm-10">
                             <vue-multiselect placeholder="Укажите claim"
-                                             v-model="claims"
+                                             v-model="filter.claims"
                                              :options="claimsList"
                                              :hide-selected="true"
                                              :show-no-results="false"
                                              :options-limit="300"
-                                             :limit="15"
+                                             :limit="claimsLimit"
                                              :loading="isClaimsLoading"
                                              :searchable="true"
                                              :internal-search="false"
@@ -54,7 +54,7 @@
                     <div class="form-group row">
                         <div class="col-sm-4 col-form-label text-right">Дата создания с:</div>
                         <div class="col-sm-8">
-                            <b-datepicker v-model="createdDateFrom"
+                            <b-datepicker v-model="filter.createdDateFrom"
                                           start-weekday="1"
                                           placeholder="Выберите дату"
                                           locale="ru-RU"
@@ -66,7 +66,7 @@
                     <div class="form-group row">
                         <div class="col-sm-4 col-form-label text-right">Дата создания по:</div>
                         <div class="col-sm-8">
-                            <b-datepicker v-model="createdDateTo"
+                            <b-datepicker v-model="filter.createdDateTo"
                                           start-weekday="1"
                                           placeholder="Выберите дату"
                                           nav-button-variant="primary"></b-datepicker>
@@ -80,7 +80,7 @@
                     <div class="form-group row">
                         <div class="col-sm-4 col-form-label text-right">Только актуальные:</div>
                         <div class="col-sm-8 m-md-auto">
-                            <b-checkbox v-model="onlyActual"></b-checkbox>
+                            <b-checkbox v-model="filter.onlyActual"></b-checkbox>
                         </div>
                     </div>
                 </div>

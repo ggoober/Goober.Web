@@ -14,6 +14,18 @@ var vueApp = new Vue({
             errorMessage: null,
         };
     },
+    mounted: function ()
+    {
+        this.$refs.searchFilter.filter.scopes = [{ id: 3, name: "scope 3" }];
+    },
+    methods:
+    {
+        findClick: function () {
+            var searchFilter = this.$refs.searchFilter.getFilter();
+
+            console.log('findClick: ' + JSON.stringify(searchFilter));
+        }
+    },
     components: {
         'users-search-filter': usersSearchFilter
     }
