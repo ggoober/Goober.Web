@@ -12,10 +12,10 @@
     <script src="~/dist/js/user/bundle.js" asp-append-version="true"></script>
 }
 
-<div id="users-search" v-cloak>
+<div id="tpl-users-search" v-cloak>
     @*<b-alert variant="danger" :show="!!errorMessage">{{errorMessage}}</b-alert>*@
 
-    <users-search-filter ref="usersSearchFilter"></users-search-filter>
+    <vue-users-search-filter ref="refUsersSearchFilter"></vue-users-search-filter>
     
     <div class="row">
         <div class="col">
