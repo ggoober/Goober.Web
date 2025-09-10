@@ -1,0 +1,32 @@
+<div class="i-overlay-container">
+    <div class="i-overlay-panel">
+        <form class="i-form-container">
+            <div class="i-form-group i-container-header">
+                <h2>Заголовок всплывающего окна</h2>
+                <button class="i-container-header-button" type="button" (click)="closeOverlay('')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="i-form-group">
+                <div class="i-input-group">
+                    <label class="i-label" for="input_name_overlay">Название</label>
+                    <input class="i-input" type="text" id="input_name_overlay">
+                </div>
+                <div class="i-input-group">
+                    <label class="i-label" for="input_desc_overlay">Описание</label>
+                    <textarea class="i-textarea" id="input_desc_overlay"></textarea>
+                </div>
+            </div>
+            <div class="i-form-group buttons-group">
+                <button class="i-button" type="button" tabindex="0" (click)="closeOverlay('')">
+                    <i class="i-button-icon fas fa-reply-all"></i>
+                    <span class="i-button-label">Отмена</span>
+                </button>
+                <button type="button" class="i-button" tabindex="0">
+                    <i class="i-button-icon fas fa-save"></i>
+                    <span class="i-button-label">Сохранить</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

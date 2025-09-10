@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Goober.WebJobs.Abstractions
+namespace Indusoft.WebJobs.Abstractions
 {
     public interface IIterateJobService
     {

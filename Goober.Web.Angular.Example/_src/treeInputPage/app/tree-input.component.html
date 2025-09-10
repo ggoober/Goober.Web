@@ -1,0 +1,91 @@
+
+<div class="container">
+    <section class="card" id='section1'>
+        <h1>Постой выбор</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [hasError]="false"
+                    (itemSelected)="onItemSelectedSingle($event)"
+                    [appendTo]="'section1'">
+        </tree-input>
+    </section>
+    <section class="card">
+        <h1>Множественный выбор</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [selectionMode]="multipleSelectionMode"
+                    (itemSelected)="onItemSelectedMultiple($event)">
+
+        </tree-input>
+    </section>
+    <section class="card">
+        <h1>Множественный выбор с флажками</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [selectionMode]="checkBoxSelectionMode"
+                    (itemSelected)="onItemSelectedCheckBox($event)">
+
+        </tree-input>
+    </section>
+    <section class="card">
+        <h1>Предустановленный выбор</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [selectedItem]="selectedItem"
+                    (itemSelected)="onItemSelectedCheckBox($event)">
+        </tree-input>
+    </section>
+    <section class="card">
+        <h1>Предустановленный выбор с флажками</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [selectedItems]="selectedItems"
+                    [selectionMode]="checkBoxSelectionMode"
+                    (itemSelected)="onItemSelectedCheckBox($event)">
+        </tree-input>
+    </section>
+    <section class="card">
+        <h1>Предустановленный выбор по ключу</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [selectedItemByKey]="selectedByKeyItemsSubscription"
+                    (itemSelected)="onItemSelectedCheckBox($event)"
+                    (itemsSelectedByKeys)="onItemSelectedByKey($event)">
+        </tree-input>
+        <a>{{selectedByKeyItem}}</a>
+        <button (click)="setKey()"> Открой обратно </button>
+    </section>
+    <section class="card">
+        <h1>Предустановленный выбор с флажками по ключам</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    [selectedItemsByKeys]="selectedItemsByKeys"
+                    [selectionMode]="checkBoxSelectionMode"
+                    (itemSelected)="onItemSelectedCheckBox($event)"
+                    (itemsSelectedByKeys)="onItemsSelectedByKeys($event)">
+        </tree-input>
+        <a>{{selectedByKeysItems}}</a>
+    </section>
+    <section class="card">
+        <h1>Недоступно</h1>
+        <tree-input [items]="items"
+                    placeholder="Выберите элемент"
+                    (itemSelected)="onItemSelectedSingle($event)"
+                    [isDisabled]="disable">
+        </tree-input>
+        <br />
+        <button (click)="toggleDisable()">Переключить</button>
+        <a>{{disable}}</a>
+    </section>
+    <section class="card">
+        <h1>Только для чтения</h1>
+        <tree-input [isReadonly]="readonly"
+                    [items]="items"
+                    placeholder="Выберите элемент"
+                    (itemSelected)="onItemSelectedSingle($event)">
+        </tree-input>
+        <br />
+        <button (click)="toggleReadonly()">Переключить</button>
+        <a>{{readonly}}</a>
+    </section>
+</div>

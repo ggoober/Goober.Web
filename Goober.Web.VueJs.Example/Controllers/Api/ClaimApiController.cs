@@ -1,12 +1,12 @@
 ﻿using AutoFixture;
-using Goober.Web.VueJs.Example.Models.Claims;
+using Indusoft.Web.VueJs.Example.Models.Claims;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Goober.Web.VueJs.Example.Controllers.Api
+namespace Indusoft.Web.VueJs.Example.Controllers.Api
 {
     [ApiController]
     public class ClaimApiController : ControllerBase

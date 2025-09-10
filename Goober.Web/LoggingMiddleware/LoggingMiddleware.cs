@@ -3,17 +3,21 @@ using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Goober.Core.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Goober.Base.Extensions;
 
 namespace Goober.Web.LoggingMiddleware
 {
     public class LoggingMiddleware
     {
-        public static int MaxContentLength { get; set; } = 1024 * 30;
+		public static int MaxContentLength { get; set; } = 50 * 1024 * 1024;
 
         private readonly RequestDelegate _next;
 
-        private const string CallSequenceIdKey = "g-callsec-id";
+        private const string CallSequenceIdKey = "i-callsec-id";
+
+		private const string ContextRequestBody = "CONTEXT_REQUEST_BODY";
+		private const string ContextRequestForm = "CONTEXT_REQUEST_FORM";
 
         public LoggingMiddleware(RequestDelegate next)
         {
@@ -25,59 +29,47 @@ namespace Goober.Web.LoggingMiddleware
             var request = context?.Request;
             if (request == null)
                 return;
-
-            context.Items["APPLICATION"] = ProgramUtils.ApplicationName;
-
+            
             context.Items[CallSequenceIdKey] = GetCallSequenceIdFromRequestHeaderOrGenerateNew(context);
 
-            var requestForm = GetRequestForm(request);
-            context.Items["CONTEXT_REQUEST_FORM"] = requestForm;
+			request.EnableBuffering();
 
-            string requestBody = null;
-            if (string.IsNullOrEmpty(requestForm) == true)
+			context.Items[ContextRequestForm] = GetRequestForm(request);
+
+			var requestBodyDelegate = context.RequestServices.GetService<LoggingRequestBodyAbstractDelegate>();
+			if (requestBodyDelegate != null)
+			{
+				requestBodyDelegate.MaxContentLength = MaxContentLength;
+				requestBodyDelegate.HttpContext = context;
+				requestBodyDelegate.RequestBodyBytes = await GetRequestBodyBytesAsync(request);
+
+				context.Items[ContextRequestBody] = requestBodyDelegate;
+			}
+			else
             {
-                requestBody = await GetRequestBodyAsync(request);
+				context.Items[ContextRequestBody] = await GetRequestBodyStringAsync(request);
             }
-            context.Items["CONTEXT_REQUEST_BODY"] = requestBody;
 
             await _next(context);
         }
 
-        private string GetRequestForm(HttpRequest request)
-        {
-            if (request.Method == "GET")
-                return null;
 
-            if (request.ContentType  == null 
-                || request.ContentType.Contains("form-data") == false)
-                return null;
 
-            var sb = new StringBuilder();
-
-            if (request.Form.Files?.Count > 0)
+		private string GetCallSequenceIdFromRequestHeaderOrGenerateNew(HttpContext httpContext)
             {
-                var fileNames = request.Form.Files.Select(x => x.FileName).ToList();
-                sb.AppendLine($"files: {string.Join(";", fileNames)}");
+			var request = httpContext.Request;
 
-                return sb.ToString();
+			if (request == null || request.Headers.ContainsKey(CallSequenceIdKey) == false)
+            {
+				return Guid.NewGuid().ToString();
             }
 
-            if (request.ContentLength > MaxContentLength)
-                return $"RequestForm content length > {MaxContentLength}";
+			var ret = request.Headers[CallSequenceIdKey];
 
-            request.EnableBuffering();
-
-            foreach (var iFormItem in request.Form)
-            {
-                sb.AppendLine($"{iFormItem.Key}:{iFormItem.Value}");
-            }
-
-            request.Body.Position = 0;
-
-            return sb.ToString();
+			return ret;
         }
 
-        private async Task<string> GetRequestBodyAsync(HttpRequest request)
+		private async Task<string> GetRequestBodyStringAsync(HttpRequest request)
         {
             if (request.Method.ToUpper() == "GET")
                 return null;
@@ -87,7 +79,8 @@ namespace Goober.Web.LoggingMiddleware
 
             string requestBody;
             
-            request.EnableBuffering();
+			request.Body.Position = 0;
+
             var readBodyResult = await request.Body.ReadStreamWithMaxSizeRetrictionAsync(Encoding.UTF8, maxSize: MaxContentLength);
             if (readBodyResult.IsReadToTheEnd == false)
             {
@@ -101,18 +94,65 @@ namespace Goober.Web.LoggingMiddleware
             return requestBody;
         }
 
-        private string GetCallSequenceIdFromRequestHeaderOrGenerateNew(HttpContext httpContext)
+		private async Task<byte[]> GetRequestBodyBytesAsync(HttpRequest request)
         {
-            var request = httpContext.Request;
+			if (request.Method.ToUpper() == "GET")
+				return null;
 
-            if (request == null || request.Headers.ContainsKey(CallSequenceIdKey) == false)
+			if (request.ContentLength > MaxContentLength)
+				return Encoding.UTF8.GetBytes($"RequestBody content length > {MaxContentLength}");
+
+			request.Body.Position = 0;
+			var readBodyResult = await request.Body.ReadStreamBytesWithMaxSizeRetrictionAsync(maxSize: MaxContentLength);
+			request.Body.Position = 0;
+
+			if (readBodyResult.IsReadToTheEnd == true)
             {
-                return Guid.NewGuid().ToString();
+				return readBodyResult.Bytes;
             }
 
-            var ret = request.Headers[CallSequenceIdKey];
+			var str = Encoding.UTF8.GetString(readBodyResult.Bytes);
+			var retString = new StringBuilder(str);
+			retString.AppendLine();
+			retString.AppendLine($"<<< NOT END, request body is greter than {MaxContentLength}.");
 
-            return ret;
+			return Encoding.UTF8.GetBytes(retString.ToString());
+		}
+
+		private string GetRequestForm(HttpRequest request)
+		{
+			if (request.Method == "GET")
+				return null;
+
+			if (request.ContentType == null
+				|| request.ContentType.Contains("form-data") == false)
+				return null;
+
+			var sb = new StringBuilder();
+
+			if (request.Form.Files?.Count > 0)
+			{
+				var fileNames = request.Form.Files.Select(x => x.FileName).ToList();
+				sb.AppendLine($"files: {string.Join(";", fileNames)}");
+
+				return sb.ToString();
+			}
+
+			if (request.ContentLength > MaxContentLength)
+				return $"RequestForm content length > {MaxContentLength}";
+
+			request.EnableBuffering();
+
+			request.Body.Position = 0;
+
+			foreach (var iFormItem in request.Form)
+			{
+				sb.AppendLine($"{iFormItem.Key}:{iFormItem.Value}");
+			}
+
+			request.Body.Position = 0;
+
+			return sb.ToString();
         }
     }
 }

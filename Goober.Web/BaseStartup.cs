@@ -1,38 +1,40 @@
-using System.Linq;
-using System.Text.Json.Serialization;
+using Anemonis.AspNetCore.RequestDecompression;
+using Goober.Base.Extensions;
 using Goober.Caching;
-using Goober.Core.Extensions;
-using Goober.Config.Api;
 using Goober.Http;
+using Goober.Http.Glossary;
+using Goober.Http.Models;
+using Goober.Http.Models.Parameters;
 using Goober.Web.Extensions;
+using Goober.Web.Glossary;
+using Goober.Web.IdentityUtils.Exceptions;
 using Goober.Web.ModelBinder;
+using Goober.Web.Models;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Goober.Web.Models;
-using Goober.Web.Glossary;
-using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Goober.Web
 {
-    public abstract class BaseStartup
+    public abstract partial class BaseStartup
     {
         #region props
 
         protected IConfiguration Configuration { get; private set; }
 
-        private BaseStartupSwaggerSettings _swaggerSettings { get; set; } = new BaseStartupSwaggerSettings {
-            UseHideInDocsFilter = false
-        };
+        /// <summary>
+        /// Базовый путь.
+        /// </summary>
+        protected virtual string BasePath { get; private set; } = "";
 
-        private BaseStartupConfigSettings _configSettings { get; set; } = new BaseStartupConfigSettings 
-        { 
-            AppSettingsFileName = "appsettings.json", 
-            IsAppSettingsFileOptional = false,
-            CacheExpirationTimeInMinutes = null,
-            CacheRefreshTimeInMinutes = 5,
-            ConfigApiEnvironmentAndHostMappings = ConfigGlossary.ConfigApiEnvironmentAndHostMappings
-        };
+        private BaseStartupSwaggerSettings _swaggerSettings { get; set; }
 
         private long? _memoryCacheSizeLimitInBytes = null;
 
@@ -41,88 +43,190 @@ namespace Goober.Web
         #region ctor
 
         public BaseStartup()
-        { 
+        {
         }
 
         public BaseStartup(
-            BaseStartupSwaggerSettings swaggerSettings = null, 
-            BaseStartupConfigSettings configSettings = null, 
+            BaseStartupSwaggerSettings swaggerSettings = null,
             int? memoryCacheSizeLimitInMB = null)
         {
-            if (swaggerSettings != null)
-            {
-                _swaggerSettings = swaggerSettings;
-            }
-
-            if (configSettings != null)
-            {
-                _configSettings = configSettings;
-            }
+            _swaggerSettings = swaggerSettings ?? new BaseStartupSwaggerSettings();
 
             _memoryCacheSizeLimitInBytes = memoryCacheSizeLimitInMB * 1024;
         }
 
         #endregion
 
-        public void ConfigureServices(IServiceCollection services)
+        public virtual void ConfigureServices(IServiceCollection services)
         {
-            services.AddGooberDateTimeService();
-            services.AddGooberCaching(memoryCacheSizeLimitInBytes: _memoryCacheSizeLimitInBytes);
-            services.AddGooberHttp();
+            ConfigureBeforeBaseService(services);
 
-            Configuration = GenerateConfiguration(configSettings: _configSettings, serviceCollection: services);
-            services.AddSingleton(Configuration);
+            VerifyLicense(services);
+            services.AddIndusoftExpirationDate(_expireDate, ApplicationBaseConfiguration);
 
-            if (_swaggerSettings != null)
+            ConfigureBaseService(services);
+
+            ConfigureConfiguration(services);
+
+            ConfigureIndusoftHttp(services);
+
+            ConfigureSwagger(services);
+
+            ConfigureModelBindings(services);
+
+            ConfigureServiceCollections(services);
+
+            var baseAuthPassword = Configuration.GetDecryptedString(CryptoExtensions.EncryptedPasswordConfigKey);
+
+            Goober.Base.Attributes.SwaggerHideInDocsAttribute.DefaultPassword = baseAuthPassword;
+
+            Goober.Web.Filters.BasicAuthAttribute.DefaultPassword = baseAuthPassword;
+
+            ManageResponseCompression(services);
+
+            ManageRequestDecompression(services);
+        }
+
+        private void ManageRequestDecompression(IServiceCollection services)
+        {
+            var needToAddRequestDecompression = Configuration.NeedToAddRequestDecompression();
+            if (needToAddRequestDecompression)
             {
-                ConfigureSwagger(services);
+                services.AddRequestDecompression(o =>
+                {
+                    o.Providers.Add<DeflateDecompressionProvider>();
+                    o.Providers.Add<GzipDecompressionProvider>();
+                    o.Providers.Add<BrotliDecompressionProvider>();
+                });
             }
+        }
 
+        private void ManageResponseCompression(IServiceCollection services)
+        {
+            var needToAddResponseCompression = Configuration.NeedToAddResponseCompression();
+            if (needToAddResponseCompression == false)
+                return;
+
+            var enableForHttps = Configuration.NeedToUseResponseHttpsCompression();
+            services.AddResponseCompression(options => options.EnableForHttps = enableForHttps);
+        }
+
+        protected virtual void ConfigureModelBindings(IServiceCollection services)
+        {
             services
-                .AddControllersWithViews(o => 
-                { 
-                        o.ModelBinderProviders.Insert(0, new DateCultureIsoModelBinderProvider()); 
+                .AddControllersWithViews(o =>
+                {
+                    o.ModelBinderProviders.Insert(0, new DateCultureIsoModelBinderProvider());
                 })
                 .AddJsonOptions(o =>
                 {
                     o.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
-                    o.JsonSerializerOptions.PropertyNameCaseInsensitive = false;
+                    o.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                     o.JsonSerializerOptions.IgnoreNullValues = true;
                     o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
-
-            ConfigureServiceCollections(services);
         }
 
-        private void ConfigureSwagger(IServiceCollection services)
+        protected virtual void ConfigureConfiguration(IServiceCollection services)
+        {
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+
+            configurationBuilder = configurationBuilder
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddEnvironmentVariables()
+                .AddCommandLine(Environment.GetCommandLineArgs());
+
+            Configuration = configurationBuilder.Build();
+
+            services.AddSingleton(Configuration);
+        }
+
+        protected virtual void ConfigureIndusoftHttp(IServiceCollection services)
+        {
+            var authorizationFunctions = GetAuthenticateFunctions();
+
+            if ((authorizationFunctions?.Count ?? 0) == 0)
+            {
+                services.AddSingleton(typeof(IList<AuthenticationEndPointModel>), new List<AuthenticationEndPointModel>());
+
+                return;
+            }
+
+            var authorizationEndPoints = GetAuthorizationEndPointsWithCheckForDuplicates();
+            var configAuthorizations = authorizationEndPoints.ToDictionary(x => x.Alias.ToLowerAndTrimSafety());
+
+            var resultAuthorizationEndpoints = GetIndusoftAuthorizationEndpoints(authorizationFunctions, configAuthorizations);
+
+            services.AddSingleton(typeof(IList<AuthenticationEndPointModel>), resultAuthorizationEndpoints);
+        }
+
+        protected virtual Dictionary<string, EndpointRequestOptions> GetAuthenticateFunctions()
+        {
+            return new Dictionary<string, EndpointRequestOptions>();
+        }
+
+        protected virtual void ConfigureBeforeBaseService(IServiceCollection services)
+        {
+        }
+
+        /// <summary>
+        /// DateTimeSerivce, Caching, Http
+        /// </summary>
+        /// <param name="services"></param>
+        protected virtual void ConfigureBaseService(IServiceCollection services)
+        {
+            services.AddIndusoftDateTimeService();
+            services.AddIndusoftCaching(memoryCacheSizeLimitInBytes: _memoryCacheSizeLimitInBytes);
+            services.AddIndusoftHttp();
+        }
+
+        protected virtual void ConfigureSwagger(IServiceCollection services)
         {
             if (_swaggerSettings.XmlCommentsFileNameList != null
                                 && _swaggerSettings.XmlCommentsFileNameList.Any() == true)
             {
-                services.AddSwaggerGenWithXmlDocs(_swaggerSettings.XmlCommentsFileNameList, _swaggerSettings.UseHideInDocsFilter, _swaggerSettings.OpenApiInfo);
+                services.AddSwaggerGenWithXmlDocs(xmlDocFileNameList: _swaggerSettings.XmlCommentsFileNameList,
+                useHideDocsFilter: _swaggerSettings.UseHideInDocsFilter,
+                info: _swaggerSettings.OpenApiInfo,
+                optionsAction: ConfigureSwaggerOptions);
             }
             else
             {
-                services.AddSwaggerGenWithDocs(_swaggerSettings.UseHideInDocsFilter, _swaggerSettings.OpenApiInfo);
+                services.AddSwaggerGenWithDocs(useHideDocsFilter: _swaggerSettings.UseHideInDocsFilter,
+                    info: _swaggerSettings.OpenApiInfo,
+                    optionsAction: ConfigureSwaggerOptions);
             }
         }
 
-        public void Configure(IApplicationBuilder app)
+        public virtual void Configure(IApplicationBuilder app)
         {
-            app.UseGooberExceptionsHandling();
+            var addResponseCompression = Configuration.NeedToAddResponseCompression();
+            if (addResponseCompression)
+            {
+                app.UseResponseCompression();
+            }
 
-            app.UseGooberLoggingVariables();
+            var needToAddRequestDecompression = Configuration.NeedToAddRequestDecompression();
+            if (needToAddRequestDecompression)
+            {
+                app.UseRequestDecompression();
+            }
 
-            app.UseRequestLocalizationByDefault();
+            ConfigureStartPipeline(app);
 
-            ConfigurePipelineAfterExceptionsHandling(app);
+            ConfigurePipelineBeforeRouting(app);
 
-            app.UseSwagger();
+            ConfigureRouting(app);
 
-            app.UseSwaggerUIWithDocs();
+            ConfigurePipelineAfterRouting(app);
 
-            app.UseRouting();
+            ConfigureMvcPipeline(app);
 
+            ConfigurePipelineAfterMvc(app);
+        }
+
+        protected virtual void ConfigureMvcPipeline(IApplicationBuilder app)
+        {
             app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
@@ -133,48 +237,110 @@ namespace Goober.Web
 
                 endpoints.MapControllers();
             });
-
-            ConfigurePipelineAfterMvc(app);
         }
+
+        protected virtual void ConfigureRouting(IApplicationBuilder app)
+        {
+            app.UseRouting();
+        }
+
+        protected virtual void ConfigureStartPipeline(IApplicationBuilder app)
+        {
+            app.UseIndusoftExceptionsHandling();
+
+            app.UseIndusoftLoggingVariables();
+
+            app.UseRequestLocalizationByDefault();
+
+            app.UseSwaggerWithBasePath(BasePath);
+        }
+
+        protected abstract void ConfigurePipelineBeforeRouting(IApplicationBuilder app);
 
         protected abstract void MapControllerRoutes(IEndpointRouteBuilder endpoints);
 
         protected abstract void ConfigureServiceCollections(IServiceCollection services);
 
-        protected abstract void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app);
+        protected abstract void ConfigurePipelineAfterRouting(IApplicationBuilder app);
 
         protected abstract void ConfigurePipelineAfterMvc(IApplicationBuilder app);
 
-        private static IConfiguration GenerateConfiguration(BaseStartupConfigSettings configSettings,
-            IServiceCollection serviceCollection)
+        protected virtual void ConfigureSwaggerOptions(SwaggerGenOptions swaggerOptions)
         {
-            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            //do nothing
+        }
 
-            if (configSettings != null)
+        private void VerifyLicense(IServiceCollection services)
+        {
+            try
             {
-                if (configSettings.ConfigApiEnvironmentAndHostMappings != null
-                    && configSettings.ConfigApiEnvironmentAndHostMappings.Any() == true)
+                LicenseValidation();
+            }
+            catch (IndusoftProductException exception)
+            {
+                var provider = services.BuildServiceProvider();
+                var logger = provider.GetService<ILogger<IndusoftProductException>>();
+                logger?.LogError(exception.Message);
+
+                throw exception;
+            }
+        }
+
+        private static List<AuthenticationEndPointModel> GetIndusoftAuthorizationEndpoints(
+                Dictionary<string, EndpointRequestOptions> authorizationFunctions,
+                Dictionary<string, IndusoftAuthorizationEndPointParameters> configAuthorizations)
+        {
+            var resultAuthorizationEndpoints = new List<AuthenticationEndPointModel>();
+
+            var missingConfigs = new List<string>();
+
+            foreach (var iAuthFunction in authorizationFunctions)
+            {
+                var authAlias = iAuthFunction.Key.ToLowerAndTrimSafety();
+
+                if (configAuthorizations.TryGetValue(authAlias, out var configAuth) == false)
                 {
-                    configurationBuilder = configurationBuilder.AddConfigApi(
-                            serviceCollection: serviceCollection,
-                            environmentConfigApiSchemeAndHosts: configSettings.ConfigApiEnvironmentAndHostMappings,
-                            cacheExpirationTimeInMinutes: configSettings.CacheExpirationTimeInMinutes,
-                            cacheRefreshTimeInMinutes: configSettings.CacheRefreshTimeInMinutes,
-                            applicationName: configSettings.OverrideApplicationName
-                        );
+                    missingConfigs.Add(authAlias);
+                    continue;
                 }
 
-                if (string.IsNullOrEmpty(configSettings.AppSettingsFileName) == false)
+                var newRecord = new AuthenticationEndPointModel
                 {
-                    configurationBuilder = configurationBuilder.AddJsonFile(configSettings.AppSettingsFileName, optional: configSettings.IsAppSettingsFileOptional);
-                }
-            }
-            else
-            {
-                configurationBuilder = configurationBuilder.AddJsonFile("appsettings.json", optional: false);
+                    AuthenticateAsync = iAuthFunction.Value?.AuthenticateAsync,
+                    EndPointAlias = authAlias,
+                    EndPointSchemeAndHost = configAuth.SchemeAndHost,
+                    BeforeHttpRequestSendAsync = iAuthFunction.Value?.BeforeHttpRequestSendAsync,
+                    AfterHttpResponseRecivedAsync = iAuthFunction.Value?.AfterHttpResponseRecivedAsync,
+                    RetryCount = configAuth.RetryCount,
+                    RetryPeriod = configAuth.RetryPeriod
+                };
+
+                resultAuthorizationEndpoints.Add(newRecord);
             }
 
-            return configurationBuilder.Build();
+            if (missingConfigs.Count > 0)
+            {
+                throw new InvalidOperationException($"Can't find authorization endpoint configs for alias: {string.Join(", ", missingConfigs)}");
+            }
+
+            return resultAuthorizationEndpoints;
+        }
+
+        List<IndusoftAuthorizationEndPointParameters> GetAuthorizationEndPointsWithCheckForDuplicates()
+        {
+            var httpParameters = Configuration.GetSettingValueByKeyOrDefault<IndusoftHttpParameters>(ConfigurationStatic.IndusoftHttpConfigSectionKey, null);
+            if (httpParameters is null)
+                return new();
+
+            var duplicates = httpParameters.AuthorizationEndPoints
+                                           .GroupBy(p => p.Alias)
+                                           .Where(g => g.Count() > 1)
+                                           .Select(g => g.Key);
+
+            if (duplicates.Any())
+                throw new InvalidOperationException($"Имена псевдонимов '{string.Join("', '", duplicates)}' не уникальны. Проверьте содержимое секции '{ConfigurationStatic.IndusoftHttpConfigSectionKey}' файла конфигурации.");
+
+            return httpParameters.AuthorizationEndPoints;
         }
     }
 }

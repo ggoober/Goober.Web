@@ -8,16 +8,7 @@ namespace Goober.WebApi.FileExample
 {
     public class Startup : BaseStartup
     {
-        public Startup() : base(
-                configSettings:
-                    new Goober.Web.Models.BaseStartupConfigSettings
-                    {
-                        ConfigApiEnvironmentAndHostMappings = null
-                    })
-        {
-        }
-
-        protected override void ConfigurePipelineAfterExceptionsHandling(IApplicationBuilder app)
+        protected override void ConfigurePipelineAfterRouting(IApplicationBuilder app)
         {
         }
 
@@ -30,6 +21,10 @@ namespace Goober.WebApi.FileExample
         }
 
         protected override void MapControllerRoutes(IEndpointRouteBuilder endpoints)
+        {
+        }
+
+        protected override void ConfigurePipelineBeforeRouting(IApplicationBuilder app)
         {
         }
     }

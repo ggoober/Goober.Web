@@ -1,0 +1,85 @@
+<div class="i-container i-mt-2">
+    <form class="i-form-container">
+        <div class="i-form-group i-container-header">
+            <h2>Заголовок формы</h2>
+        </div>
+        <i-tab-form [tabs]="tabs" [activeForm]="true" [(tabs)]="tabs">
+            <div class="i-form-group" *ngIf="tabs[0].selected">
+                <div class="i-input-group">
+                    <label class="i-label" for="input_1">Label#1</label>
+                    <input class="i-input" type="text" id="input_1">
+                </div>
+                <div class="i-input-group">
+                    <label class="i-label" for="input_2">Label-very-very-long#2</label>
+                    <textarea class="i-textarea" id="input_2"></textarea>
+                </div>
+                <div class="i-input-group">
+                    <label class="i-label" for="input_3">Label-very-very-long#3</label>
+                    <textarea class="i-textarea" id="input_3"></textarea>
+                </div>
+            </div>
+            <div class="i-form-group" *ngIf="tabs[1].selected">
+                <div class="i-input-group">
+                    <label class="i-label" for="input_1">Label#1</label>
+                    <input class="i-input" type="text" id="input_1">
+                </div>
+                <div class="i-input-group">
+                    <label class="i-label" for="input_3">Label-very-very-long#3</label>
+                    <textarea class="i-textarea" id="input_3"></textarea>
+                </div>
+                <div class="i-form-group buttons-group">
+                    <button type="button" class="i-button" tabindex="0">
+                        <span class="i-button-label">Обычная кнопка</span>
+                    </button>
+                    <button type="button" class="i-button" tabindex="0">
+                        <i class="i-button-icon fas fa-angle-left"></i>
+                        <span class="i-button-label">Иконка слева</span>
+                    </button>
+                    <button type="button" class="i-button" tabindex="0">
+                        <span class="i-button-label">Иконка справа</span>
+                        <i class="i-button-icon fas fa-angle-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="i-form-group" *ngIf="tabs[2].selected">
+                <div class="i-input-group">
+                    <label class="i-label" for="input_2">Label-very-very-long#2</label>
+                    <textarea class="i-textarea" id="input_2"></textarea>
+                </div>
+                <div class="i-input-group">
+                    <label class="i-label" for="input_3">Label-very-very-long#3</label>
+                    <textarea class="i-textarea" id="input_3"></textarea>
+                </div>
+            </div>
+            <div class="i-form-group" *ngIf="tabs[3].selected">
+                <div class="i-form-group">
+                    <button type="button" class="i-button">
+                        <i class="i-button-icon fas fa-plus"></i>
+                    </button>
+                    <button type="button" class="i-button">
+                        <i class="i-button-icon fas fa-pen-square"></i>
+                    </button>
+                    <button type="button" class="i-button">
+                        <i class="i-button-icon fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        </i-tab-form>
+        <div class="i-form-group">
+            <button class="i-button" type="button" tabindex="0" (click)="clickOverlay()">
+                <i class="i-button-icon fas fa-window-maximize"></i>
+                <span class="i-button-label">Показать overlay</span>
+            </button>
+        </div>
+        <div class="i-form-group buttons-group">
+            <button class="i-button" type="button" tabindex="0">
+                <i class="i-button-icon fas fa-reply-all"></i>
+                <span class="i-button-label">Отмена</span>
+            </button>
+            <button type="button" class="i-button" tabindex="0">
+                <i class="i-button-icon fas fa-save"></i>
+                <span class="i-button-label">Сохранить</span>
+            </button>
+        </div>
+    </form>
+</div>

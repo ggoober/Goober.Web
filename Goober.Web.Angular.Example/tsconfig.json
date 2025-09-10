@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "skipLibCheck": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "lib": [ "dom", "esnext", "dom.Iterable"]
+    }
+}

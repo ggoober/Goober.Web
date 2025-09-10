@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.Dsl;
 using AutoFixture.Kernel;
-using Goober.Core.Services;
+using Goober.Base.Services;
 using Goober.Http;
 using Goober.Http.Services;
 using Goober.Http.Utils;
@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +34,7 @@ namespace Goober.Tests
     {
         #region fields
 
-        private static readonly JsonSerializerSettings _jsonSerializerSettings = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings DefaultJsonSerializerSettings = new JsonSerializerSettings
         {
             Converters = new List<JsonConverter>
             {
@@ -50,6 +51,7 @@ namespace Goober.Tests
         };
 
         private const string ApplicationJsonContentTypeValue = "application/json";
+        private readonly JsonSerializerSettings _jsonSerializerSettings = DefaultJsonSerializerSettings;
 
         #endregion
 
@@ -78,6 +80,11 @@ namespace Goober.Tests
             AssemblyNames = assemblyNames.ToList();
         }
 
+        public SystemUnderTest(List<string> assemblyNames, JsonSerializerSettings jsonSerializerSettings): this(assemblyNames)
+        {
+            _jsonSerializerSettings = jsonSerializerSettings;
+        }
+
         public void Init<TStartup>()
             where TStartup : class
         {
@@ -95,12 +102,16 @@ namespace Goober.Tests
             return ServiceProvider.GetRequiredService<TService>();
         }
 
-        public void Init<TStartup>(Action<IServiceCollection> configureServices, Action<IServiceCollection> configureTestServices)
+        public void Init<TStartup>(
+            Action<IServiceCollection> configureServices,
+            Action<IServiceCollection> configureTestServices,
+            Action<IConfigurationBuilder> configureConfigBuilder = null)
             where TStartup : class
         {
             SessionKey = Guid.NewGuid().ToString();
 
             var server = new TestServer(WebHost.CreateDefaultBuilder()
+                    .ConfigureAppConfiguration(builder => configureConfigBuilder?.Invoke(builder))
                     .UseStartup<TStartup>()
                     .ConfigureServices(configureServices)
                     .ConfigureTestServices(services =>
@@ -215,9 +226,14 @@ namespace Goober.Tests
         public async Task<TResponse> ExecutePostAsync<TResponse, TRequest>(
             string urlPath,
             TRequest request,
-            long maxResponseContentLength = 300*1024)
+            List<KeyValuePair<string, string>> headerValues = null,
+            long maxResponseContentLength = 300 * 1024)
         {
-            var strRet = await ExecutePostReturnStringAsync<TRequest>(urlPath, request, maxResponseContentLength);
+            var strRet = await ExecutePostReturnStringAsync<TRequest>(
+                urlPath: urlPath,
+                request: request,
+                headerValues: headerValues,
+                maxResponseContentLength: maxResponseContentLength);
 
             if (string.IsNullOrEmpty(strRet) == true)
                 return default;
@@ -228,10 +244,13 @@ namespace Goober.Tests
         public async Task<TResponse> ExecutePostFormDataAsync<TResponse>(
             string urlPath,
             List<KeyValuePair<string, string>> formData,
+            List<KeyValuePair<string, string>> headerValues = null,
             long maxResponseContentLength = 300 * 1024)
         {
-            var strRet = await ExecutePostFormDataReturnStringAsync(urlPath: urlPath,
+            var strRet = await ExecutePostFormDataReturnStringAsync(
+                urlPath: urlPath,
                 formData: formData,
+                headerValues: headerValues,
                 maxResponseContentLength: maxResponseContentLength);
 
             if (string.IsNullOrEmpty(strRet) == true)
@@ -243,11 +262,16 @@ namespace Goober.Tests
         public async Task<string> ExecutePostFormDataReturnStringAsync(
             string urlPath,
             List<KeyValuePair<string, string>> formData,
+            List<KeyValuePair<string, string>> headerValues = null,
             long maxResponseContentLength = 300 * 1024)
         {
             var content = new FormUrlEncodedContent(formData);
 
-            var httpResponse = await HttpClient.PostAsync(requestUri: urlPath, content: content);
+            SetHeaders(content, headerValues);
+
+            var httpResponse = await HttpClient.PostAsync(
+                requestUri: urlPath,
+                content: content);
 
             if (httpResponse.StatusCode == HttpStatusCode.NoContent)
             {
@@ -264,11 +288,14 @@ namespace Goober.Tests
         public async Task<string> ExecutePostReturnStringAsync<TRequest>(
             string urlPath,
             TRequest request,
-            long maxResponseContentLength = 300*1024)
+            List<KeyValuePair<string, string>> headerValues = null,
+            long maxResponseContentLength = 300 * 1024)
         {
             var strJsonContent = Serialize(request, _jsonSerializerSettings);
 
             var content = new StringContent(content: strJsonContent, Encoding.UTF8, mediaType: ApplicationJsonContentTypeValue);
+
+            SetHeaders(content, headerValues);
 
             var httpResponse = await HttpClient.PostAsync(requestUri: urlPath, content: content);
 
@@ -286,9 +313,12 @@ namespace Goober.Tests
 
         public async Task<TResponse> ExecuteGetAsync<TResponse>(string urlPath,
             List<KeyValuePair<string, string>> queryParameters,
-            long maxResponseContentLength = 300*1024)
+            long maxResponseContentLength = 300 * 1024)
         {
-            var strRes = await ExecuteGetStringAsync(urlPath, queryParameters, maxResponseContentLength);
+            var strRes = await ExecuteGetStringAsync(
+                urlPath: urlPath,
+                queryParameters: queryParameters,
+                maxResponseContentLength: maxResponseContentLength);
 
             if (string.IsNullOrEmpty(strRes) == true)
                 return default;
@@ -297,8 +327,8 @@ namespace Goober.Tests
         }
 
         public async Task<string> ExecuteGetStringAsync(
-            string urlPath, 
-            List<KeyValuePair<string, string>> queryParameters, 
+            string urlPath,
+            List<KeyValuePair<string, string>> queryParameters,
             long maxResponseContentLength = 300 * 1024)
         {
             var urlPathWithQueryParameters = HttpUtils.BuildUrlWithQueryParameters(urlWithoutQueryParameters: urlPath, queryParameters: queryParameters);
@@ -318,7 +348,7 @@ namespace Goober.Tests
         }
 
         #endregion
-        
+
         #region private mocks and setups
 
         private void MockLogger(IServiceCollection services)
@@ -507,6 +537,17 @@ namespace Goober.Tests
         private string Serialize(object value, JsonSerializerSettings serializerSettings)
         {
             return JsonConvert.SerializeObject(value, serializerSettings);
+        }
+
+        private void SetHeaders(HttpContent content, List<KeyValuePair<string, string>> headers)
+        {
+            if (headers is null)
+                return;
+
+            foreach (var header in headers)
+            {
+                content.Headers.Add(header.Key, header.Value);
+            }
         }
 
         #endregion

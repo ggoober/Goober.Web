@@ -1,0 +1,44 @@
+<div>{{ title }}</div>
+ 
+
+<i-accordion [collapsing]="true">
+    <i-accordion-item title="привет">
+        <ng-template i-accordion-content>
+            <p>Очень важная скрытая информация</p>
+        </ng-template>
+    </i-accordion-item>
+    <i-accordion-item title="Заголовок аккордеона 2" *ngIf="showItem">
+        <ng-template i-accordion-content>
+            <p>Очень важная скрытая информация</p>
+        </ng-template>
+    </i-accordion-item>
+    <i-accordion-item title="Заголовок аккордеона 3">
+        <ng-template i-accordion-header let-toggle="toggle">
+            <div class="flex">
+                <button style="height: 20px;" (click)="toggle();test()">Нажми на меня</button>
+                <p> Заголовок из итема не передался, но можно добавить <span style="font-weight: bold;">любой другой контент</span></p>
+            </div>
+        </ng-template>
+        <ng-template i-accordion-content>
+            <span>Ку-ку</span>
+        </ng-template>
+    </i-accordion-item>
+    <i-accordion-item title="Заголовок аккордеона 4" headerClass="break-header" [disabled]="true" [expanded]="true">
+        <ng-template i-accordion-header let-toggle="toggle">
+            <div class="flex">
+                <p> Заголовок расположили перед <span style="color: lightcoral">кнопкой</span></p>
+                <button style="height: 20px;" (click)="toggle()">Нажми на меня</button>
+            </div>
+            <br>
+            <div>
+                Дополнительная запись
+            </div>
+        </ng-template>
+        <ng-template i-accordion-content>
+            <span>Ку-ку</span>
+        </ng-template>
+    </i-accordion-item>
+</i-accordion>
+
+
+<button (click)="showItem = !showItem">{{showItem}}</button>

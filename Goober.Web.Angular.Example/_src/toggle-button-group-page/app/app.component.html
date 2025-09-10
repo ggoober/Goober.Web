@@ -1,0 +1,41 @@
+<div class="i-container i-mt-2">
+    <h3>Одиночный выбор</h3>
+    <h4>Базовое поведение</h4>
+    <i-toggle-button-group (change)="app_toggle1($event)">
+        <i-toggle-button label="State1" value="State1"></i-toggle-button>
+        <i-toggle-button label="State2" value="State2"></i-toggle-button>
+        <i-toggle-button label="State3" value="State3"></i-toggle-button>
+        <i-toggle-button label="State4" value="State4"></i-toggle-button>
+    </i-toggle-button-group>
+    <p>Выбранное состояние: {{state1}}</p>
+    <h4>Предустановленный выбор</h4>
+    <i-toggle-button-group (change)="app_toggle2($event)">
+        <i-toggle-button label="State1" value="State1" [selected]=true></i-toggle-button>
+        <i-toggle-button label="State2" value="State2"></i-toggle-button>
+        <i-toggle-button label="State3" value="State3"></i-toggle-button>
+    </i-toggle-button-group>
+    <p>Выбранное состояние: {{state2}}</p>
+    <h4>Недоступное значение</h4>
+    <i-toggle-button-group (change)="app_toggle3($event)">
+        <i-toggle-button label="State1" value="State1"></i-toggle-button>
+        <i-toggle-button label="State2" value="State2" [isDisabled]=true></i-toggle-button>
+        <i-toggle-button label="State3" value="State3"></i-toggle-button>
+    </i-toggle-button-group>
+    <p>Выбранное состояние: {{state3}}</p>
+    <h4>Недоступная группа</h4>
+    <i-toggle-button-group [isDisabled]=true>
+        <i-toggle-button label="State1" value="State1"></i-toggle-button>
+        <i-toggle-button label="State2" value="State2"></i-toggle-button>
+        <i-toggle-button label="State3" value="State3"></i-toggle-button>
+    </i-toggle-button-group>
+    <p>Выбранное состояние:</p>
+    <h3>Множественный выбор</h3>
+    <i-toggle-button-group [multiple]=true (change)="app_toggle4($event)">
+        <i-toggle-button label="Bold" value="Bold"></i-toggle-button>
+        <i-toggle-button label="Italic" value="Italic"></i-toggle-button>
+        <i-toggle-button label="Underline" value="Underline"></i-toggle-button>
+    </i-toggle-button-group>
+    <p [ngClass]="{'style1': style1, 'style2': style2, 'style3': style3}">
+        Съешь же еще этих мягких франузских булок да выпей чаю.
+    </p>
+</div>

@@ -1,5 +1,5 @@
 {
-  "name": "goober.web.vuejs.example",
+  "name": "indusoft.web.vuejs.example",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -14,9 +14,9 @@
     "vue-multiselect": "2.1.6"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.2",
+    "@babel/core": "^7.16.0",
     "@babel/polyfill": "^7.12.1",
-    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-env": "^7.16.4",
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",

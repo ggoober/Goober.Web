@@ -1,20 +1,19 @@
-﻿using Goober.WebApi.Example.Models;
-using Goober.Core.Extensions;
+﻿using Goober.WebApi.Example.Api.Models;
+using Goober.Base.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Goober.WebApi.Example.Services;
+using Goober.WebApi.Example.Api.Services;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Goober.Core.Attributes;
+using Goober.Base.Attributes;
 
 namespace Goober.WebApi.Example.Controllers.Api
 {
-    [Route("api/example")]
     [ApiController]
     public class ExampleApiController : ControllerBase
     {
@@ -47,7 +46,7 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// <param name="intList"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("get")]
+        [Route("/api/example/get")]
         public GetResponse Get([FromQuery] int intValue,
             [FromQuery] float floatValue,
             [FromQuery] string stringValue,
@@ -74,11 +73,9 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("post-json")]
+        [Route("/api/example/post-json")]
         public PostJsonResponse PostJson([FromBody] PostJsonRequest request)
         {
-            _logger.LogError("json readed");
-
             return new PostJsonResponse { Message = $"post-json {request.Serialize()}" };
         }
 
@@ -88,7 +85,7 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("post-json-through-http")]
+        [Route("/api/example/post-json-through-http")]
         public async Task<PostJsonResponse> PostJsonExecuteThroughHttpAsync([FromBody] PostJsonRequest request)
         {
             request.RequiredNotNull(nameof(request));
@@ -97,8 +94,6 @@ namespace Goober.WebApi.Example.Controllers.Api
             request.RequiredArgumentNotDefaultValue(() => request.IntValue);
             request.RequiredArgumentListNotEmpty(() => request.IntList);
             request.RequiredArgumentNotDefaultValue(() => request.FloatValue);
-
-            _logger.LogError("json readed");
 
             return await _exampleHttpService.PostJsonAsync(request);
         }
@@ -109,27 +104,23 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// <param name="request"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("post-json-through-http-twice")]
+        [Route("/api/example/post-json-through-http-twice")]
         public async Task<PostJsonResponse> PostJsonExecuteThroughHttpTwiceAsync([FromBody] PostJsonRequest request)
         {
-            _logger.LogError("json readed");
-
             return await _exampleHttpService.PostJsonExecuteThroughHttpAsync(request);
         }
 
         [HttpPost]
-        [Route("post-form")]
+        [Route("/api/example/post-form")]
         public string PostForm([FromForm] int id, [FromForm] string name, [FromForm] DateTime date)
         {
             name.RequiredArgumentNotNull(nameof(name));
-
-            _logger.LogError("form readed");
 
             return $"{new { id, name, date }.Serialize()}";
         }
 
         [HttpPost]
-        [Route("post-file")]
+        [Route("/api/example/post-file")]
         [RequestSizeLimit(MaxFileSize)]
         [RequestFormLimits(MultipartBodyLengthLimit = MaxFileSize)]
         public async Task<PostFileResult> PostFileAsync([FromHeader] int id, [FromHeader] string name, IFormFile file)
@@ -151,8 +142,6 @@ namespace Goober.WebApi.Example.Controllers.Api
                 await file.CopyToAsync(fileStream);
             }
 
-            _logger.LogError("file saved");
-
             return new PostFileResult { FileName = file.FileName };
         }
 
@@ -160,15 +149,15 @@ namespace Goober.WebApi.Example.Controllers.Api
         /// hidden method
         /// </summary>
         [HttpGet]
-        [Route("hidden")]
-        [SwaggerHideInDocsAttribute("test")]
+        [Route("/api/example/hidden")]
+        [SwaggerHideInDocsAttribute]
         public void HiddenMethod()
         {
             _logger.LogError("hidden method executed");
         }
 
         [HttpPost]
-        [Route("throw-exception")]
+        [Route("/api/example/throw-exception")]
         public void ThrowException([FromBody] LogRequest request)
         {
             request.RequiredArgumentNotNull(nameof(request));
@@ -195,7 +184,7 @@ namespace Goober.WebApi.Example.Controllers.Api
         }
 
         [HttpGet]
-        [Route("get-configs")]
+        [Route("/api/example/get-configs")]
         public string GetConfigs()
         {
             var section = _configuration.GetSection("Doc");

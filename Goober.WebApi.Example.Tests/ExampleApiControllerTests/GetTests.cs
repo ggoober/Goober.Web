@@ -1,6 +1,6 @@
-﻿using Goober.Core.Extensions;
+﻿using Goober.Base.Extensions;
 using Goober.Tests;
-using Goober.WebApi.Example.Models;
+using Goober.WebApi.Example.Api.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

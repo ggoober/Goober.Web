@@ -1,0 +1,92 @@
+<section class="card">
+  <h1>По умолчанию</h1>
+  <div class="i-input-group">
+    <label class="i-label" for="default">Поддерживаются знаки минус, экспонента(е), запятая и точка</label>
+    <i-numeric-input labelForId="default"
+                     [(value)]="defaultValue"
+                     [hasError]="false">
+    </i-numeric-input>
+    <p>Введенное число: {{defaultValue}}</p>
+  </div>
+  <h1>Целые числа</h1>
+  <div class="i-input-group">
+    <label class="i-label" for="integer">Только целые положительные или отрицательные числа</label>
+    <i-numeric-input labelForId="integer"
+                     placeholder="Введите целое число"
+                     [forbidDecimal]="true"
+                     [(value)]="integerValue">
+    </i-numeric-input>
+  </div>
+  <h1>Неотрицательные числа</h1>
+  <div class="i-input-group">
+    <label class="i-label" for="negative">Только неотрицательные целые или дробные числа</label>
+    <i-numeric-input labelForId="negative"
+                     placeholder="Введите неотрицательное число"
+                     [forbidNegative]="true"
+                     [(value)]="nonNegativeValue">
+    </i-numeric-input>
+  </div>
+  <h1>Формат без экспоненты</h1>
+  <div class="i-input-group">
+    <label class="i-label" for="exp">Ввод чисел без знака e(E)</label>
+    <i-numeric-input labelForId="exp"
+                     [forbidExponent]="true"
+                     [(value)]="nonExpValue">
+    </i-numeric-input>
+  </div>
+  <h1>Настраиваемые min, max, step</h1>
+  <div class="i-input-group">
+    <label class="i-label" for="minMax">Минимальное -10, максимальное 10, шаг 2</label>
+    <i-numeric-input labelForId="minMax"
+                     minValue="-10"
+                     maxValue="10"
+                     stepValue="2"
+                     [(value)]="minMaxValue">
+    </i-numeric-input>
+  </div>
+  <h1>Диапазон чисел</h1>
+  <div class="i-input-group">
+    <label class="i-label" for="range">Диапазон числовых значений</label>
+    <i-numeric-input labelForId="range"
+                     [range]="true"
+                     [hasError]="[false, false]"
+                     [(value)]="rangeValue">
+    </i-numeric-input>
+  </div>
+  <p>Введенное число: {{rangeValue}}</p>
+  <h2>Недоуступное состояние (disabled)</h2>
+  <div class="i-input-group">
+    <label class="i-label" for="disabled">Числовое значение</label>
+    <i-numeric-input labelForId="disabled"
+                     [hasError]="true"
+                     [isDisabled]="true"
+                     [(value)]="disabledValue">
+    </i-numeric-input>
+  </div>
+  <h2>Только для чтения (readonly)</h2>
+  <div class="i-input-group">
+    <label class="i-label" for="readonly">Числовое значение</label>
+    <i-numeric-input labelForId="readonly"
+                     [isReadonly]="true"
+                     [(value)]="readonlyValue">
+    </i-numeric-input>
+  </div>
+  <h1>Работа в реактивной форме</h1>
+  <form [formGroup]="appFormGroup" novalidate>
+    <div class="i-input-group">
+      <label class="i-label" for="formgroup">Числовое значение</label>
+      <i-numeric-input labelForId="formgroup"
+                       formControlName="numericInput">
+      </i-numeric-input>
+    </div>
+    <p>Введенное число: {{appFormGroup.value.numericInput}}</p>
+    <div class="i-input-group">
+      <label class="i-label" for="formgroup2">Диапазон числовых значений</label>
+      <i-numeric-input labelForId="formgroup2"
+                       [range]="true"
+                       formControlName="numericInput2">
+      </i-numeric-input>
+    </div>
+    <p>Введенный диапазон: {{appFormGroup.value.numericInput2}}</p>
+  </form>
+</section>

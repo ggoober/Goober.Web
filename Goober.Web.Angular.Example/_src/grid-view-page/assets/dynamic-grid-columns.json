@@ -1,0 +1,39 @@
+[
+    {
+        "field": "name",
+        "headerName": "Имя",
+        "filter": {
+            "filterType": "FilterTypes.Text",
+            "showFloatingFilter": true
+        },
+        "headerCheckboxSelectionEnable": true,
+        "checkboxSelectionEnable": true,
+        "valueFormatter": "'Префикс_' + data.name"
+    },
+    {
+        "field": "number",
+        "headerName": "Цена",
+        "filter": {
+            "filterType": "Number"
+        },
+        "valueFormat": "00.00",
+        "valueFormatLocale": "ru"
+    },
+    {
+        "field": "creationDate",
+        "headerName": "Дата",
+        "filter": {
+            "filterType": 3,
+            "showFloatingFilter": true
+        },
+        "valueFormat": "dd.MM.yyyy HH:mm:ss",
+        "valueFormatLocale": "ru"
+    },
+    {
+        "field": "isValid",
+        "headerName": "Валидно",
+        "filter": {
+            "filterType": 4
+        }
+    }
+]

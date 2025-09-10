@@ -1,0 +1,47 @@
+<div class="i-container i-mt-2">
+    <section class="card">
+        <h2>Одиночный выбор</h2>
+        <multiselect [loadedElements]="app_loadedElements_full"
+                     [MSSettings]="app_MSSettings1">
+        </multiselect>
+    </section>
+    <section class="card">
+        <h4>Группировка элементов</h4>
+        <multiselect [loadedElements]="app_loadedElements_full"
+                     [MSSettings]="app_MSSettings2">
+        </multiselect>
+    </section>
+    <section class="card">
+        <h4>Использование картинки в списке</h4>
+        <multiselect [loadedElements]="app_loadedElements_full"
+                     [MSSettings]="app_MSSettings3">
+        </multiselect>
+    </section>
+    <section class="card">
+        <h2>Множественный выбор</h2>
+        <multiselect [loadedElements]="app_loadedElements_full"
+                     [MSSettings]="app_MSSettings4">
+        </multiselect>
+    </section>
+    <section class="card">
+        <h4>Группировка элементов и выбор группы</h4>
+        <multiselect [loadedElements]="app_loadedElements_full"
+                     [MSSettings]="app_MSSettings5">
+        </multiselect>
+    </section>
+    <section class="card">
+        <h4>Добавление нового элемента</h4>
+        <multiselect [loadedElements]="app_loadedElements_full"
+                     [MSSettings]="app_MSSettings6">
+        </multiselect>
+    </section>
+    <section class="card footer">
+        <h2>Динамическая загрузка</h2>
+        <h5>Загружено элементов: {{app_loadedElements_lazy.length}}</h5>
+        <multiselect [loadedElements]="app_loadedElements_lazy"
+                     [MSSettings]="app_MSSettings7"
+                     (addNewElements)="app_addNewElements()"
+                     (searchForNewElements)="app_searchForNewElements($event)">
+        </multiselect>
+    </section>
+</div>

@@ -1,0 +1,38 @@
+<div class="i-container i-mt-2">
+    <form class="i-form-container">
+        <div class="i-form-group i-container-header">
+            <h2>Вызов функций из внешнего js-файла</h2>
+        </div>
+    </form>
+    <div class="i-form-group">
+        <ul>
+            <li>
+                <label>Начальное значение:</label> {{startValue}}
+            </li>
+            <li>
+                <label>Конечное значение:</label> {{endValue}}
+            </li>
+        </ul>
+    </div>
+    <div class="i-form-group buttons-group">
+        <ul>
+            <li>
+                <button class="i-button i-mt-2" type="button" (click)="callHelloFunc()">Вызов hello func</button>
+            </li>
+            <li>
+                <button class="i-button i-mt-2" type="button" (click)="callComponentFunc()">Вызов component func</button>
+            </li>
+            <li>
+                <button class="i-button i-mt-2" type="button" (click)="callChangeFunc()">Вызов values outside</button>
+            </li>
+            <li>
+                <button class="i-button i-mt-2" type="button" (click)="callComponentFuncWithoutRef()">Вызов component func without ref</button>
+            </li>
+            <li>
+                <button class="i-button i-mt-2" type="button" (click)="callComponentService()">Вызов component service</button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+

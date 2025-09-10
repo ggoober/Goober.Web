@@ -1,4 +1,4 @@
-﻿using Goober.WebJobs.Abstractions;
+﻿using Indusoft.WebJobs.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Goober.WebJobs
+namespace Indusoft.WebJobs
 {
     public abstract class IterateJob<TIterateJobService> : BaseJob, IIterateJobMetrics
         where TIterateJobService : IIterateJobService
@@ -55,28 +55,31 @@ namespace Goober.WebJobs
             base.SetWorkerIsStarted();
         }
 
-        protected override void SetWorkerIsStopped()
+        protected override void SetWorkerIsStopped(string reason)
         {
-            base.SetWorkerIsStopped();
+            base.SetWorkerIsStopped(reason);
         }
+
+
+        protected override async Task ExecuteAwake() 
+        {}
 
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (cancellationToken.IsCancellationRequested == false)
             {
+	            Logger.LogTrace($"Job: {ClassName}. Starting iteration");
                 await ExecuteIterationSafetyAsync(cancellationToken);
 
                 await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds, cancellationToken: cancellationToken);
             }
-
-            SetWorkerIsStopped();
         }
 
         protected override void LoadJobParametersFromConfiguration(string configSectionKey)
         {
             base.LoadJobParametersFromConfiguration(configSectionKey);
 
-            TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
+            TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? (int?)Parameters.IterationDelayTimespan?.TotalMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
         }
 
         #endregion
@@ -92,7 +95,7 @@ namespace Goober.WebJobs
             {
                 using (var scope = ServiceScopeFactory.CreateScope())
                 {
-                    var service = scope.ServiceProvider.GetRequiredService<TIterateJobService>() as IIterateJobService;
+                    var service = scope.ServiceProvider.GetRequiredService<TIterateJobService>();
                     if (service == null)
                         throw new InvalidOperationException($"Can't resolve service {typeof(TIterateJobService).Name} for worker {ClassName} iterate ({IteratedCount})");
 

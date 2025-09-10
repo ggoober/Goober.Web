@@ -1,88 +1,91 @@
-﻿using Goober.WebJobs.Abstractions;
-using Goober.WebJobs.Models;
+﻿using Indusoft.Base.Attributes;
+using Indusoft.Web.Filters;
+using Indusoft.WebJobs.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Indusoft.WebJobs.Api.Models;
+using Microsoft.Extensions.Logging;
 
-namespace Goober.WebJobs.Controllers
+namespace Indusoft.WebJobs.Controllers
 {
     public class JobApiController : Controller
     {
         private readonly IServiceProvider _serviceProvider;
+        private readonly ILogger<JobApiController> _logger;
 
-        public JobApiController(IServiceProvider serviceProvider)
+        public JobApiController(IServiceProvider serviceProvider, ILogger<JobApiController> logger)
         {
-            _serviceProvider = serviceProvider;
+	        _serviceProvider = serviceProvider;
+	        _logger = logger;
         }
 
         [HttpGet]
         [Route("api/job/ping")]
+        [SwaggerHideInDocs]
+        [BasicAuth]
         public virtual PingApiResponse Ping()
         {
+	        var sw = new Stopwatch();
+            sw.Start();
             var ret = new PingApiResponse();
-
             var jobs = _serviceProvider.GetServices<IHostedService>();
-
-            foreach (var iJob in jobs)
+            foreach (var baseJob in jobs.OfType<BaseJob>())
             {
-                var baseJob = iJob as BaseJob;
-                if (baseJob == null)
-                    continue;
-
-                var newWorker = new WebJobPingModel
+	            var newWorker = new WebJobPingModel
                 {
                     IsEnabled = baseJob.IsEnabled,
                     IsRunning = baseJob.IsRunning,
+                    IsExecuting = baseJob.IsExecuting,
+                    State = baseJob.State,
+                    ReasonForState = baseJob.ReasonForState,
+                    PriorityCompareType = baseJob.PriorityCompareType,
+                    ClusterNodePriority = baseJob.ClusterNodePriority,
+                    IsCluster = baseJob.IsCluster,
                     Name = baseJob.GetType().FullName,
                     ServiceUpTimeInSec = Convert.ToInt64(baseJob.ServiceUpTime.TotalSeconds),
-                    IsCancellationRequested = baseJob.IsCancellationRequested
+                    IsCancellationRequested = baseJob.IsCancellationRequested,
+                    RetryDelayInMilliseconds = baseJob.RetryDelayInMilliseconds
                 };
 
-                var iterateJob = baseJob as IIterateJobMetrics;
-
-                if (iterateJob != null)
+                switch (baseJob)
                 {
-                    var iterateMetrics = new IterateJobPingModel
-                    {
-                        TaskDelayInMilliseconds = iterateJob.TaskDelayInMilliseconds,
-                        IteratedCount = iterateJob.IteratedCount,
-                        SuccessIteratedCount = iterateJob.SuccessIteratedCount,
-                        LastIterationStartDateTime = iterateJob.LastIterationStartDateTime,
-                        LastIterationFinishDateTime = iterateJob.LastIterationFinishDateTime,
-                        LastIterationDurationInMilliseconds = iterateJob.LastIterationDurationInMilliseconds,
-                        AvgIterationDurationInMilliseconds = iterateJob.AvgIterationDurationInMilliseconds
-                    };
-                    newWorker.Iterate = iterateMetrics;
-                }
-
-                var listJob = baseJob as IListJobMetrics;
-                if (listJob != null)
-                {
-                    var listMetrics = new ListJobPingModel
-                    {
-                        MaxDegreeOfParallelism = listJob.MaxDegreeOfParallelism,
-                        UseSemaphoreParallelism = listJob.UseSemaphoreParallelism,
-                        LastIterationListItemsCount = listJob.LastIterationListItemsCount,
-                        LastIterationListItemsProcessedCount = listJob.LastIterationListItemsProcessedCount,
-                        LastIterationListItemsSuccessProcessedCount = listJob.LastIterationListItemsSuccessProcessedCount,
-                        LastIterationListItemsLastDurationInMilliseconds = listJob.LastIterationListItemsLastDurationInMilliseconds,
-                        LastIterationListItemsAvgDurationInMilliseconds = listJob.LastIterationListItemsAvgDurationInMilliseconds,
-                        LastIterationListItemExecuteDateTime = listJob.LastIterationListItemExecuteDateTime
-                    };
-                    newWorker.List = listMetrics;
+	                case ISimpleJobMetrics simpleJob:
+	                {
+		                var simpleMetrics = GetSimpleJobPingModel(simpleJob);
+		                newWorker.Simple = simpleMetrics;
+		                break;
+	                }
+	                case IIterateJobMetrics iterateJob:
+	                {
+		                var iterateMetrics = GetIterateJobPingModel(iterateJob);
+		                newWorker.Iterate = iterateMetrics;
+		                break;
+                        }
+	                case IListJobMetrics listJob:
+	                {
+		                var listMetrics = GetListJobPingModel(listJob);
+		                newWorker.List = listMetrics;
+                            break;
+	                }
                 }
 
                 ret.Services.Add(newWorker);
             }
-
+            sw.Stop();
+            _logger.LogDebug($"PingApi elapsed {sw.ElapsedMilliseconds}ms");
             return ret;
         }
 
         [HttpPost]
         [Route("api/job/start")]
+        [SwaggerHideInDocs]
+        [BasicAuth]
         public virtual async Task<StartJobResponse> StartJobAsync([FromBody]StartJobRequest request)
         {
             if (request == null)
@@ -98,13 +101,15 @@ namespace Goober.WebJobs.Controllers
 
             var isStarted = job.IsRunning == false;
 
-            await job.StartAsync(new CancellationToken());
+            await job.ForceStartAsync(new CancellationToken());
 
             return new StartJobResponse { IsStarted = isStarted };
         }
 
         [HttpPost]
         [Route("api/job/stop")]
+        [SwaggerHideInDocs]
+        [BasicAuth]
         public virtual async Task<StopJobResponse> StopJobAsync([FromBody]StopJobRequest request)
         {
             if (request == null)
@@ -127,20 +132,57 @@ namespace Goober.WebJobs.Controllers
 
         private BaseJob GetJobByClassName(string name)
         {
-            var hostedServices = _serviceProvider.GetServices<IHostedService>();
+            return _serviceProvider
+	            .GetServices<IHostedService>()
+                .OfType<BaseJob>()
+	            .FirstOrDefault(job => job.ClassName == name);
+        }
 
-            foreach (var iHostedService in hostedServices)
+        private static ListJobPingModel GetListJobPingModel(IListJobMetrics listJob)
+        {
+            var listMetrics = new ListJobPingModel
             {
-                var baseJob = iHostedService as BaseJob;
+                MaxDegreeOfParallelism = listJob.MaxDegreeOfParallelism,
+                UseSemaphoreParallelism = listJob.UseSemaphoreParallelism,
+                LastIterationListItemsCount = listJob.LastIterationListItemsCount,
+                LastIterationListItemsProcessedCount = listJob.LastIterationListItemsProcessedCount,
+                LastIterationListItemsSuccessProcessedCount = listJob.LastIterationListItemsSuccessProcessedCount,
+                LastIterationListItemsLastDurationInMilliseconds = listJob.LastIterationListItemsLastDurationInMilliseconds,
+                LastIterationListItemsAvgDurationInMilliseconds = listJob.LastIterationListItemsAvgDurationInMilliseconds,
+                LastIterationListItemExecuteDateTime = listJob.LastIterationListItemExecuteDateTime,
+                ListItemProcessingRetryCount = listJob.ListItemProcessingRetryCount
+            };
+            return listMetrics;
+        }
 
-                if (baseJob == null)
-                    continue;
+        private static IterateJobPingModel GetIterateJobPingModel(IIterateJobMetrics iterateJob)
+        {
+            var iterateMetrics = new IterateJobPingModel
+            {
+                TaskDelayInMilliseconds = iterateJob.TaskDelayInMilliseconds,
+                IteratedCount = iterateJob.IteratedCount,
+                SuccessIteratedCount = iterateJob.SuccessIteratedCount,
+                LastIterationStartDateTime = iterateJob.LastIterationStartDateTime,
+                LastIterationFinishDateTime = iterateJob.LastIterationFinishDateTime,
+                LastIterationDurationInMilliseconds = iterateJob.LastIterationDurationInMilliseconds,
+                AvgIterationDurationInMilliseconds = iterateJob.AvgIterationDurationInMilliseconds
+            };
+            return iterateMetrics;
+        }
 
-                if (baseJob.ClassName == name)
-                    return baseJob;
-            }
-
-            return null;
+        private static SimpleJobPingModel GetSimpleJobPingModel(ISimpleJobMetrics simpleJob)
+        {
+            var simpleMetrics = new SimpleJobPingModel
+            {
+                ExecutedCount = simpleJob.ExecutedCount,
+                LastExecutedStartDateTime = simpleJob.LastExecutedStartDateTime,
+                AvgExecutedDurationInMilliseconds = simpleJob.AvgExecutedDurationInMilliseconds,
+                ErrorExecutedCount = simpleJob.ErrorExecutedCount,
+                LastExecutedDurationInMilliseconds = simpleJob.LastExecutedDurationInMilliseconds,
+                LastExecutedFinishDateTime = simpleJob.LastExecutedFinishDateTime,
+                SuccessExecutedCount = simpleJob.SuccessExecutedCount,
+            };
+            return simpleMetrics;
         }
     }
 }

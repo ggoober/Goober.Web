@@ -1,0 +1,53 @@
+<div class="i-container i-mt-2">
+    <div class="i-row">
+        <div class="i-mb-2 i-mt-2">
+            <date-time-picker [headerText]="'Одиночный выбор'"
+                              [placeholder]="'Введите дату и время'">
+            </date-time-picker>
+        </div>
+    </div>
+    <div class="i-row">
+        <div class="i-mb-2 i-mt-2">
+            <date-time-picker [headerText]="'Выбор нескольких дат'"
+                              [selectionMode]="SelectionModeType.Multiple"
+                              [maxDateCount]="3"
+                              [isTimeEnabled]="false"
+                              [placeholder]="'Выберите несколько дат'">
+            </date-time-picker>
+        </div>
+    </div>
+    <div class="i-row">
+        <div class="i-mb-2 i-mt-2" id="container_3">
+            <date-time-picker [headerText]="'Выбор диапазона дат'"
+                              [selectionMode]="SelectionModeType.Range"
+                              [isTimeEnabled]="false"
+                              [numberOfMonths]="3"
+                              [appendTo]="'container_3'"
+                              [isTimeEnabled]="false"
+                              [placeholder]="'Выберите диапазон'">
+            </date-time-picker>
+        </div>
+    </div>
+    <div class="i-row">
+        <div class="i-mb-2 i-mt-2" id="container_3">
+            <date-time-picker [headerText]="'Выбор только даты'"
+                              [viewFormat]="'day'"
+                              [timeOnly]="false"
+                              [appendTo]="'container_4'"
+                              [isTimeEnabled]="false"
+                              [placeholder]="'Введите дату'">
+            </date-time-picker>
+        </div>
+    </div>
+    <div class="i-row">
+        <div class="i-mb-2 i-mt-2" id="container_3">
+            <date-time-picker [headerText]="'Выбор только времени'"
+                              [timeOnly]="true"
+                              [appendTo]="'container_5'"
+                              [hourFormat]="'12'"
+                              [placeholder]="'Введите время'">
+            </date-time-picker>
+        </div>
+    </div>
+</div>
+

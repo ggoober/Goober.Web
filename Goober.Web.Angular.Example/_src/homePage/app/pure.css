@@ -1,0 +1,11 @@
+body{
+    background-color: blue;
+}
+
+.mysuperclasshere{
+    color:blue;
+    font-size: 100px;
+
+    background-image: url("./cat.jpg");
+}
+

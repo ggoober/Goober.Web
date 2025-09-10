@@ -1,0 +1,42 @@
+<br/>
+
+<div class="i-mt-2 i-pl-2 i-pr-2">
+    <h2>С динамической загрузкой колонок</h2>
+    <grid-view [options]="gridOptions"
+                [rowDatas]="rowData"
+                [totalRows]="totalRows"
+                [pageSize]="pageSize"
+                [pageSizeList]="pageSizeList"
+                [columnDefinition]="columnDefinitionsDynamic"
+                [loading]="loading"
+                (gridViewInitialised)="onGridViewInitialised($event)"
+                (paginationParametersChanged)="onPaginationChanged($event)"
+                (gridViewFilterChanged)="onGridViewFilterChanged($event)"
+                (gridViewSortChanged)="onGridViewSortChanged($event)">
+    </grid-view>
+</div>
+
+<div class="i-mt-2 i-pl-2 i-pr-2">
+    <h2>Колонки via html</h2>
+    <grid-view [options]="gridOptions"
+               [rowDatas]="rowData"
+               [totalRows]="totalRows"
+               [pageSize]="pageSize"
+               [pageSizeList]="pageSizeList"
+               [loading]="loading"
+               (gridViewInitialised)="onGridViewInitialised($event)"
+               (paginationParametersChanged)="onPaginationChanged($event)"
+               (gridViewFilterChanged)="onGridViewFilterChanged($event)"
+               (gridViewSortChanged)="onGridViewSortChanged($event)"
+               [additionalComponents]="myComponents"
+               >
+
+
+        <grid-column [columnDefenition]="firstColumn"></grid-column>
+        <grid-column headerName='Через field без фильтров'>
+            <grid-column field='creationDate' cellRenderer="customCellButton"></grid-column>
+            <grid-column field="isValid"></grid-column>
+        </grid-column>
+        <grid-column [columnDefenition]="thirdColumn"></grid-column>
+    </grid-view>
+</div>

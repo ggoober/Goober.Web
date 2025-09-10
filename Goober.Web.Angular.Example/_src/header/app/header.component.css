@@ -1,0 +1,7 @@
+﻿/*Добавлен z-index, чтобы раположить i-base выше дерева навигации
+и убрать тень от него на i-base.*/
+
+i-base {
+    position: relative;
+    z-index: 1;
+}

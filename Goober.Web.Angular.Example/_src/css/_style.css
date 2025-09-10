@@ -1,0 +1,29 @@
+:root {
+    --side-containers-width: 24vw;
+    --side-containers-mobile: 10vw;
+    --side-container-middle: 40vw;
+    --sm-icon-size: 15px;
+    --md-icon-size: 30px;
+    --lg-icon-size: 40px;
+    --primary-grey-light: #F2F4F8;
+    --primary-grey: #D5D7DC;
+    --primary-grey-dark: #B8BBC0;
+    --primary-grey-darker: #676A70;
+    --header-title-color: #333538;
+    --header-breadcrumbs-color: #333538;
+    --header-icons-color: #333538;
+    --header-icons-hover: #D5D7DC;
+    --header-background: #F2F4F8;
+    --header-border: #D5D7DC;
+    --submenu-font-color: #333538;
+    --submenu-font-active: #F2F4F8;
+    --submenu-font-hover: #F2F4F8;
+    --submenu-background: red;
+    --submenu-item-active: #676A70;
+    --submenu-item-hover: #676A70;
+    --dropdown-background: #F2F4F8;
+    --dropdown-item-hover: #D5D7DC;
+    --mobile-menu-background: #D5D7DC;
+    --body-font-color: #333538;
+    --min-offset: 5px;
+}

@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<Authors>Indusoft</Authors>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>6.0.0.2</Version>
+		<PackageReleaseNotes>Создана SimpleJob. Добавлен флаг запуска webjob на старте.</PackageReleaseNotes>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Indusoft.DependencyInjection" Version="2.6.0.2" />
+		<PackageReference Include="Indusoft.Http.Abstractions" Version="2.6.0.11" />
+		<!--<PackageReference Include="Indusoft.Http.Abstractions" Version="2.0.0.13" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Indusoft.Web.Abstractions\Indusoft.Web.Abstractions.csproj" />
+	</ItemGroup>
+
+</Project>

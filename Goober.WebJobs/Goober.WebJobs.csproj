@@ -1,22 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>Goober.WebJobs</AssemblyName>
-    <RootNamespace>Goober.WebJobs</RootNamespace>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.1.0.2</Version>
-    <Authors>Goober</Authors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<AssemblyName>Indusoft.WebJobs</AssemblyName>
+		<RootNamespace>Indusoft.WebJobs</RootNamespace>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>6.0.0.7</Version>
+		<Authors>Indusoft</Authors>
+		<PackageId>Indusoft.WebJobs</PackageId>
+		<Product>Indusoft.WebJobs</Product>
+		<PackageReleaseNotes>Создана SimpleJob. Добавлен флаг запуска webjob на старте.</PackageReleaseNotes>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="Polly" Version="7.2.2" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="Polly" Version="7.2.3" />
+		<PackageReference Include="System.Threading.Tasks.Dataflow" Version="6.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Indusoft.WebJobs.Api\Indusoft.WebJobs.Api.csproj" />
+		<ProjectReference Include="..\Indusoft.Web.Abstractions\Indusoft.Web.Abstractions.csproj" />
+	</ItemGroup>
 
 </Project>

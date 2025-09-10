@@ -1,4 +1,4 @@
-namespace Goober.Web.VueJs.Example
+namespace Indusoft.Web.VueJs.Example
 {
     public class Program
     {

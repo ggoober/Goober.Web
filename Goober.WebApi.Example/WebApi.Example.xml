@@ -4,7 +4,7 @@
         <name>Goober.WebApi.Example</name>
     </assembly>
     <members>
-        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.Get(System.Int32,System.Single,System.String,System.DateTime,Goober.WebApi.Example.Models.ExampleEnum,System.Collections.Generic.List{System.Int32})">
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.Get(System.Int32,System.Single,System.String,System.DateTime,Goober.WebApi.Example.Api.Models.ExampleEnum,System.Collections.Generic.List{System.Int32})">
             <summary>
             Get api method
             </summary>
@@ -16,21 +16,21 @@
             <param name="intList"></param>
             <returns></returns>
         </member>
-        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJson(Goober.WebApi.Example.Models.PostJsonRequest)">
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJson(Goober.WebApi.Example.Api.Models.PostJsonRequest)">
             <summary>
             Post json api method
             </summary>
             <param name="request"></param>
             <returns></returns>
         </member>
-        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJsonExecuteThroughHttpAsync(Goober.WebApi.Example.Models.PostJsonRequest)">
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJsonExecuteThroughHttpAsync(Goober.WebApi.Example.Api.Models.PostJsonRequest)">
             <summary>
             Post json api method
             </summary>
             <param name="request"></param>
             <returns></returns>
         </member>
-        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJsonExecuteThroughHttpTwiceAsync(Goober.WebApi.Example.Models.PostJsonRequest)">
+        <member name="M:Goober.WebApi.Example.Controllers.Api.ExampleApiController.PostJsonExecuteThroughHttpTwiceAsync(Goober.WebApi.Example.Api.Models.PostJsonRequest)">
             <summary>
             Post json api method
             </summary>

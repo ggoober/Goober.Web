@@ -1,0 +1,18 @@
+.sample_list{
+    height: 30px;
+    width: 100px;
+    text-align: center;
+    background-color: hotpink;
+    border: 1px solid grey;
+    margin: 5px;
+    line-height: 30px;
+    cursor: pointer;
+}
+
+.flexConteiner{
+    display:flex;
+    align-content:center;
+    justify-content:center;
+    margin-top:30px;
+}
+

@@ -1,0 +1,11 @@
+.buttonContainer {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 10px;
+}
+.buttonContainer:first-child {
+    margin-top: 10px;
+}

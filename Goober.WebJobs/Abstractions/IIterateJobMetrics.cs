@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Goober.WebJobs.Abstractions
+namespace Indusoft.WebJobs.Abstractions
 {
     public interface IIterateJobMetrics
     {

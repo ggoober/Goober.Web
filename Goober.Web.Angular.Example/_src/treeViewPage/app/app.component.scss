@@ -1,0 +1,13 @@
+.fix_margin {
+    margin-bottom: 20px;
+}
+
+.container-box {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    background: var(--n100);
+}
+

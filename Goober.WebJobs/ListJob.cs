@@ -1,4 +1,4 @@
-﻿using Goober.WebJobs.Abstractions;
+﻿using Indusoft.WebJobs.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -10,8 +10,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
-namespace Goober.WebJobs
+namespace Indusoft.WebJobs
 {
     public abstract class ListJob<TItem, TListJobService> : BaseJob, IListJobMetrics, IIterateJobMetrics
         where TListJobService : IListJobService<TItem>
@@ -21,8 +22,6 @@ namespace Goober.WebJobs
         private long _sumIterationsDurationInMilliseconds;
 
         private long _lastIterationListItemsSumDurationInMilliseconds;
-
-        private AsyncRetryPolicy _defaultRetryPolicyAsync;
 
         #endregion
 
@@ -65,6 +64,10 @@ namespace Goober.WebJobs
 
         public long? LastIterationListItemsCount { get; private set; }
 
+        public ushort ListItemProcessingRetryCount { get; set; }
+
+        public int RetryDelayInMilliseconds { get; set; }
+
         private long _lastIterationListItemExecuteDateTimeInBinnary;
         public DateTime? LastIterationListItemExecuteDateTime
         {
@@ -106,32 +109,38 @@ namespace Goober.WebJobs
 
         #region BaseJob methods
 
+        protected override async Task ExecuteAwake()
+        {
+            using (var scope = ServiceScopeFactory.CreateScope())
+            {
+                var service = scope.ServiceProvider.GetRequiredService<TListJobService>() as IListJobService<TItem>;
+                if (service == null)
+                    throw new InvalidOperationException($"{ClassName} error resolve service: {typeof(TListJobService).Name}");
+
+                await service.ExecuteAwakeAsync();
+            }
+        }
+
         protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             while (cancellationToken.IsCancellationRequested == false)
             {
                 await ExecuteIterationSafetyAsync(cancellationToken);
 
-                await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds);
+                await Task.Delay(millisecondsDelay: TaskDelayInMilliseconds, cancellationToken);
             }
-
-            SetWorkerIsStopped();
         }
 
         protected override void LoadJobParametersFromConfiguration(string configSectionKey)
         {
             base.LoadJobParametersFromConfiguration(configSectionKey);
 
-            TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
+            TaskDelayInMilliseconds = Parameters.IterationDelayInMilliseconds ?? (int?)Parameters.IterationDelayTimespan?.TotalMilliseconds ?? WebJobsGlossary.DefaultIterationDelayInMilliseconds;
             MaxDegreeOfParallelism = Parameters.ListMaxDegreeOfParallelism ?? WebJobsGlossary.DefaultListMaxDegreeOfParallelism;
             UseSemaphoreParallelism = Parameters.UseSemaphoreParallelism ?? false;
-
-            _defaultRetryPolicyAsync = Policy
-                .Handle<Exception>()
-                .WaitAndRetryAsync(
-                    retryCount: WebJobsGlossary.DefaultListItemProcessingRetryCount,
-                    sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(WebJobsGlossary.DefaultListItemProcessingRetryDelayInMilliseconds));
-        }
+            ListItemProcessingRetryCount = Parameters.ListItemProcessingRetryCount ?? WebJobsGlossary.DefaultListItemProcessingRetryCount;
+            RetryDelayInMilliseconds = Parameters.RetryDelayInMilliseconds ?? (int?)Parameters.RetryDelayTimespan?.TotalMilliseconds ?? WebJobsGlossary.DefaultRetryDelayInMilliseconds;
+    }
 
         #endregion
 
@@ -156,7 +165,7 @@ namespace Goober.WebJobs
                 }
                 else
                 {
-                    ProcessParallel(items: items, cancellationToken: cancellationToken);
+                    await ProcessParallelAsync(items: items, cancellationToken: cancellationToken);
                 }
 
                 SuccessIteratedCount++;
@@ -188,7 +197,7 @@ namespace Goober.WebJobs
             }
         }
 
-        private async Task<TItem> ExecuteItemMethodSafety(TItem item, CancellationToken cancellationToken, SemaphoreSlim semaphore = null)
+        private async Task<TItem> ExecuteItemMethodSafetyAsync(TItem item, CancellationToken cancellationToken, SemaphoreSlim semaphore = null)
         {
             Interlocked.Increment(ref _lastIterationListItemsProcessedCount);
             Interlocked.Exchange(ref _lastIterationListItemExecuteDateTimeInBinnary, DateTime.Now.ToBinary());
@@ -198,9 +207,18 @@ namespace Goober.WebJobs
 
             try
             {
-                await _defaultRetryPolicyAsync.ExecuteAsync(
-                                () => ExecuteProcessItemWithoutRetryPolicyAsync(item, cancellationToken)
-                            );
+                var policy = Policy.Handle<Exception>((exc) =>
+                    {
+                        this.Logger.LogError(exception: exc, message: $"{ClassName} fail to execute item: {JsonConvert.SerializeObject(item)}");
+                        return true;
+                    })
+                    .WaitAndRetryAsync(
+                        retryCount: ListItemProcessingRetryCount,
+                        sleepDurationProvider: retryAttempt => TimeSpan.FromMilliseconds(RetryDelayInMilliseconds));
+                
+                await policy.ExecuteAsync(
+                    () => ExecuteProcessItemWithoutRetryPolicyAsync(item, cancellationToken)
+                );
 
                 Interlocked.Increment(ref _lastIterationListItemsSuccessProcessedCount);
             }
@@ -236,16 +254,20 @@ namespace Goober.WebJobs
             }
         }
 
-        private void ProcessParallel(List<TItem> items, CancellationToken cancellationToken)
+        private async Task ProcessParallelAsync(List<TItem> items, CancellationToken cancellationToken)
         {
-            var query = items
-                .AsParallel()
-                .WithDegreeOfParallelism(MaxDegreeOfParallelism)
-                .WithCancellation(cancellationToken)
-                .Select(x => ExecuteItemMethodSafety(item: x,
-                                cancellationToken: cancellationToken));
+            var actionItemBlock = new ActionBlock<TItem>(
+                async x => await ExecuteItemMethodSafetyAsync(item: x, cancellationToken: cancellationToken)
+                    .ConfigureAwait(false), 
+                new ExecutionDataflowBlockOptions
+                {
+                    MaxDegreeOfParallelism = MaxDegreeOfParallelism,
+                    CancellationToken = cancellationToken
+                });
 
-            var res = query.ToList();
+            items.ForEach(item => actionItemBlock.Post(item));
+            actionItemBlock.Complete();
+            await actionItemBlock.Completion.ConfigureAwait(false);
         }
 
         private async Task ProcessListBySemaphoreAsync(List<TItem> items, CancellationToken cancellationToken)
@@ -263,7 +285,7 @@ namespace Goober.WebJobs
 
                     await semaphore.WaitAsync();
 
-                    var task = ExecuteItemMethodSafety(
+                    var task = ExecuteItemMethodSafetyAsync(
                             item: item,
                             semaphore: semaphore,
                             cancellationToken: cancellationToken);
@@ -280,9 +302,9 @@ namespace Goober.WebJobs
             base.SetWorkerIsStarted();
         }
 
-        protected override void SetWorkerIsStopped()
+        protected override void SetWorkerIsStopped(string reason)
         {
-            base.SetWorkerIsStopped();
+            base.SetWorkerIsStopped(reason);
         }
 
         private void ResetListMetrics()

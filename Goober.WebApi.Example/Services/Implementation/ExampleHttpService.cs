@@ -3,7 +3,6 @@ using Goober.Http.Services;
 using Goober.WebApi.Example.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Hosting;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -15,9 +14,8 @@ namespace Goober.WebApi.Example.Services.Implementation
 
         public ExampleHttpService(IConfiguration configuration, 
             IHttpJsonHelperService httpJsonHelperService, 
-            IHttpContextAccessor httpContextAccessor,
-            IHostEnvironment hostEnvironment) 
-            : base(configuration, httpJsonHelperService, httpContextAccessor, hostEnvironment)
+            IHttpContextAccessor httpContextAccessor) 
+            : base(configuration, httpJsonHelperService, httpContextAccessor)
         {
         }
 

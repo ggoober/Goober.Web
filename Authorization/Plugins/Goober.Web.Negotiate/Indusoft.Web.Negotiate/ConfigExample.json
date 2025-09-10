@@ -1,0 +1,39 @@
+﻿{
+  "Goober.Authorization": {
+    "Provider": "Negotiate",
+    "Negotiate": {
+      "Negotiate": {
+        "Enabled": true,
+        //"SchemeName": "Negotiate",
+        //"PersistKerberosCredentials": null,
+        //"PersistNtlmCredentials": null,
+        //"ClaimsIssuer": null,
+        //"ForwardDefault": null,
+        //"ForwardAuthenticate": null,
+        //"ForwardChallenge": null,
+        //"ForwardForbid": null,
+        //"ForwardSignIn": null,
+        //"ForwardSignOut": null,
+        // Секцию "LDAP" желательно оставлять выключенной, потому что встроенный механизм не пытается восстановить LDAP соединение при обрыве
+        // Если нужно получать клеймы для линукса, лучше воспользоваться LDAP из Goober.Web.LDAP.
+        "LDAP": {
+          "Enabled": false,
+          //"EnableLdapClaimResolution": null,
+          "Domain": "WIN2DOM.COM",
+          //"MachineAccountName": null,
+          //"MachineAccountPassword": null,
+          //"EncryptedMachineAccountPassword": null,
+          //"IgnoreNestedGroups": null,
+          //"ClaimsCacheSlidingExpiration": null,
+          //"ClaimsCacheAbsoluteExpiration": null,
+          //"ClaimsCacheSize": null,
+          "Connection": {
+            "ServerAdress": "192.168.56.2",
+            "UserName": "admin",
+            "EncryptedPassword": "ujCAWLeSdo1I3ixkJYmgiw=="
+          }
+        }
+      }
+    }
+  }
+}

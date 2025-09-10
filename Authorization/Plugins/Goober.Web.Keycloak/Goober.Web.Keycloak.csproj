@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>6.0.0.3</Version>
+    <PackageReleaseNotes>
+      Добавлено автоматическое обновление refresh-токена.
+      Исправлена ошибка вызова события AccessTokenRefreshed при неудачном обновлении.
+      При обновлении токенов исходный access_token заменен на преобразованный.
+      Добавлены параметры времени проверки токенов в конфигурацию.
+    </PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.29" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Goober.Standard\Goober.Base\Goober.Base.csproj" />
+    <ProjectReference Include="..\..\Goober.Web.Authorization\Goober.Web.Authorization.csproj" />
+  </ItemGroup>
+
+</Project>

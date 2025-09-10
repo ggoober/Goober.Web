@@ -1,0 +1,12 @@
+
+.container-height {
+    height: 700px;
+}
+
+:host::ng-deep .i-grid .ag-cell.selected {
+    background-color: #90ee90b3;
+}
+
+:host::ng-deep .i-grid .selectedRow .ag-cell {
+    background-color: #5bb6bdb3;
+}

@@ -1,10 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.1.0.2</Version>
+    <Version>6.10.0.27</Version>
     <Authors>Goober</Authors>
+    <PackageReleaseNotes>Добавлена возможность отключения Swagger в зависимости от значения параметра конфига</PackageReleaseNotes>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,21 +24,33 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Goober.Caching" Version="2.0.0.1" />
-    <PackageReference Include="Goober.Config.Api" Version="2.0.0.2" />
-    <PackageReference Include="Goober.Core" Version="2.0.1" />
-    <PackageReference Include="Goober.Http" Version="2.0.0.1" />
+    <PackageReference Include="Anemonis.AspNetCore.RequestDecompression" Version="1.11.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="6.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="NLog" Version="4.7.9" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.2" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="4.12.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.3" />
+    <PackageReference Include="NLog" Version="4.7.13" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="1.7.4" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.14.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="System.Management" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <InternalsVisibleTo Include="Goober.Web.LicenseControl.Tests" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="nlog-json.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Base\Goober.Base.csproj" />
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Caching\Goober.Caching.csproj" />
+    <ProjectReference Include="..\..\Goober.Standard\Goober.Http\Goober.Http.csproj" />
+    <ProjectReference Include="..\Goober.Web.Abstractions\Goober.Web.Abstractions.csproj" />
   </ItemGroup>
 
 </Project>

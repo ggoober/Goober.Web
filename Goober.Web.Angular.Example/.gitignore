@@ -1,0 +1,4 @@
+*.js.map
+/_src/**/*.js
+/wwwroot/assets/*
+package-lock.json

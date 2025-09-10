@@ -1,0 +1,29 @@
+﻿using Goober.Http;
+using Goober.Http.Services;
+using Goober.WebApi.Example.Api.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
+
+namespace Goober.WebApi.Example.Api.Services.Implementation
+{
+    class ExampleHttpService : BaseHttpService, IExampleHttpService
+    {
+        protected override string ApiSchemeAndHostConfigKey { get; set; } = "Example.Api.SchemeAndHost";
+
+        public ExampleHttpService(IConfiguration configuration, 
+            IHttpJsonHelperService httpJsonHelperService, 
+            IHttpContextAccessor httpContextAccessor) 
+            : base(configuration, httpJsonHelperService, httpContextAccessor)
+        {
+        }
+
+        public async Task<PostJsonResponse> PostJsonAsync(PostJsonRequest request, [CallerMemberName] string callerMemberName = null)
+            => await ExecutePostAsync<PostJsonResponse, PostJsonRequest>("api/example/post-json", request, callerMemberName: callerMemberName);
+
+        public async Task<PostJsonResponse> PostJsonExecuteThroughHttpAsync(PostJsonRequest request, [CallerMemberName] string callerMemberName = null)
+            => await ExecutePostAsync<PostJsonResponse, PostJsonRequest>("api/example/post-json-through-http", request, callerMemberName: callerMemberName);
+    }
+}

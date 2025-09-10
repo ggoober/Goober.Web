@@ -1,0 +1,61 @@
+﻿{
+  "Goober.Authorization": {
+    "Provider": "LDAP",
+    "LDAP": {
+      "Address": "192.168.56.2",
+      "Port": 389,
+      /*
+        * Общее имя пользователя (CN)
+        */
+      "UserName": "admin",
+      /*
+         * Зашифрованный пароль пользователя
+         */
+      "PasswordEncrypted": "ujCAWLeSdo1I3ixkJYmgiw==",
+      /*
+         * Компонент каталога отличительного имени пользователя (distinguishedName).
+         * Пример: CN=Users
+         */
+      "UsersCommonName": "CN=Users",
+      /*
+         *  Kомпонент домена отличительного имени пользователя (distinguishedName).
+         *  Пример: DC=dev,DC=test
+         */
+      "DomainComponent": "DC=win2dom,DC=com",
+      /*
+         *  Фильтр для поиска пользователя (опционально)
+         *  В фильтре параметр @userName заменеятся на фактическое имя пользователя 
+         *  Пример: "(&(objectCategory=person)(|(sAMAccountName=@userName)(userPrincipalName=@userName)))"         
+        */
+      "FilterSearchUser": "(&(objectCategory=person)(|(sAMAccountName=@userName)(userPrincipalName=@userName)))",
+      "Cookie": {
+        "Enabled": true,
+        //"SchemeName": "Cookies",
+        //"SlidingExpiration": true,
+        "LoginPath": "/LDAP/Login",
+        "LogoutPath": "/LDAP/Logout",
+        //"AccessDeniedPath": "/login",
+        //"ReturnUrlParameter": "ReturnUrl",
+        "ExpireTimeSpan": "02:00:00",
+        //"ClaimsIssuer": null,
+        //"ForwardDefault": null,
+        //"ForwardAuthenticate": null,
+        //"ForwardChallenge": null,
+        //"ForwardForbid": null,
+        //"ForwardSignIn": null,
+        //"ForwardSignOut": null,
+        "Cookie": {
+          //  "Name": null,
+          "Path": "/",
+          //  "Domain": null,
+          //  "HttpOnly": true,
+          "SameSite": 1,
+          //  "SecurePolicy": 0,
+          //  "Expiration": null,
+          //  "MaxAge": null,
+          "IsEssential": true
+        }
+      }
+    }
+  }
+}

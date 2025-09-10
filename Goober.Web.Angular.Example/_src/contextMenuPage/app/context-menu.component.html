@@ -1,0 +1,25 @@
+<div class="flexConteiner">
+    <div class="sample_list"
+         *ngFor="let data of exampleArr1"
+         addContextMenu
+         (contextmenu)="menuFirst.displayContextMenu($event); false">
+        {{data?.data}}
+    </div>
+    <div class="sample_list"
+         *ngFor="let data of exampleArr2"
+         addContextMenu
+         (contextmenu)="menuSecond.displayContextMenu($event); false">
+        {{data?.data}}
+    </div>
+</div>
+
+
+<i-context-menu #menuFirst
+                [contextMenuItems]="firstType"
+                (onContextMenuItemClick)="handleMenuItemClick($event)">
+</i-context-menu>
+
+<i-context-menu #menuSecond
+                [contextMenuItems]="secondType"
+                (onContextMenuItemClick)="handleMenuItemClick($event)">
+</i-context-menu>

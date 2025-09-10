@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
-using Goober.Core.Extensions;
+using Goober.Base.Extensions;
 using System.Threading.Tasks;
 
 namespace Goober.Web.ModelBinder

@@ -1,4 +1,4 @@
-﻿namespace Goober.Web.VueJs.Example.Models.Claims
+﻿namespace Indusoft.Web.VueJs.Example.Models.Claims
 {
     public class SearchClaimsSingleModel
     {

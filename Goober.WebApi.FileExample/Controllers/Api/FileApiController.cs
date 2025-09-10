@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using Goober.Core.Extensions;
+using Goober.Base.Extensions;
 using Microsoft.Extensions.Logging;
 using System.Net.Http;
 using Goober.Http.Utils;

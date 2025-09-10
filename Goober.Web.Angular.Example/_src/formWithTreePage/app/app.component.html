@@ -1,0 +1,172 @@
+<div class="i-tree-container active" id='tree'>
+    <tree-view [settings]="settingsSingle" [items]="dataSingle" (itemSelected)="itemSelected($event)" class="left-menu">
+    </tree-view>
+</div>
+
+<div class="i-scheme-space sm" id='scheme'>
+    <div class="i-button i-close-form" (click)="closeTree()">
+        <i class="fas fa-angle-double-left" *ngIf="treeOpen"></i>
+        <i class="fas fa-angle-double-right" *ngIf="!treeOpen"></i>
+    </div>
+    <form class="i-form-container">
+        <nav class="i-form-group i-tab-group active">
+            <div class="i-form-group i-container-header">
+                <h2>Форма 1</h2>
+            </div>
+            <input type="radio" name="tabs" id="tab1" checked />
+            <label class="tab-label tab1" for="tab1" tabindex="0" #tab1 (click)="chekTree(tab1)">Вкладка 1</label>
+            <input type="radio" name="tabs" id="tab2" />
+            <label class="tab-label tab2" for="tab2" tabindex="0" #tab2 (click)="chekTree(tab2)">Вкладка 2</label>
+            <input type="radio" name="tabs" id="tab3" />
+            <label class="tab-label tab3" for="tab3" tabindex="0" #tab3 (click)="chekTree(tab3)">Вкладка 3</label>
+            <input type="radio" name="tabs" id="tab4" />
+            <label class="tab-label tab4" for="tab4" tabindex="0" #tab4 (click)="chekTree(tab4)">Вкладка 4</label>
+            <input type="radio" name="tabs" id="tab5" />
+            <label class="tab-label tab5" for="tab5" tabindex="0" #tab5 (click)="chekTree(tab5)">Вкладка 5</label>
+            <div class="tab-content content1">
+                <div class="i-form-group">
+                    <div class="i-input-group">
+                        <label class="i-label" for="input_1">Текстовый инпут</label>
+                        <input class="i-input" type="text" id="input_1">
+                    </div>
+                    <div class="i-input-group">
+                        <label class="i-label" for="input_2">Текстовое поле</label>
+                        <textarea class="i-textarea" id="input_2"></textarea>
+                    </div>
+                    <div class="i-input-group">
+                        <label class="i-label" for="input_3">Текстовое поле с более длинным именем</label>
+                        <textarea class="i-textarea" id="input_3"></textarea>
+                    </div>
+                </div>
+                <div class="i-form-group buttons-group">
+                    <button type="button" class="i-button" tabindex="0">
+                        <span class="i-button-label">Обычная кнопка</span>
+                    </button>
+                    <button type="button" class="i-button" tabindex="0">
+                        <i class="i-button-icon fas fa-angle-left"></i>
+                        <span class="i-button-label">Иконка слева</span>
+                    </button>
+                    <button type="button" class="i-button" tabindex="0">
+                        <span class="i-button-label">Иконка справа</span>
+                        <i class="i-button-icon fas fa-angle-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="tab-content content2">
+                <div class="i-form-group">
+                    <button type="button" class="i-button">
+                        <i class="i-button-icon fas fa-plus"></i>
+                    </button>
+                    <button type="button" class="i-button">
+                        <i class="i-button-icon fas fa-pen-square"></i>
+                    </button>
+                    <button type="button" class="i-button">
+                        <i class="i-button-icon fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="tab-content content3">
+                <div class="i-settings-header">
+                    <i class="i-icon fas fa-cog"></i>
+                    <span>Настройки</span>
+                </div>
+                <div class="i-settings-group">
+                    <div class="i-checkbox-container">
+                        <input type="checkbox" class="i-checkbox-input" value="Checked" id="checkbox_1" name="checkbox" checked tabindex="0" />
+                        <label for="checkbox_1" class="i-checkbox-label">Применить настройку#1</label>
+                    </div>
+                    <div class="i-settings-groupheader">
+                        <span>Групповая настройка</span>
+                        <i class="i-icon fas fa-angle-down"></i>
+                    </div>
+                    <div class="i-form-group">
+                        <div class="i-row">
+                            <div class="i-col-6">
+                                <label for="checkbox_2" class="i-checkbox-container">
+                                    <input type="checkbox" class="i-checkbox-input" value="Unchecked" id="checkbox_2" name="checkbox" tabindex="0" />
+                                    <span class="i-checkbox-label">Применить настройку#2</span>
+                                </label>
+                                <label for="checkbox_6" class="i-checkbox-container">
+                                    <input type="checkbox" class="i-checkbox-input" value="Unchecked" id="checkbox_6" name="checkbox" tabindex="0" />
+                                    <span class="i-checkbox-label">Применить настройку#6</span>
+                                </label>
+                            </div>
+                            <div class="i-col-6">
+                                <label for="checkbox_3" class="i-checkbox-container">
+                                    <input type="checkbox" class="i-checkbox-input" value="Checked" id="checkbox_3" name="checkbox" tabindex="0" checked />
+                                    <span class="i-checkbox-label">Применить настройку#3</span>
+                                </label>
+                                <label for="checkbox_7" class="i-checkbox-container">
+                                    <input type="checkbox" class="i-checkbox-input" value="Unchecked" id="checkbox_7" name="checkbox" tabindex="0" checked disabled />
+                                    <span class="i-checkbox-label">Применить настройку#7</span>
+                                </label>
+                            </div>
+                            <div class="i-col-6">
+                                <label for="checkbox_4" class="i-checkbox-container">
+                                    <input type="checkbox" class="i-checkbox-input" value="Unchecked" id="checkbox_4" tabindex="0" name="checkbox" />
+                                    <span class="i-checkbox-label">Применить настройку#4</span>
+                                </label>
+                            </div>
+                            <div class="i-col-6">
+                                <label for="checkbox_5" class="i-checkbox-container">
+                                    <input type="checkbox" class="i-checkbox-input" value="Unchecked" id="checkbox_5" tabindex="0" name="checkbox" />
+                                    <span class="i-checkbox-label">Применить настройку#5</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-content content4">
+                Контент 4 формы 1
+            </div>
+            <div class="tab-content content5">
+                Контент 5 формы 1
+            </div>
+        </nav>
+
+        <nav class="i-form-group i-tab-group">
+            <div class="i-form-group i-container-header">
+                <h2>Форма 2</h2>
+            </div>
+            <input type="radio" name="tabs" id="tab6" />
+            <label class="tab-label tab6" for="tab6" tabindex="0" #tab6 (click)="chekTree(tab6)">Вкладка 6</label>
+            <input type="radio" name="tabs" id="tab7" />
+            <label class="tab-label tab7" for="tab7" tabindex="0" #tab7 (click)="chekTree(tab7)">Вкладка 7</label>
+            <input type="radio" name="tabs" id="tab8" />
+            <label class="tab-label tab8" for="tab8" tabindex="0" #tab8 (click)="chekTree(tab8)">Вкладка 8</label>
+            <input type="radio" name="tabs" id="tab9" />
+            <label class="tab-label tab9" for="tab9" tabindex="0" #tab9 (click)="chekTree(tab9)">Вкладка 9</label>
+
+            <div class="tab-content content6">
+                Контент 1 формы 2
+            </div>
+            <div class="tab-content content7">
+                Контент 2 формы 2
+            </div>
+            <div class="tab-content content8">
+                Контент 3 формы 2
+            </div>
+            <div class="tab-content content9">
+                Контент 4 формы 2
+            </div>
+        </nav>
+
+        <div class="i-form-group">
+            <button class="i-button" type="button" tabindex="0" (click)="clickOverlay()">
+                <i class="i-button-icon fas fa-window-maximize"></i>
+                <span class="i-button-label">Всплывающее окно</span>
+            </button>
+        </div>
+        <div class="i-form-group buttons-group">
+            <button class="i-button" type="button" tabindex="0">
+                <i class="i-button-icon fas fa-reply-all"></i>
+                <span class="i-button-label">Отмена</span>
+            </button>
+            <button type="button" class="i-button" tabindex="0">
+                <i class="i-button-icon fas fa-save"></i>
+                <span class="i-button-label">Сохранить</span>
+            </button>
+        </div>
+    </form>
+</div>

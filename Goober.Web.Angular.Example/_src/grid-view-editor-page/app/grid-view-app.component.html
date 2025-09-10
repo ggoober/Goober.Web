@@ -1,0 +1,23 @@
+<br />
+
+<div class="i-mt-2 i-pl-2 i-pr-2">
+    <h2>Кликни дважды на текст</h2>
+    <grid-view [treeData]="true"
+               [options]="options"
+               [rowDatas]="rowData"
+               [columnDefinition]="simpleColumnDefs"
+               [footerDeleteButton]="'Удалить'"
+               [additionalComponents]="inputByType"
+               (gridViewRowDataUpdated)="consoleLogger($event)"
+               (gridViewRowModelUpdated)="consoleLogger($event)"
+               (gridViewRowSelectionChanged)="onGridViewRowSelectionChanged($event)">
+    </grid-view>
+</div>
+<div class="i-mt-2 i-ml-2 i-button-group flex-start">
+    <button (click)="updList()">Расширение списка 1</button>
+    <p *ngIf="selectedRow">
+        <input type="text" [(ngModel)]="selectedRow.brand">
+    </p>
+</div>
+
+

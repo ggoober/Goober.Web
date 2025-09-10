@@ -1,0 +1,71 @@
+<h1 class="title">{{ title }}</h1>
+
+<section class="card">
+    <h1>По умолчанию</h1>
+    <div class="i-input-group">
+        <label class="i-label" for="color1">Выбор цвета</label>
+        <i-color-picker labelForId="color1"
+                        [(color)]="color1">
+        </i-color-picker>
+    </div>
+    <p>Выбранное значение цвета: {{color1}}</p>
+    <div [style.background-color]="color1">Изменение цвета блока</div>
+    <br />
+    <h1>Работа в реактивной форме</h1>
+    <form [formGroup]="appFormGroup">
+        <div class="i-input-group">
+            <label class="i-label" for="color5">Выбор цвета</label>
+            <i-color-picker labelForId="color5"
+                            formControlName="element">
+            </i-color-picker>
+        </div>
+    </form>
+    <p>Выбранное значение цвета: {{appFormGroup.value.element}}</p>
+    <div [style.background-color]="appFormGroup.value.element">Изменение цвета блока</div>
+    <br />
+    <h1>В разметке (inline)</h1>
+    <div class="i-input-group">
+        <label class="i-label" for="color2">Выбор цвета</label>
+        <i-color-picker labelForId="color2"
+                        [(color)]="color2"
+                        [inline]="true">
+        </i-color-picker>
+    </div>
+    <p>Выбранное значение цвета: {{color2}}</p>
+    <h1>Disabled</h1>
+    <div class="i-input-group">
+        <label class="i-label" for="color3">Выбор цвета</label>
+        <i-color-picker labelForId="color3"
+                        [(color)]="color3"
+                        [isDisabled]="true">
+        </i-color-picker>
+    </div>
+    <br />
+    <div class="i-input-group">
+        <label class="i-label" for="color3">В разметке</label>
+        <i-color-picker labelForId="color3"
+                        [(color)]="color3"
+                        [inline]="true"
+                        [isDisabled]="true">
+        </i-color-picker>
+    </div>
+    <br />
+    <h1>Readonly</h1>
+    <div class="i-input-group">
+        <label class="i-label" for="color4">Выбор цвета</label>
+        <i-color-picker labelForId="color4"
+                        [(color)]="color4"
+                        [isReadonly]="true">
+        </i-color-picker>
+    </div>
+    <br />
+    <div class="i-input-group">
+        <label class="i-label" for="color4">В разметке</label>
+        <i-color-picker labelForId="color4"
+                        [(color)]="color4"
+                        [inline]="true"
+                        [isReadonly]="true">
+        </i-color-picker>
+
+    </div>
+</section>

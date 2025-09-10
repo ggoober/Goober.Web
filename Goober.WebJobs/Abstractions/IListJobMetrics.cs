@@ -1,12 +1,14 @@
 ﻿using System;
 
-namespace Goober.WebJobs.Abstractions
+namespace Indusoft.WebJobs.Abstractions
 {
     public interface IListJobMetrics
     {
         ushort MaxDegreeOfParallelism { get; }
 
-        public bool UseSemaphoreParallelism { get; }
+        bool UseSemaphoreParallelism { get; }
+
+        ushort ListItemProcessingRetryCount { get; set; }
 
         long? LastIterationListItemsCount { get; }
 

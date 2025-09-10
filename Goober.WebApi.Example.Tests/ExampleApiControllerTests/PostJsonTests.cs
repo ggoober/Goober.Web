@@ -1,8 +1,6 @@
-﻿using AutoFixture;
-using Goober.Core.Extensions;
-using Goober.WebApi.Example.Models;
-using Goober.WebApi.Example.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Goober.Base.Extensions;
+using Goober.WebApi.Example.Api.Models;
+using Goober.WebApi.Example.Api.Services;
 using NSubstitute;
 using System;
 using System.Threading.Tasks;

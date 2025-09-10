@@ -1,0 +1,25 @@
+<br />
+
+<button class="i-button i-ml-2" (click)="onAddClicked()">Add item</button>
+<button class="i-button i-ml-2" (click)="onUpdateClicked()">Update item</button>
+<button class="i-button i-ml-2" (click)="onDeleteClicked()">Delete item</button>
+<button class="i-button i-ml-2" (click)="onClearClicked()">Clear DB</button>
+
+<button class="i-button i-ml-2" (click)="onDeleteDbClicked()">Delete DB</button>
+
+<br />
+<div class="i-mt-2 i-pl-2 i-pr-2">
+    <grid-view [options]="gridOptions"
+               [rowDatas]="rowData"
+               [totalRows]="totalRows"
+               [pageSize]="pageSize"
+               [pageSizeList]="pageSizeList"
+               [columnDefinition]="columnDefinitions"
+               [loading]="loading"
+               (gridViewInitialised)="onGridViewInitialised($event)"
+               (paginationParametersChanged)="onPaginationChanged($event)"
+               (gridViewFilterChanged)="onGridViewFilterChanged($event)"
+               (gridViewSortChanged)="onGridViewSortChanged($event)"
+               (gridViewRowSelectionChanged)="gridViewRowSelectionChanged($event)">
+    </grid-view>
+</div>

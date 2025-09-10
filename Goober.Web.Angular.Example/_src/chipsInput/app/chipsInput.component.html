@@ -1,0 +1,36 @@
+<div class="title" >{{ title }}</div>
+ 
+<div class="chipsContent">
+    <section class="card">
+        <h2>Simple chips input</h2>
+        <chips-input [placeholder]="'Введите тег'"
+                     (chipAdded)="onChipAddedSimple($event)"
+                     (chipRemoved)="onChipRemovedSimple($event)"
+                     (chipClicked)="onChipClickedSimple($event)">
+        </chips-input>
+    </section>
+    <section class="card">
+        <h2>Chips input with two-way binding</h2>
+        <chips-input [(chipValues)]="values"
+                     (chipAdded)="onChipAdded($event)"
+                     (chipRemoved)="onChipRemoved($event)"
+                     (chipClicked)="onChipClicked($event)"
+                     [isDragDropDisabled]="disableDragDrop">
+        </chips-input>
+        <br />
+        <button (click)="toggleDragDrop()">Toggle disable drag&drop</button>
+        <a>{{disableDragDrop}}</a>
+    </section>
+    <section class="card">
+        <h2>Chips input with objects binding</h2>
+        <chips-input [chipValues]="objectValues"
+                     [fieldToShow]="'name'"
+                     (chipAdded)="onChipAddedObj($event)"
+                     (chipRemoved)="onChipRemovedObj($event)"
+                     (chipClicked)="onChipClickedObj($event)">
+        </chips-input>
+    </section>
+</div>
+<div class="divConteiner">
+    <div class="inputContainer"></div>
+</div>

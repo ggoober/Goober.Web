@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Goober.WebJobs.Abstractions
+namespace Indusoft.WebJobs.Abstractions
 {
     public interface IBaseJobMetrics
     {
@@ -13,5 +13,7 @@ namespace Goober.WebJobs.Abstractions
         TimeSpan ServiceUpTime { get; }
 
         bool IsCancellationRequested { get; }
+
+        int RetryDelayInMilliseconds { get; set; }
     }
 }

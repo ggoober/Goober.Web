@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace Goober.Web.VueJs.Example.Controllers
+namespace Indusoft.Web.VueJs.Example.Controllers
 {
     public class UserController : Controller
     {

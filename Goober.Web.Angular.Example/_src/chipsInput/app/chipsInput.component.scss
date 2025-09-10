@@ -1,0 +1,16 @@
+body {
+}
+.title {
+    margin: 15px;
+    text-align:center;
+    font-size: 24px;
+    font-weight: bold;
+}
+.chipsContent {
+    display: flex;
+    flex-direction: column;
+    text-align:center;
+    justify-content:center;
+    max-width:800px;
+    margin:0px auto
+}

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
-using Goober.Core.Extensions;
+using Goober.Base.Extensions;
 
 namespace Goober.WebApi.Example.Tests.ExampleApiControllerTests
 {

@@ -1,0 +1,236 @@
+{
+    "functionalTools": {
+        "greeting": "Здраствуйте",
+        "topToolbar": [
+            {
+                "func": "searchControl",
+                "name": "Поиск",
+                "active": true,
+                "url": "#/search",
+                "icon": "fa-search"
+            },
+            {
+                "func": "subMenuControl",
+                "name": "Скрыть горизонатальное меню",
+                "altName": "Показать горизонтальное меню",
+                "active": true,
+                "icon": "fa-bars"
+            },
+            {
+                "func": "screenControl",
+                "name": "Полноэкранный режим",
+                "active": true,
+                "icon": "fa-expand"
+            },
+            {
+                "func": "soundControl",
+                "name": "Выключить звук приложения",
+                "altName": "Включить звук приложения",
+                "active": true,
+                "icon": "fa-volume-mute",
+                "altIcon": "fa-volume-up"
+            },
+            {
+                "func": "themeControl",
+                "name": "Тёмная тема",
+                "altName": "Светлая тема",
+                "active": true,
+                "icon": "fa-moon",
+                "altIcon": "fa-sun"
+            }
+        ],
+        "dropdownMenu": [
+            {
+                "func": "adminDashboard",
+                "name": "Панель администрирования",
+                "active": true,
+                "icon": "fa-desktop"
+            },
+            {
+                "func": "userSettings",
+                "name": "Настройки пользователя",
+                "active": true,
+                "url": "#/user",
+                "icon": "fa-user-cog"
+            },
+            {
+                "func": "logOut",
+                "name": "Завершить сеанс",
+                "active": true,
+                "url": "#/log-out",
+                "icon": "fa-sign-out-alt"
+            }
+        ]
+    },
+    "routerPath": [
+        {
+            "title": "Домашняя",
+            "url": "/"
+        },
+        {
+            "title": "Календарь",
+            "url": "/datetimepicker"
+        },
+        {
+            "title": "Мультиселект",
+            "url": "/multiselect"
+        },
+        {
+            "title": "Оверлей",
+            "url": "/overlay"
+        },
+        {
+            "title": "Прогресс-спиннер",
+            "url": "/progress"
+        },
+        {
+            "title": "Тост",
+            "url": "/toast"
+        },
+        {
+            "title": "Дерево",
+            "url": "/treeview"
+        },
+        {
+            "title": "Грид",
+            "url": "/gridview"
+        },
+        {
+            "title": "Подключение внешнего js",
+            "url": "/externaljs"
+        },
+        {
+            "title": "Форма",
+            "url": "/form"
+        },
+        {
+            "title": "Форма с деревом",
+            "url": "/formwithtree"
+        },
+        {
+            "title": "IndexedDB",
+            "url": "/indexeddbdemo"
+        },
+        {
+            "title": "DropdownButton",
+            "url": "/dropdownbutton"
+        },
+        {
+            "title": "Группа переключателей",
+            "url": "/togglebuttongroup"
+        },
+        {
+            "title": "Редактирование грида",
+            "url": "/gridvieweditor"
+        }
+    ],
+    "subMenuItems": [
+        {
+            "label": "Календарь",
+            "url": "/datetimepicker"
+        },
+        {
+            "label": "Выбор из списка",
+            "url": "/multiselect"
+        },
+        {
+            "label": "Оверлей",
+            "url": "/overlay"
+        },
+        {
+
+            "label": "Прогресс-спиннер",
+            "url": "/progress"
+        },
+        {
+            "label": "Тост",
+            "url": "/toast"
+        },
+        {
+            "label": "Дерево",
+            "url": "/treeview"
+        },
+        {
+            "label": "Грид",
+            "url": "/gridview"
+        },
+        {
+
+            "label": "Подключение внешнего js",
+            "url": "/externaljs"
+        },
+        {
+            "label": "Форма",
+            "url": "/form"
+        },
+        {
+            "label": "Форма с деревом",
+            "url": "/formwithtree"
+        },
+        {
+            "label": "IndexedDB",
+            "url": "/indexeddbdemo"
+        },
+        {
+            "label": "DropdownButton",
+            "url": "/dropdownbutton"
+        },
+        {
+            "label": "Группа переключателей",
+            "url": "/togglebuttongroup"
+        },
+        {
+            "label": "Редактирование грида",
+            "url": "/gridvieweditor"
+        },
+        {
+            "label": "Аккордеон",
+            "url": "/accordion"
+        },
+        {
+            "label": "Кнопки",
+            "url": "/basebutton"
+        },
+        {
+            "label": "Теги",
+            "url": "/chipsinput"
+        },
+        {
+            "label": "Выбор цвета",
+            "url": "/colorpicker"
+        },
+        {
+            "label": "Модальное окно",
+            "url": "/confirmdialog"
+        },
+        {
+            "label": "Выбор из иерархического списка",
+            "url": "/treeinput"
+        },
+        {
+            "label": "Переключатель",
+            "url": "/switch"
+        },
+        {
+            "label": "Поле ввода чисел",
+            "url": "/numericinput"
+        },
+        {
+            "label": "Контекстное меню",
+            "url": "/contextmenu"
+        },
+        {
+            "label": "Прокрутка вверх",
+            "url": "/scrollup"
+        },
+        {
+            "label": "Подсказка",
+            "url": "/tooltip"
+        }
+    ],
+    "logoData": {
+        "logoSrc": "/assets/img/logo.png",
+        "logoMiniSrc": "/assets/img/logo-small.png",
+        "logoHref": "/"
+    }
+}

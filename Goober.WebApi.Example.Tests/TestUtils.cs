@@ -9,7 +9,8 @@ namespace Goober.WebApi.Example.Tests
         public static SystemUnderTest GenerateSut()
         {
             var sut = new SystemUnderTest(new List<string> {
-                AssemblyUtils.GetAssemlbyName<Startup>()
+                AssemblyUtils.GetAssemlbyName<Startup>(),
+                AssemblyUtils.GetAssemlbyName<Goober.WebApi.Example.Api.Models.GetResponse>()
             });
 
             sut.Init<Startup>();

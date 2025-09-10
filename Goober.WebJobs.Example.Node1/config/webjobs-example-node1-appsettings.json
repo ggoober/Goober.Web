@@ -1,0 +1,101 @@
+﻿{
+	"Indusoft.BasicAuth.EncryptedPassword": "yXnoQSEpjldO+dSomh0aQw==",
+	"WebJobs": {
+		//"ClusterSettings": {
+		//	"SelfApiSchemeAndHost": "http://localhost:55501",
+
+		//	// Каждую из семи следующих настроек можно добавить в настройки отдельного узла (список Nodes)
+		//	// и они будут иметь преимущество перед общими настройками
+
+		//	// 1. AddressPort или NodePriority
+		//	"PriorityCompareType": "AddressPort",
+
+		//	// 2. Приоритет при PriorityCompareType = NodePriority (больше - приоритетнее)
+		//	"NodePriority": 0,
+
+		//	// 3. Задержка в состоянии ожидания
+		//	"WatchingDelayInMilliseconds": 10000,
+
+		//	// 4. Тайм-аут для пинга узлов в составе кластера
+		//	"PingTimeoutInMilliseconds": 20000,
+
+		//	// 5. Задержка перед повторной попыткой пинга узлов в составе кластера
+		//	"DelayBeforeRepeatPingApiInMilliseconds": 3000,
+
+		//	// 6. Окно выполнения без смены состояния
+		//	"MinimalExecutingFrameInMilliseconds": 20000,
+
+		//	// 7. Флаг остановки выполнения, если есть узел с более высоким приоритетом
+		//	// true - для задач, которые нежелательно прерывать
+		//	"IsStopExecuteIfLowerPriority": true,
+		//	"Nodes": [
+		//		{
+		//			"Description": "node-1",
+		//			"ApiSchemeAndHost": "http://localhost:55501"
+		//		},
+		//		{
+		//			"Description": "node-2",
+		//			"ApiSchemeAndHost": "http://localhost:55502"
+		//		},
+		//		{
+		//			"Description": "node-3",
+		//			"ApiSchemeAndHost": "http://localhost:55503"
+		//		}
+		//	]
+		//},
+		"Jobs": [
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 3000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob1",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 4000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob2",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 5000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob3",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 6000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob4",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 7000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob5",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 8000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob6",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 9000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob7",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 10000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.IterateExampleJob8",
+				"IsEnabled": false,
+				"IterationDelayInMilliseconds": 11000
+			},
+			{
+				"ClassName": "Indusoft.WebJobs.Example.Jobs.ListExampleJob",
+				"IsEnabled": true,
+				"IterationDelayInMilliseconds": 5000,
+				"ListMaxDegreeOfParallelism": 32,
+				"UseSemaphoreParallelism": false
+			}
+		]
+	}
+}

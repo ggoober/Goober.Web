@@ -1,0 +1,51 @@
+<div class="container">
+    <header>
+        <h1>Переключатель</h1>
+    </header>
+    <section class="card">
+        <h2>По умолчанию</h2>
+        <div class="i-input-group">
+            <label class="i-label" for="checked1">Wi-Fi</label>
+            <i-switch [(modelValue)]="checked1"
+                      inputId="checked1"></i-switch>
+        </div>
+    </section>
+    <section class="card">
+        <h2>Предустановленный выбор</h2>
+        <div class="i-input-group">
+            <label class="i-label" for="checked2">Bluetooth</label>
+            <i-switch [(modelValue)]="checked2"
+                      inputId="checked2"></i-switch>
+        </div>
+    </section>
+    <section class="card">
+        <h2>Только для чтения</h2>
+        <div class="i-input-group">
+            <label class="i-label">Mobile data</label>
+            <i-switch [(modelValue)]="checked3"
+                      [isReadonly]="true"></i-switch>
+        </div>
+    </section>
+    <section class="card">
+        <h2>Недоступно</h2>
+        <div class="i-input-group">
+            <label class="i-label">Airplane mode</label>
+            <i-switch [(modelValue)]="checked4"
+                      [isDisabled]="true"></i-switch>
+        </div>
+    </section>
+    <section class="card">
+        <h2>Пользовательские иконки</h2>
+        <div class="i-input-group">
+            <label class="i-label">Пользовательские иконки на переключателе</label>
+            <i-switch iconOffClass="fa fa-times"
+                      iconOnClass="fa fa-check"></i-switch>
+        </div>
+        <br />
+        <div class="i-input-group">
+            <label class="i-label">Пользовательские иконки на слайдере</label>
+            <i-switch iconSliderOffClass="fas fa-volume-off"
+                      iconSliderOnClass="fas fa-volume-up"></i-switch>
+        </div>
+    </section>
+</div>

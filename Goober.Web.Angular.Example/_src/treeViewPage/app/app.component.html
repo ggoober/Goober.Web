@@ -1,0 +1,9 @@
+<div class="container-box active">
+    <tree-view
+        [settings]="settingsSingle"
+        [items]="data" class="item-menu"
+        (treeWidthChanged)="treeWidth = $event; ref.detectChanges();"
+        [style.flex-basis.%]='treeWidth + paddingInPercent'>
+     >
+    </tree-view>
+</div>

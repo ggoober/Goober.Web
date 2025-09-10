@@ -3,67 +3,38 @@ using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Indusoft.WebJobs.Api.Extensions;
+using Indusoft.WebJobs.Api.Services;
+using Indusoft.WebJobs.Api.Services.Implementation;
+using Indusoft.WebJobs.Services;
+using Indusoft.WebJobs.Services.Implementation;
 
-namespace Goober.WebJobs.Extensions
+namespace Indusoft.WebJobs.Extensions
 {
-    public static class ServiceCollectionExtensions
-    {
-        public static void AddWebJobs<TAssemblyClassName>(this IServiceCollection services)
-        {
-            var assembly = typeof(TAssemblyClassName).Assembly;
+	public static class ServiceCollectionExtensions
+	{
+		public static void AddWebJobs<TAssemblyClassName>(this IServiceCollection services)
+		{
+			var jobTypes = typeof(TAssemblyClassName).Assembly.GetTypes()
+				.Where(type => type.IsClass && type.IsSubclassOf(typeof(BaseJob)));
 
-            var jobsTypes = new List<Type>();
-
-            foreach (var assemblyDefinedType in assembly.GetTypes())
-            {
-                if (assemblyDefinedType.IsClass == false)
-                {
-                    continue;
-                }
-
-                if (ContainsTypeInBaseTypes(type: assemblyDefinedType,
-                    searchingType: typeof(BaseJob)) == false)
-                {
-                    continue;
-                }
-
-                jobsTypes.Add(assemblyDefinedType);
-            }
-
-            foreach (var iJobType in jobsTypes)
-            {
-                if (services.Any(x => x.ImplementationType == iJobType
-                        && x.ServiceType == typeof(IHostedService)) == true)
-                {
-                    continue;
-                }
-
-                services.Add(new ServiceDescriptor(typeof(IHostedService), iJobType, ServiceLifetime.Singleton));
-            }
+			foreach (var type in jobTypes)
+			{
+				if (services.Any(x => x.ImplementationType == type
+				                      && x.ServiceType == typeof(IHostedService)))
+				{
+					continue;
+				}
+				services.Add(new ServiceDescriptor(typeof(IHostedService), type, ServiceLifetime.Singleton));
+			}
         }
 
-        private static bool ContainsTypeInBaseTypes(Type type, Type searchingType)
-        {
-            var baseType = type;
-
-            var maxIterations = 10;
-            var currentIteration = 0;
-
-            while (baseType != null)
-            {
-                if (baseType == searchingType)
-                    return true;
-
-                currentIteration++;
-                if (currentIteration > maxIterations)
-                {
-                    throw new InvalidOperationException($"currentIteration > {maxIterations}");
-                }
-
-                baseType = baseType.BaseType;
-            }
-
-            return false;
-        }
-    }
+		public static IServiceCollection ConfigureWebJobs(this IServiceCollection services)
+		{
+			services.AddWebJobsHttpApi();
+			services.AddScoped<ICookieHttpService, CookieHttpService>();
+			services.AddSingleton<IClusterInfoVisor, ClusterInfoVisor>();
+			return services;
+		}
+	}
 }
