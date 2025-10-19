@@ -52,7 +52,7 @@ namespace Goober.Web
                 {
                     logger.Debug("Run as web application");
                     webHost.Run();
-            }
+                }
             }
             catch (Exception ex)
             {
@@ -92,8 +92,8 @@ namespace Goober.Web
                 else
                 {
                     logger.Debug("Run as web application");
-                await webHost.RunAsync();
-            }
+                    await webHost.RunAsync();
+                }
             }
             catch (Exception ex)
             {
