@@ -2,20 +2,16 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<Authors>Indusoft</Authors>
+		<Authors>Goober</Authors>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>6.0.0.2</Version>
 		<PackageReleaseNotes>Создана SimpleJob. Добавлен флаг запуска webjob на старте.</PackageReleaseNotes>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Indusoft.DependencyInjection" Version="2.6.0.2" />
-		<PackageReference Include="Indusoft.Http.Abstractions" Version="2.6.0.11" />
-		<!--<PackageReference Include="Indusoft.Http.Abstractions" Version="2.0.0.13" />-->
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\Indusoft.Web.Abstractions\Indusoft.Web.Abstractions.csproj" />
+	  <ProjectReference Include="..\..\Goober.Standard\Goober.DependencyInjection\Goober.DependencyInjection.csproj" />
+	  <ProjectReference Include="..\..\Goober.Standard\Goober.Http.Abstractions\Goober.Http.Abstractions.csproj" />
+	  <ProjectReference Include="..\Goober.Web.Abstractions\Goober.Web.Abstractions.csproj" />
 	</ItemGroup>
 
 </Project>

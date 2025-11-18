@@ -2,13 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<AssemblyName>Indusoft.WebJobs</AssemblyName>
-		<RootNamespace>Indusoft.WebJobs</RootNamespace>
+		<AssemblyName>Goober.WebJobs</AssemblyName>
+		<RootNamespace>Goober.WebJobs</RootNamespace>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<Version>6.0.0.7</Version>
-		<Authors>Indusoft</Authors>
-		<PackageId>Indusoft.WebJobs</PackageId>
-		<Product>Indusoft.WebJobs</Product>
+		<Authors>Goober</Authors>
+		<PackageId>Goober.WebJobs</PackageId>
+		<Product>Goober.WebJobs</Product>
 		<PackageReleaseNotes>Создана SimpleJob. Добавлен флаг запуска webjob на старте.</PackageReleaseNotes>
 	</PropertyGroup>
 
@@ -24,8 +24,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Indusoft.WebJobs.Api\Indusoft.WebJobs.Api.csproj" />
-		<ProjectReference Include="..\Indusoft.Web.Abstractions\Indusoft.Web.Abstractions.csproj" />
+	  <ProjectReference Include="..\Goober.Web.Abstractions\Goober.Web.Abstractions.csproj" />
+	  <ProjectReference Include="..\Goober.WebJobs.Api\Goober.WebJobs.Api.csproj" />
 	</ItemGroup>
 
 </Project>

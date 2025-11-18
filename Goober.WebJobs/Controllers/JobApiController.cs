@@ -1,6 +1,6 @@
-﻿using Indusoft.Base.Attributes;
-using Indusoft.Web.Filters;
-using Indusoft.WebJobs.Abstractions;
+﻿using Goober.Base.Attributes;
+using Goober.Web.Filters;
+using Goober.WebJobs.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,10 +9,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Indusoft.WebJobs.Api.Models;
+using Goober.WebJobs.Api.Models;
 using Microsoft.Extensions.Logging;
 
-namespace Indusoft.WebJobs.Controllers
+namespace Goober.WebJobs.Controllers
 {
     public class JobApiController : Controller
     {

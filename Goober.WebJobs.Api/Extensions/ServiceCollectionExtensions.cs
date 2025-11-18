@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Indusoft.DependencyInjection.Extensions;
-using Indusoft.WebJobs.Api.Services;
-using Indusoft.WebJobs.Api.Services.Implementation;
+using Goober.DependencyInjection.Extensions;
+using Goober.WebJobs.Api.Services;
+using Goober.WebJobs.Api.Services.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Indusoft.WebJobs.Api.Extensions
+namespace Goober.WebJobs.Api.Extensions
 {
 	public static class ServiceCollectionExtensions
 	{

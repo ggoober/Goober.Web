@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Indusoft.WebJobs.Api.Models
+namespace Goober.WebJobs.Api.Models
 {
     public class PingApiResponse
     {

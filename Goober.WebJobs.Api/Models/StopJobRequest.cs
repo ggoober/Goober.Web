@@ -1,4 +1,4 @@
-﻿namespace Indusoft.WebJobs.Api.Models
+﻿namespace Goober.WebJobs.Api.Models
 {
     public class StopJobRequest
     {

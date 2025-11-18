@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Indusoft.WebJobs.Api.Models;
+using Goober.WebJobs.Api.Models;
 
-namespace Indusoft.WebJobs.Helpers
+namespace Goober.WebJobs.Helpers
 {
 	internal interface IPriorityComparer
 	{

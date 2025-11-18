@@ -1,4 +1,4 @@
-﻿namespace Indusoft.WebJobs.Parameters
+﻿namespace Goober.WebJobs.Parameters
 {
 	public class ClusterNode
 	{

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Indusoft.WebJobs.Abstractions
+namespace Goober.WebJobs.Abstractions
 {
     public interface IListJobService<TItem>
     {

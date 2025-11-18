@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System;
 
-namespace Indusoft.WebJobs.Parameters
+namespace Goober.WebJobs.Parameters
 {
     public class SingleJobParameters: JobParametersBase
     {

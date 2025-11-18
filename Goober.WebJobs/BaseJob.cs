@@ -1,9 +1,9 @@
-﻿using Indusoft.WebJobs.Abstractions;
-using Indusoft.WebJobs.Api.Enums;
-using Indusoft.WebJobs.Api.Models;
-using Indusoft.WebJobs.Helpers;
-using Indusoft.WebJobs.Parameters;
-using Indusoft.WebJobs.Services;
+﻿using Goober.WebJobs.Abstractions;
+using Goober.WebJobs.Api.Enums;
+using Goober.WebJobs.Api.Models;
+using Goober.WebJobs.Helpers;
+using Goober.WebJobs.Parameters;
+using Goober.WebJobs.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,7 +16,7 @@ using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Indusoft.WebJobs
+namespace Goober.WebJobs
 {
     public abstract class BaseJob : IBaseJobMetrics, IHostedService
     {

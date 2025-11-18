@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Indusoft.WebJobs.Api.Models;
+using Goober.WebJobs.Api.Models;
 
-namespace Indusoft.WebJobs.Api.Services
+namespace Goober.WebJobs.Api.Services
 {
 	public interface IWebJobsHttpService
 	{

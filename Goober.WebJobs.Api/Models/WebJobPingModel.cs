@@ -1,9 +1,9 @@
 ﻿using System;
-using Indusoft.WebJobs.Api.Enums;
+using Goober.WebJobs.Api.Enums;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace Indusoft.WebJobs.Api.Models
+namespace Goober.WebJobs.Api.Models
 {
     public class WebJobPingModel
     {

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Indusoft.WebJobs.Api.Enums;
-using Indusoft.WebJobs.Api.Models;
+using Goober.WebJobs.Api.Enums;
+using Goober.WebJobs.Api.Models;
 
-namespace Indusoft.WebJobs.Helpers
+namespace Goober.WebJobs.Helpers
 {
 	internal class HostAndPortPriorityComparer : IPriorityComparer
 	{

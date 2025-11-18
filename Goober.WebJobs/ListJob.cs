@@ -1,4 +1,4 @@
-﻿using Indusoft.WebJobs.Abstractions;
+﻿using Goober.WebJobs.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,7 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
-namespace Indusoft.WebJobs
+namespace Goober.WebJobs
 {
     public abstract class ListJob<TItem, TListJobService> : BaseJob, IListJobMetrics, IIterateJobMetrics
         where TListJobService : IListJobService<TItem>

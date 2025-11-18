@@ -1,4 +1,4 @@
-﻿namespace Indusoft.WebJobs.Api.Enums
+﻿namespace Goober.WebJobs.Api.Enums
 {
 	public enum PriorityCompareType
 	{

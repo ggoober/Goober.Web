@@ -1,4 +1,4 @@
-﻿using Indusoft.WebJobs.Abstractions;
+﻿using Goober.WebJobs.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Indusoft.WebJobs
+namespace Goober.WebJobs
 {
     public abstract class IterateJob<TIterateJobService> : BaseJob, IIterateJobMetrics
         where TIterateJobService : IIterateJobService

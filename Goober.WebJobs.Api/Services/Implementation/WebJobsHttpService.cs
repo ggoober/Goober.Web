@@ -1,14 +1,14 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Indusoft.DependencyInjection.Attributes;
-using Indusoft.Http;
-using Indusoft.Http.Services;
-using Indusoft.WebJobs.Api.Models;
+using Goober.DependencyInjection.Attributes;
+using Goober.Http;
+using Goober.Http.Services;
+using Goober.WebJobs.Api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Indusoft.WebJobs.Api.Services.Implementation
+namespace Goober.WebJobs.Api.Services.Implementation
 {
 	[ExportService(typeof(IWebJobsHttpService), ServiceLifetime.Transient)]
 	class WebJobsHttpServiсe : BaseHttpService, IWebJobsHttpService

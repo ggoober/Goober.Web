@@ -1,12 +1,12 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Indusoft.Http;
-using Indusoft.Http.Services;
-using Indusoft.Web.Models;
+using Goober.Http;
+using Goober.Http.Services;
+using Goober.Web.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
-namespace Indusoft.WebJobs.Api.Services.Implementation
+namespace Goober.WebJobs.Api.Services.Implementation
 {
 	public class CookieHttpService: BaseHttpService, ICookieHttpService
 	{

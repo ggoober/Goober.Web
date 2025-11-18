@@ -1,8 +1,8 @@
 ﻿using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Indusoft.Web.Models;
+using Goober.Web.Models;
 
-namespace Indusoft.WebJobs.Api.Services
+namespace Goober.WebJobs.Api.Services
 {
 	public interface ICookieHttpService
 	{

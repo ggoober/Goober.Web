@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Indusoft.WebJobs.Api.Enums;
+using Goober.WebJobs.Api.Enums;
 
-namespace Indusoft.WebJobs.Parameters
+namespace Goober.WebJobs.Parameters
 {
 	public abstract class JobParametersBase
 	{

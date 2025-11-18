@@ -7,13 +7,13 @@ using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Indusoft.Web.Models;
-using Indusoft.WebJobs.Api.Models;
-using Indusoft.WebJobs.Api.Services;
+using Goober.Web.Models;
+using Goober.WebJobs.Api.Models;
+using Goober.WebJobs.Api.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Indusoft.WebJobs.Services.Implementation
+namespace Goober.WebJobs.Services.Implementation
 {
 	class ClusterInfoVisor : IClusterInfoVisor
 	{
@@ -205,7 +205,7 @@ namespace Indusoft.WebJobs.Services.Implementation
 				await cookieSetter.SetAsync(apiSchemeAndHost, new SetCookieRequest
 				{
 					Name = "indusoft",
-					Value = Indusoft.Web.Filters.BasicAuthAttribute.DefaultPassword
+					Value = Goober.Web.Filters.BasicAuthAttribute.DefaultPassword
 				}, pingTimeout);
 				result = await webJobsHttpService.PingAsync(apiSchemeAndHost, pingTimeout);
 			}

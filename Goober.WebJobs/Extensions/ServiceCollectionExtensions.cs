@@ -1,15 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using Indusoft.WebJobs.Api.Extensions;
-using Indusoft.WebJobs.Api.Services;
-using Indusoft.WebJobs.Api.Services.Implementation;
-using Indusoft.WebJobs.Services;
-using Indusoft.WebJobs.Services.Implementation;
+using Goober.WebJobs.Api.Extensions;
+using Goober.WebJobs.Api.Services;
+using Goober.WebJobs.Api.Services.Implementation;
+using Goober.WebJobs.Services;
+using Goober.WebJobs.Services.Implementation;
 
-namespace Indusoft.WebJobs.Extensions
+namespace Goober.WebJobs.Extensions
 {
 	public static class ServiceCollectionExtensions
 	{

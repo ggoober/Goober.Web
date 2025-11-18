@@ -2,9 +2,9 @@
 using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
-using Indusoft.WebJobs.Api.Models;
+using Goober.WebJobs.Api.Models;
 
-namespace Indusoft.WebJobs.Services
+namespace Goober.WebJobs.Services
 {
 	public interface IClusterInfoVisor
 	{

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Indusoft.WebJobs
+namespace Goober.WebJobs
 {
     public static class WebJobsGlossary
     {
